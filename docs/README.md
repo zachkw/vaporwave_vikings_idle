@@ -36,6 +36,7 @@ This folder is the single source of truth for Vaporwave Vikings Idle. Design and
 | [Courses](game-systems/courses.md) | Entering, failing, clearing, farms |
 | [Level flow](game-systems/level-flow.md) | Levels, bosses, biomes, World+, portals |
 | [HUD and menus](game-systems/hud-and-menus.md) | On-screen elements and menus |
+| [Backgrounds and parallax](game-systems/backgrounds.md) | Layer stack, scroll speeds, placeholder art |
 | [Later systems](game-systems/later-systems.md) | What remaining systems need before they are built |
 
 ## Technical
@@ -52,6 +53,7 @@ This folder is the single source of truth for Vaporwave Vikings Idle. Design and
 | Doc | Covers |
 | --- | --- |
 | [First build](production/first-build.md) | Dark Forest scope, build order, done criteria |
+| [Proof segments](production/proof-segments.md) | The built proof: five segments, level builder, parallax, tests |
 | [Roadmap](production/roadmap.md) | What's done and what's next |
 
 ## Art

@@ -1,0 +1,136 @@
+[
+  {
+    "id": "proof_flat",
+    "scene": "res://scenes/segments/proof/proof_flat.tscn",
+    "biomes": [
+      "proof"
+    ],
+    "width": 48,
+    "entry_row": 2,
+    "exit_row": 2,
+    "roles": [
+      "start",
+      "run"
+    ],
+    "difficulty": 1,
+    "weight": 1.0,
+    "cooldown": 1,
+    "pits": [],
+    "platforms": [],
+    "slots": [],
+    "flags": []
+  },
+  {
+    "id": "proof_pit",
+    "scene": "res://scenes/segments/proof/proof_pit.tscn",
+    "biomes": [
+      "proof"
+    ],
+    "width": 48,
+    "entry_row": 2,
+    "exit_row": 2,
+    "roles": [
+      "jump"
+    ],
+    "difficulty": 1,
+    "weight": 1.0,
+    "cooldown": 1,
+    "pits": [
+      [
+        22,
+        25
+      ]
+    ],
+    "platforms": [],
+    "slots": [],
+    "flags": []
+  },
+  {
+    "id": "proof_platform",
+    "scene": "res://scenes/segments/proof/proof_platform.tscn",
+    "biomes": [
+      "proof"
+    ],
+    "width": 48,
+    "entry_row": 2,
+    "exit_row": 2,
+    "roles": [
+      "run",
+      "platform"
+    ],
+    "difficulty": 1,
+    "weight": 1.0,
+    "cooldown": 1,
+    "pits": [],
+    "platforms": [
+      {
+        "from": 21,
+        "to": 27,
+        "top_row": 5
+      }
+    ],
+    "slots": [],
+    "flags": []
+  },
+  {
+    "id": "proof_platforms_2",
+    "scene": "res://scenes/segments/proof/proof_platforms_2.tscn",
+    "biomes": [
+      "proof"
+    ],
+    "width": 48,
+    "entry_row": 2,
+    "exit_row": 2,
+    "roles": [
+      "run",
+      "platform"
+    ],
+    "difficulty": 1,
+    "weight": 1.0,
+    "cooldown": 1,
+    "pits": [],
+    "platforms": [
+      {
+        "from": 12,
+        "to": 18,
+        "top_row": 5
+      },
+      {
+        "from": 30,
+        "to": 36,
+        "top_row": 5
+      }
+    ],
+    "slots": [],
+    "flags": []
+  },
+  {
+    "id": "proof_pits_2",
+    "scene": "res://scenes/segments/proof/proof_pits_2.tscn",
+    "biomes": [
+      "proof"
+    ],
+    "width": 48,
+    "entry_row": 2,
+    "exit_row": 2,
+    "roles": [
+      "jump"
+    ],
+    "difficulty": 1,
+    "weight": 1.0,
+    "cooldown": 1,
+    "pits": [
+      [
+        14,
+        17
+      ],
+      [
+        31,
+        34
+      ]
+    ],
+    "platforms": [],
+    "slots": [],
+    "flags": []
+  }
+]

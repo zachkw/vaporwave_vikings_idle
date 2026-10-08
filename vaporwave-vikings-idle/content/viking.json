@@ -1,0 +1,27 @@
+{
+  "health": 100,
+  "sword_damage": 10,
+  "attacks_per_second": 2,
+  "regen_delay_s": 2,
+  "regen_per_second_pct": 10,
+  "sprint": {
+    "speed_mult": 1.5,
+    "duration_s": 3,
+    "cooldown_s": 20
+  },
+  "crit": {
+    "cap": 0.5,
+    "k": 100,
+    "base_damage_mult": 2,
+    "base_gold_mult": 2
+  },
+  "physics": {
+    "block_px": 32,
+    "gravity_blocks_s2": 28,
+    "jump_velocity_blocks_s": 14,
+    "coyote_s": 0.1,
+    "jump_buffer_s": 0.1,
+    "drop_in_height_row": 14,
+    "probe_ahead_px": 20
+  }
+}

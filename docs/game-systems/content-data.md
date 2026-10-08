@@ -14,8 +14,8 @@ Purpose: every number the game uses lives in JSON under `vaporwave-vikings-idle/
 | File | Holds |
 | --- | --- |
 | `version.json` | `content_version` |
-| `economy.json` | Run speed, gold per metre, coin value, away bands, sync margin |
-| `viking.json` | Base health, damage, attack rate, regen, sprint |
+| `economy.json` | Run speed, gold per metre, coin value, level length, away bands, sync margin |
+| `viking.json` | Base health, damage, attack rate, regen, sprint, jump physics |
 | `gear.json` | The 22 slots: order, bracket, base cost, step, stats per level |
 | `enemies.json` | Every enemy: role, health, attack, gold, flying, material drop |
 | `biomes.json` | Biome order, enemy lists, ingredients, segment pool, boss |
@@ -34,6 +34,7 @@ Purpose: every number the game uses lives in JSON under `vaporwave-vikings-idle/
   "gold_per_metre": 1,
   "coin_value": 6,
   "sync_margin": 2,
+  "level_length_m": 1500,
   "away_bands": [
     { "from_h": 0,   "to_h": 12,   "rate": 0.50 },
     { "from_h": 12,  "to_h": 24,   "rate": 0.25 },
@@ -54,7 +55,16 @@ Purpose: every number the game uses lives in JSON under `vaporwave-vikings-idle/
   "regen_delay_s": 2,
   "regen_per_second_pct": 10,
   "sprint": { "speed_mult": 1.5, "duration_s": 3, "cooldown_s": 20 },
-  "crit": { "cap": 0.5, "k": 100, "base_damage_mult": 2, "base_gold_mult": 2 }
+  "crit": { "cap": 0.5, "k": 100, "base_damage_mult": 2, "base_gold_mult": 2 },
+  "physics": {
+    "block_px": 32,
+    "gravity_blocks_s2": 28,
+    "jump_velocity_blocks_s": 14,
+    "coyote_s": 0.1,
+    "jump_buffer_s": 0.1,
+    "drop_in_height_row": 14,
+    "probe_ahead_px": 20
+  }
 }
 ```
 

@@ -1,0 +1,14 @@
+{
+  "run_speed_mps": 5,
+  "gold_per_metre": 1,
+  "coin_value": 6,
+  "sync_margin": 2,
+  "level_length_m": 1500,
+  "away_bands": [
+    { "from_h": 0,   "to_h": 12,   "rate": 0.50 },
+    { "from_h": 12,  "to_h": 24,   "rate": 0.25 },
+    { "from_h": 24,  "to_h": 48,   "rate": 0.10 },
+    { "from_h": 48,  "to_h": 168,  "rate": 0.05 },
+    { "from_h": 168, "to_h": null, "rate": 0.01 }
+  ]
+}

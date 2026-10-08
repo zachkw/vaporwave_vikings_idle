@@ -18,6 +18,7 @@ Every spec uses the same sections: **Purpose, Rules, Content data, State and act
 | [Courses](courses.md) | Entering, playing and failing assault courses; rewards; farms | Yes (one course) |
 | [Level flow](level-flow.md) | Level start, boss, advance, badges, World+, portals | Partly |
 | [HUD and menus](hud-and-menus.md) | What is on screen and in the menus | Partly |
+| [Backgrounds and parallax](backgrounds.md) | Layered scrolling backgrounds per biome | Yes |
 | [Later systems](later-systems.md) | Artefacts and weapons, pickups, ascension, Village, away gold | No |
 
 Saving, sync and validation are specified in [State store spec](../technical/state-store-spec.md) and [Validation](../technical/validation.md).

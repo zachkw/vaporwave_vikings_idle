@@ -21,7 +21,7 @@ These limits are the contract with segment authors (see [Level builder](level-bu
 | --- | --- |
 | Highest rise in one jump | 3 blocks |
 | Widest gap at base speed | 4 blocks |
-| Jump time, take-off to landing on flat | about 0.8 s |
+| Jump time, take-off to landing on flat | about 1.0 s (the proof uses 14 blocks/s up, 28 blocks/s² gravity: 3.5 high, 5 long) |
 | Coyote time after leaving an edge | 0.1 s |
 | Tap buffer before landing | 0.1 s |
 

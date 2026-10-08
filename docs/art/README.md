@@ -1,6 +1,6 @@
 # Art
 
-This folder will hold the art direction and asset specs. The style is not decided yet and will be filled in later.
+This folder will hold the art direction and asset specs. The art is made by the project's artist; the style is not decided yet and will be filled in later. Anything drawn in code (such as the proof's parallax shapes) is a throwaway placeholder.
 
 ## Principles already agreed
 

@@ -5,6 +5,8 @@
 - June 2026: first design and technical docs, backend skeleton (auth, profile, run report, purchases), empty Godot 4.6 project.
 - October 2026: October design (biomes, dimensions, gear, artefacts, Village, ascension), decisions session, state store spec, player-flow map on Miro, docs rewritten as one set.
 
+- 8 October 2026: proof segments built and tested in Godot 4.6: level builder, streaming, auto-jump, pit-fall extension, parallax background.
+
 ## Next
 
 1. **Values and simulation.** Fill content tables for the first build (gear costs and stats, enemy gold, spawn rates, brackets), then simulate and plot time to each milestone.

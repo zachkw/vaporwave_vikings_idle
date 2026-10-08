@@ -104,6 +104,8 @@ Last updated 8 October 2026 (second pass).
 - Segment seams can sit at **any row**; the level builder matches them.
 - Segments have **one route**; higher platforms inside a segment can hold bonus coins or enemies, but there are no forks.
 - A **surface level** (the normal ground run from start to boss) lasts about **5 minutes**.
+- **Proof segments:** prove the level builder with five 48-block segments, all entering and exiting on row 2: flat, one pit, one floating platform, two platforms, two pits. Claude picked the sizes (3-block pits, 6-block platforms at row 5). See [Proof segments](production/proof-segments.md).
+- **Backgrounds** are parallax: several layers scrolling at different speeds. See [Backgrounds and parallax](game-systems/backgrounds.md).
 - Surface segments do not all start and end at the same height, so the level builder chains them by their seam rows with an algorithm; enemy spawning is part of that algorithm. See [Level builder](game-systems/level-builder.md).
 
 ### Validation and build choices (8 Oct)
