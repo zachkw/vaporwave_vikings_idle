@@ -30,7 +30,7 @@ Every change to the player follows the same loop: something happens, an action d
 - **Effects listen, they don't own.** Sound, particles, saving and networking react to actions. If they need to change something they dispatch another action.
 - **State is plain data.** Dictionaries, arrays, numbers and strings only, so the whole tree turns into JSON as it stands.
 
-In Godot 4.6 this is one autoload, `Store`, with `dispatch(action)`, `select(name, args)` and a `changed(slice)` signal. Reducers, selectors and the batch builder are plain scripts with no scene dependencies, so they can be tested without running the game.
+In Godot 4.6 this is one autoload, `Store`, with `dispatch(action)`, a `changed(action)` signal, and selectors as static functions on `Selectors` (plus shortcuts such as `Store.gold()`). Built 8 Oct in `autoload/store.gd` and `state/`. Reducers, selectors and the batch builder are plain scripts with no scene dependencies, so they can be tested without running the game.
 
 Gold is a 64-bit float: exact to about 15 digits and good to 10^308, well past the 10^46 the gear ladder draft implies. Affordability checks compare full values, never the rounded label.
 
@@ -146,7 +146,7 @@ The device save is the working copy and the game always runs from it, with or wi
 
 ### Saving to the device
 
-The whole state is written as JSON to `user://save.json` at every checkpoint, whenever the app goes to the background, and when it closes. Each write goes to a temporary file that then replaces the save, and the previous save is kept as a backup, so a crash mid-write cannot corrupt it.
+The whole state is written as JSON to `user://save.json` at every checkpoint, whenever the app goes to the background, and when it closes. Each write goes to a temporary file that then replaces the save, and the previous save is kept as a backup, so a crash mid-write cannot corrupt it. Loading tries the save, then the backup, then runs a migration that fills any slice or key a newer build added. Built 8 Oct in `autoload/save.gd`.
 
 Close cannot be the only save. Phones stop background apps without warning, so the save taken when the app leaves the screen is the one that counts.
 

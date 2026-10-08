@@ -35,8 +35,8 @@ var levels_completed := 0
 @onready var menu_panel: Control = $UI/MenuPanel
 @onready var sprint_button: Button = $HUD/AbilityStrip/Sprint
 
-var gold := 0.0
 var _game_rect := Rect2()
+var _metres_accum := 0.0
 
 
 func _ready() -> void:
@@ -47,11 +47,14 @@ func _ready() -> void:
 	_start_level(0, 0.0)
 	viking.global_position = Vector2(4.0 * block_px, -2.0 * block_px)
 	viking.pit_fallen.connect(_on_pit_fallen)
+	Store.dispatch(Actions.level_started("proof", level_index, level_seed))
 	_update_stream()
 	layout.game_rect_changed.connect(_on_game_rect_changed)
 	layout.setup($UI, menu_panel, $UI/Dock, $UI/Drawer, $UI/Dim, $HUD/MenuButton)
 	menu_panel.close_requested.connect(layout.close_drawer)
 	sprint_button.pressed.connect(func() -> void: viking.request_jump())
+	Store.changed.connect(func(_a: Dictionary) -> void: sprint_button.visible = Store.has_sprint())
+	sprint_button.visible = Store.has_sprint()
 
 
 ## Fit the 15-block segment height to the game view and keep the camera
@@ -71,12 +74,18 @@ func _on_game_rect_changed(rect: Rect2) -> void:
 
 func _physics_process(_delta: float) -> void:
 	camera.global_position = Vector2(viking.global_position.x + CAMERA_LEAD_PX / camera.zoom.x * 0.5, -SEGMENT_HEIGHT_BLOCKS * 0.5 * block_px)
-	var gold_per_metre: float = float(Content.load_json("res://content/economy.json")["gold_per_metre"]) + menu_panel.gear_gold_per_metre()
-	gold += gold_per_metre * viking.velocity.x * _delta / block_px
-	menu_panel.set_gold(gold)
+	Store.dispatch(Actions.time_advanced(_delta))
+	# Pay distance in whole metres so the reducer is not hit with tiny fractions.
+	_metres_accum += viking.velocity.x * _delta / block_px
+	if _metres_accum >= 1.0:
+		var whole := floorf(_metres_accum)
+		Store.dispatch(Actions.distance_travelled(whole))
+		_metres_accum -= whole
 	if viking.global_position.x > level_end_x:
 		levels_completed += 1
 		_start_level(level_index + 1, level_end_x)
+		Store.dispatch(Actions.level_started("proof", level_index, level_seed))
+		Store.dispatch(Actions.checkpoint_reached("level_end"))
 	_update_stream()
 	_update_hud()
 
@@ -102,6 +111,7 @@ func _start_level(index: int, start_x: float) -> void:
 
 func _on_pit_fallen(world_x: float) -> void:
 	pit_falls += 1
+	Store.dispatch(Actions.pit_fallen())
 	var landing_x := _pit_exit_x(world_x) + block_px
 	var top_y := -float(Content.load_json("res://content/viking.json")["physics"]["drop_in_height_row"]) * block_px
 	viking.drop_in(landing_x, top_y)
@@ -187,5 +197,5 @@ func current_segment_id() -> String:
 
 
 func _update_hud() -> void:
-	hud_label.text = "Gold %d   Level %d   %s\nTo level end: %d m   Pit falls: %d   Auto-jumps: %d" % [
-		int(gold), level_index + 1, "portrait" if layout.is_portrait else "landscape", int(distance_to_level_end_m()), pit_falls, viking.auto_jumps]
+	hud_label.text = "Gold %d   (%.1f/m)   Level %d   %s\nTo level end: %d m   Pit falls: %d   Auto-jumps: %d" % [
+		int(Store.gold()), Store.gold_per_metre(), level_index + 1, "portrait" if layout.is_portrait else "landscape", int(distance_to_level_end_m()), pit_falls, viking.auto_jumps]

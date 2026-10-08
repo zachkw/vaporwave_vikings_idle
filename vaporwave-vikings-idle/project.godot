@@ -15,6 +15,11 @@ run/main_scene="res://scenes/run/run.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Store="*res://autoload/store.gd"
+Save="*res://autoload/save.gd"
+
 [display]
 
 window/size/viewport_width=480

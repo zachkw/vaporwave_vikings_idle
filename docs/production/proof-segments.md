@@ -25,6 +25,8 @@ Platforms are one-way: the Viking jumps up through them and lands on top. Pits a
 - At the end of a level the next one is built and joined on seamlessly.
 - The background has five layers scrolling at different speeds.
 - Portrait and landscape layouts: in portrait the game fills the top half and the menu panel docks below; in landscape the game fills the screen and a Menu button slides the same panel in as a drawer from the right, over the game, without moving the camera. The camera always fits the 15-block height to the game view.
+- The **Store**: a `Store` autoload holding the whole player state (wallet, gear, run, stats, plus empty slices for later systems). The run dispatches `TIME_ADVANCED`, `DISTANCE_TRAVELLED`, `PIT_FALLEN`, `LEVEL_STARTED` and `CHECKPOINT_REACHED`; the gear panel dispatches `GEAR_LEVEL_BOUGHT` and reads everything through selectors. Neither owns player state any more.
+- **Device save**: a `Save` autoload writes the state as JSON to `user://save.json` on every checkpoint, when the app pauses or loses focus, and on close. Atomic write with a `.bak` backup; load falls back to the backup if the save is corrupt, and migration fills in slices a newer build added.
 - A Gear tab that reads `content/gear.json`: rows appear as their gold-held bracket is reached (Sword, Chest and Helmet at start, Legs at 100 gold, then a hint for the next locked slot), level 1 costs scale Sword 1, Chest 10, Helmet 100, Legs 250, and the cost rises linearly. Every level adds gold per metre, so buying gear visibly speeds up the gold counter. Buy buttons go green or red against the gold earned by running. Other tabs are stubs.
 
 ## Files
@@ -40,22 +42,28 @@ Platforms are one-way: the Viking jumps up through them and lands on top. Pits a
 | `systems/viking.gd`, `scenes/viking/viking.tscn` | Placeholder Viking: auto-run, tap jump, auto-jump, pit-fall signal, drop-in |
 | `systems/run.gd`, `scenes/run/run.tscn` | The run: builds levels, streams segments, camera, HUD, drop-ins and extension |
 | `systems/parallax_placeholder.gd`, `scenes/backgrounds/proof_background.tscn` | Placeholder parallax background |
+| `autoload/store.gd` | The Store: `dispatch`, reducers in order, `changed` and `checkpoint` signals, action log |
+| `autoload/save.gd` | Device save: atomic write, backup, load, migration |
+| `state/actions.gd` | Action types and constructors |
+| `state/initial_state.gd` | The empty player and the save format version |
+| `state/selectors.gd` | Derived values: gold per metre, costs, affordability, damage, health, sprint |
+| `state/reducers/*.gd` | `wallet`, `gear` and `run` reducers |
 | `systems/layout.gd` | Portrait or landscape detection, game rect, panel docking and the drawer |
 | `systems/menu_panel.gd`, `scenes/ui/menu_panel.tscn` | The menu panel: nav bar, tabs, placeholder gear rows |
 | `content/gear.json` | Gear slots: brackets, level costs, stats |
-| `tests/run_tests.gd` | 72 headless tests |
+| `tests/run_tests.gd`, `tests/run_tests.tscn` | 102 headless tests |
 
 ## Running it
 
 - **Play:** open the `vaporwave-vikings-idle` folder in Godot 4.6 and press Play. Tap, click or press Space to jump.
 - **Portrait:** run with `--resolution 480x960`, or resize the window taller than wide; the layout switches live.
-- **Tests:** from that folder, `godot --headless --path . --script res://tests/run_tests.gd`. All 72 pass on Godot 4.6 stable: library and linter checks, the seam rule, determinism, 10,000 random levels with no failures, extension, physics simulations of an idle Viking, a pit fall and an early tap, both layouts and the drawer, and the placeholder gear purchases.
+- **Tests:** from that folder, `godot --headless --path . res://tests/run_tests.tscn` (a scene, so the autoloads exist). All 102 pass on Godot 4.6 stable: library and linter checks, the seam rule, determinism, 10,000 random levels with no failures, extension, physics simulations of an idle Viking, a pit fall and an early tap, both layouts and the drawer, every reducer and selector, and the save round trip, backup and migration.
 
 The base viewport is 480 by 480 with `canvas_items` stretch, so UI is designed at about 480 units across in either orientation and scales up on phones.
 
 ## Not in the proof
 
-The `Store` autoload and actions (the run and the panel keep their own counters for now), enemies, coins, boxes, the boss, and saving. Those come next, following the [first build](first-build.md) order.
+Enemies, coins, boxes, the boss, the batch builder and sync. The Store's `COIN_COLLECTED`, `ENEMY_KILLED`, `PLAYER_DAMAGED`, `PLAYER_DIED` and `BOSS_DEFEATED` actions exist and are tested but nothing dispatches them yet. Those come next, following the [first build](first-build.md) order.
 
 ## Physics numbers used
 

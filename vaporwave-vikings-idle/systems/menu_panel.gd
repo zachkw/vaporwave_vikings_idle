@@ -1,17 +1,15 @@
 ## The menu panel: one scene used as the bottom dock in portrait and as the
-## drawer in landscape. Placeholder content until the Store exists.
-## See docs/game-systems/hud-and-menus.md.
+## drawer in landscape. Reads the Store through selectors and dispatches
+## GEAR_LEVEL_BOUGHT; it owns no player state. See docs/game-systems/hud-and-menus.md.
 extends PanelContainer
 
 const TABS := ["Gear", "Artefacts", "Unlocks", "Ascension", "Village", "Shop"]
 
 signal close_requested
 
-var gold := 0.0
-var levels := {}
-var unlocked := {}
 var current_tab := "Gear"
 var gear: Array = []
+var _shown_unlocked := {}
 
 @onready var _title: Label = %Title
 @onready var _rows: VBoxContainer = %Rows
@@ -20,8 +18,8 @@ var gear: Array = []
 
 
 func _ready() -> void:
-	gear = Content.load_json("res://content/gear.json")
-	gear.sort_custom(func(a, b): return int(a["order"]) < int(b["order"]))
+	gear = Selectors.gear_table()
+	Store.changed.connect(_on_store_changed)
 	for tab in TABS:
 		var b := Button.new()
 		b.text = tab
@@ -41,18 +39,15 @@ func set_close_visible(show_close: bool) -> void:
 	_close.visible = show_close
 
 
-func set_gold(value: float) -> void:
-	gold = value
-	# A slot unlocks the first time the wallet reaches its bracket, and stays unlocked.
-	var newly := false
+func _on_store_changed(_action: Dictionary) -> void:
+	if current_tab != "Gear":
+		return
+	# Rebuild when a slot has unlocked since the rows were made; otherwise refresh.
 	for item in gear:
-		if not unlocked.get(item["id"], false) and gold >= float(item["bracket"]):
-			unlocked[item["id"]] = true
-			newly = true
-	if newly:
-		_rebuild_rows()
-	else:
-		_refresh_rows()
+		if Store.is_unlocked(item["id"]) != _shown_unlocked.get(item["id"], false):
+			_rebuild_rows()
+			return
+	_refresh_rows()
 
 
 func _select_tab(tab: String) -> void:
@@ -71,9 +66,11 @@ func _rebuild_rows() -> void:
 		l.text = "%s: coming in a later build." % current_tab
 		_rows.add_child(l)
 		return
+	_shown_unlocked.clear()
 	var next_locked: Dictionary = {}
 	for item in gear:
-		if unlocked.get(item["id"], false):
+		_shown_unlocked[item["id"]] = Store.is_unlocked(item["id"])
+		if _shown_unlocked[item["id"]]:
 			_rows.add_child(_make_gear_row(item))
 		elif next_locked.is_empty():
 			next_locked = item
@@ -111,25 +108,8 @@ func _make_gear_row(item: Dictionary) -> Control:
 	return row
 
 
-## Gold per metre from gear: every core piece adds to it. See docs/game-systems/gear-shop.md.
-func gear_gold_per_metre() -> float:
-	var total := 0.0
-	for item in gear:
-		total += float(item["per_level"].get("gold_per_metre", 0.0)) * float(levels.get(item["id"], 0))
-	return total
-
-
-## Linear level cost: base + step x level. See docs/game-systems/gear-shop.md.
-func next_cost(item: Dictionary) -> float:
-	return float(item["base_cost"]) + float(item["step"]) * float(levels.get(item["id"], 0))
-
-
 func _buy(id: String) -> void:
-	for item in gear:
-		if item["id"] == id and unlocked.get(id, false) and gold >= next_cost(item):
-			gold -= next_cost(item)
-			levels[id] = int(levels.get(id, 0)) + 1
-	_refresh_rows()
+	Store.dispatch(Actions.gear_level_bought(id))
 
 
 func _refresh_rows() -> void:
@@ -139,11 +119,11 @@ func _refresh_rows() -> void:
 		var row := _rows.get_node_or_null(item["id"])
 		if row == null:
 			continue
-		var level := int(levels.get(item["id"], 0))
+		var level := Store.gear_level(item["id"])
 		row.get_node("H/Text/Name").text = "%s   Lv.%d" % [item["name"], level]
 		var buy: Button = row.get_node("H/Buy")
-		var cost := next_cost(item)
-		var can := gold >= cost
+		var cost := Store.next_level_cost(item["id"])
+		var can := Store.can_afford(item["id"])
 		buy.text = "%s gold" % _short(cost)
 		buy.disabled = not can
 		buy.modulate = Color(0.55, 1.0, 0.6) if can else Color(1.0, 0.45, 0.45)

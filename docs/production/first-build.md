@@ -32,8 +32,8 @@ Artefacts and wands, pickups, farm courses, World+, portals, ascension, the Vill
 
 Each step is playable or testable on its own.
 
-1. `Store` autoload with the `wallet`, `gear` and `run` reducers, their selectors, and the device save.
-2. Shop rows reading `next_level_cost` and `can_afford`, dispatching `GEAR_LEVEL_BOUGHT`.
+1. Done: `Store` autoload with the `wallet`, `gear` and `run` reducers, their selectors, and the device save.
+2. Done: shop rows reading `next_level_cost` and `can_afford`, dispatching `GEAR_LEVEL_BOUGHT`.
 3. Running, coins and enemies in Dark Forest dispatching the run actions; death and pit falls.
 4. The boss fight and level advance.
 5. Checkpoint triggers and the batch builder, logging batches to the console.
