@@ -29,7 +29,7 @@ Last updated 8 October 2026 (second pass).
 ### Death, pits and bosses (7 Oct)
 
 - The Viking dies regularly on a normal surface run, every few minutes for most of the game. Gold and gear are kept. (What happens next was changed on 8 Oct: see below.)
-- Pits are not a death. Falling in drops the Viking back onto the level from the sky, a bit further along. Sometimes there are coins in the sky to fall through, so falling can be the best move. Pits that are cave entrances still lead to caves.
+- Pits are not a death. Falling in drops the Viking back onto the level from the sky, a bit further along. Sometimes there are coins in the sky to fall through, so falling can be the best move. Pits that are cave entrances still lead to caves. (Refined on 8 Oct: a pit fall now also extends the level; see below.)
 - The boss is always an automatic fight at the end of the area. If the Viking is very weak the boss kills him at once with a signature move (the giant frog's tongue grabs him and eats him).
 - Enemy roles are basic, elite and boss. Elites stop the Viking: he halts and fights until one of them dies.
 
@@ -98,7 +98,9 @@ Last updated 8 October 2026 (second pass).
 - The `docs/` folder in this repo is the single source of truth. The June docs were removed once this set covered them.
 - Docs are organised as: `game-design/` (what and why), `game-systems/` (build-ready specs per system), `technical/` (architecture, state, validation), `art/` (to be filled), `production/`.
 - Surface pieces are called **segments**; the sync unit is called a **batch**.
-- **Death does not restart the level.** The Viking drops back in from the sky a little ahead (about a block) and keeps running, with very little interruption. Sometimes there are coins or enemies to hit as he falls. Pit falls work the same way, landing just past the pit.
+- **Death does not restart the level.** The Viking drops back in from the sky a little ahead (about a block) and keeps running, with very little interruption. Sometimes there are coins or enemies to hit as he falls.
+- **Dying to the boss** builds a brand-new level (new layout, same biome and level number) and the Viking starts again at its beginning. (Was C6.)
+- **Falling into a pit** is treated as a death that costs progress: the Viking drops in just past the pit and keeps running, but the level is extended so the boss is a full level's length away again, as if he had restarted the level. There is no visible restart. Gold and gear are kept.
 - Segment seams can sit at **any row**; the level builder matches them.
 - Segments have **one route**; higher platforms inside a segment can hold bonus coins or enemies, but there are no forks.
 - A **surface level** (the normal ground run from start to boss) lasts about **5 minutes**.
@@ -113,7 +115,7 @@ Last updated 8 October 2026 (second pass).
 
 ## Open questions
 
-Each has a number so it can be referred to; numbers are never reused. Proposed defaults, where there is one, are in brackets. Resolved: G1, T1, T3 (8 Oct).
+Each has a number so it can be referred to; numbers are never reused. Proposed defaults, where there is one, are in brackets. Resolved: G1, T1, T3, C6 (8 Oct).
 
 ### Gear
 
@@ -139,7 +141,7 @@ Each has a number so it can be referred to; numbers are never reused. Proposed d
 - C3. Can coins crit? Is the crit-chance dampener accepted?
 - C4. Do double jump and jump dash (June) still exist?
 - C5. How weak is "very weak" for the boss's instant kill, and is there a warning?
-- C6. Dying to the boss: drop in and fight again with the boss at full health, or repeat the area to farm? [Repeat the area; otherwise an idle player loops on the boss without earning]
+- C7. Does a death to an ordinary enemy also extend the level, like a pit fall? [No: only pits and the boss cost progress]
 
 ### Ingredients and dimensions
 
@@ -171,7 +173,7 @@ Each has a number so it can be referred to; numbers are never reused. Proposed d
 - W1. How many levels per biome, and what raises a biome's level within a world?
 - W2. Biome order after Grassland.
 - W3. Content for Grassland and Frost Mountain; Volcano Land's elite, boss, tiles and backgrounds.
-- W4. How often sky coins appear on a pit fall, and how far along the Viking lands.
+- W4. How often coins or enemies appear in a drop-in, and exactly how far ahead the Viking lands.
 
 ### Ascension
 

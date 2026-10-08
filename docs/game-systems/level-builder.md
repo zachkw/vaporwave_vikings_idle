@@ -8,6 +8,8 @@ Decided 8 Oct:
 - Seams can sit at **any row**; the builder matches them.
 - **One route** through every segment. Higher platforms inside a segment can hold bonus coins or enemies, but there are no forks.
 - A surface level is about **5 minutes** long, the same for every level (about 1,500 m at base speed).
+- A **pit fall extends the level** so the boss is a full level's length away again, as if the level had restarted, with no visible restart.
+- **Dying to the boss builds a brand-new level** (new seed, same biome and level number) and the Viking starts at its beginning.
 
 Everything else here is a proposal for review.
 
@@ -153,10 +155,30 @@ After a death or a pit fall the Viking drops in from the top of the screen a lit
 - Sometimes nothing, sometimes a column of coins, sometimes one or two air enemies to hit on the way down (placeholder chances: 50 percent nothing, 35 percent coins, 15 percent enemies; dimensional flyers only if their dimension is active).
 - It uses its own random stream, seeded from the level seed and a drop-in counter.
 
+### Extension pass (after a pit fall)
+
+A pit fall makes the level longer instead of restarting it.
+
+1. Keep every segment already instantiated: the one the Viking is in and the two or three streamed ahead.
+2. Throw away the rest of the planned list, including the boss approach and arena.
+3. Run Pass 1 again with the full target length, as if the level had just started: the difficulty curve starts from easy again and the elite spacing rules restart. There is no `start` beat; the plan opens with `run` beats.
+4. Keep what is still due: if a course entrance or a box was planned but not yet passed, it goes back into the new plan.
+5. Run Pass 2 from the exit row of the last kept segment, with cooldowns carried over, so the join is seamless.
+6. Run Pass 3 on the new remainder.
+
+The extension uses its own seed (the level seed plus an extension counter), so the result is reproducible. The HUD's distance-to-boss jumps back to a full level.
+
+There is no limit on extensions. A player who keeps jumping into pits on purpose keeps farming the level; the server's gold bound still caps what they can earn per second.
+
+### Rebuild (after dying to the boss)
+
+Losing to the boss throws the whole level away and runs every pass again with a new seed (the visit counter goes up by one). Same biome, same level number, same target length. The Viking starts at the new level's `start` segment.
+
 ### Seeds
 
-- The level seed is derived from the save: `hash(player_id, world_level, biome, level_index, visit_counter)`.
-- A death does not rebuild the level; the run continues from the drop-in point.
+- The level seed is derived from the save: `hash(player_id, world_level, biome, level_index, visit_counter)`. The visit counter rises each time the level is rebuilt after a boss death.
+- Extensions use `hash(level_seed, extension_counter)`.
+- An ordinary death does not rebuild or extend the level; the run continues from the drop-in point (C7 asks whether it should extend).
 - All random numbers in the builder and spawner come from explicit `RandomNumberGenerator` objects seeded this way, never the global generator, so a level can be rebuilt exactly for debugging.
 
 ## Library linter and coverage tests
@@ -214,6 +236,8 @@ About 33 segments, many of them able to fill two roles. A 1,500 m level uses rou
 
 - 10,000 Dark Forest builds with zero failures and zero fallbacks.
 - Every level reaches the boss, keeps the floor between rows 2 and 10, takes about 5 minutes at base speed, and has at least one box once an ingredient is unlocked.
+- After a pit fall, the remaining distance to the boss is a full level length, and the join between kept and new segments passes the seam rule.
+- After a boss death, the new level differs from the old one and starts at its beginning.
 - The same seed always gives the same segment list.
 - Eating an ingredient mid-level adds its enemies to segments streamed in afterwards.
 
@@ -221,4 +245,4 @@ About 33 segments, many of them able to fill two roles. A 1,500 m level uses rou
 
 - L3. Seam tolerance: up 1, down 3 (proposed), or exact match only?
 - L5. How often is a course due, and how is it chosen (tier and biome rules are in [Courses and unlocks](../game-design/courses-and-unlocks.md))?
-- L7. What happens when the Viking dies to the boss: drop in and fight again, or repeat the area? (See [Enemies and spawning](enemies-and-spawning.md).)
+- C7. Does an ordinary enemy death also extend the level? [No]

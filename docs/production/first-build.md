@@ -12,7 +12,7 @@ The first playable build is one biome, Dark Forest, with a light backend. Its jo
 | Course | One hand-made assault course (sky or cave), one fall fails, unlocks the ingredient |
 | Gear | The ten warrior pieces, Sword to Cloak, unlocking by gold held; Legs grant sprint |
 | Controls | Auto-run, tap to jump, auto-jump at pit edges, sprint button |
-| Setbacks | Death and pit falls drop the Viking back in from the sky a little ahead, keeping gold and gear |
+| Setbacks | Death and pit falls drop the Viking back in from the sky a little ahead, keeping gold and gear; a pit fall extends the level; losing to the frog builds a fresh level |
 | Shop | Gear rows with green/red buy buttons |
 | Segments | A Dark Forest library of about 33 hand-made segments, mostly on rows 2, 5 and 8, that passes the [library linter](../game-systems/level-builder.md); levels about 5 minutes |
 

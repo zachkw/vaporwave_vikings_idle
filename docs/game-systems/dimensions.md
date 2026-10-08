@@ -13,7 +13,7 @@ Purpose: ingredient boxes, eating ingredients, running dimension effects, and th
 - **Duration (tentative).** A raw ingredient from a box lasts `raw_timer_s` of play time. A mixed garden ingredient lasts until the level ends. Eating the same ingredient again while it is active resets its timer to full (proposed; June's rule added durations together).
 - **Stacking.** Several dimensions can be active. Colour shifts blend, set pieces layer, enemy pools add up.
 - **Ending.** When an effect ends, its colour shift fades out over 1 s and no new enemies of that dimension spawn. Enemies already on screen stay until killed or passed.
-- **Death.** Effects survive death (tentative). Pit falls never affect them.
+- **Death.** Effects survive death, pit falls and boss-death rebuilds (tentative).
 - **Where it works.** An ingredient only reveals enemies in biomes in its `works_in` list. Eaten elsewhere it still shifts colour (proposed) but adds no enemies.
 - **Auto-consume (later).** Rules like "eat a torched red flower on entering Volcano Land" fire from bag stock. Not in the first build.
 

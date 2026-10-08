@@ -10,10 +10,12 @@ A surface level lasts about 5 minutes (decided 8 Oct).
 2. **Run.** Segments stream in; enemies, coins and boxes fill as they come.
 3. **Boss.** At the `boss_arena` the boss fight runs (see [Enemies and spawning](enemies-and-spawning.md)).
 4. **Win.** `BOSS_DEFEATED`. The Viking runs off the right edge, the next level starts. Checkpoint.
-5. **Die during the run.** `PLAYER_DIED`. The Viking drops back in about a block ahead and the level carries on. Dying to the boss: open (C6); proposed, the area repeats from its start.
-6. **Biome end.** After the last level of a biome, the next biome in play order starts and the biome's badge is earned.
-7. **World end.** After the last biome, `WORLD_ADVANCED`: World+ level rises, badges clear, the first biome starts again with higher enemy stats and gold.
-8. **Portals.** After a full clear, a portal can appear as a segment feature; entering sends the Viking to the start of a random other biome (`PORTAL_TAKEN`). No distance gold for the jump.
+5. **Die during the run.** `PLAYER_DIED`. The Viking drops back in about a block ahead and the level carries on.
+6. **Fall into a pit.** `PIT_FALLEN`. The Viking drops back in just past the pit; the level builder extends the level so the boss is a full level's length away again (see Extension in [Level builder](level-builder.md)).
+7. **Die to the boss.** `PLAYER_DIED` with cause `boss`. The level builder builds a brand-new level for the same biome and level number with a new seed, and the Viking starts at its beginning. Checkpoint.
+8. **Biome end.** After the last level of a biome, the next biome in play order starts and the biome's badge is earned.
+9. **World end.** After the last biome, `WORLD_ADVANCED`: World+ level rises, badges clear, the first biome starts again with higher enemy stats and gold.
+10. **Portals.** After a full clear, a portal can appear as a segment feature; entering sends the Viking to the start of a random other biome (`PORTAL_TAKEN`). No distance gold for the jump.
 
 Placeholders: 3 levels per biome (W1), biome order Grassland, Dark Forest, Volcano Land, Frost Mountain (W2; the first build is Dark Forest only). World+ multiplies enemy health and gold by a factor per world level (to be set by simulation).
 
@@ -32,7 +34,7 @@ Placeholders: 3 levels per biome (W1), biome order Grassland, Dark Forest, Volca
 
 ## Acceptance
 
-- First build: three Dark Forest levels in a row, each about 5 minutes and ending in the giant frog; dying drops the Viking back in a little ahead; beating the third earns the Dark Forest badge.
+- First build: three Dark Forest levels in a row, each about 5 minutes and ending in the giant frog; dying drops the Viking back in a little ahead, a pit fall pushes the frog a full level away, and losing to the frog builds a fresh level; beating the third earns the Dark Forest badge.
 
 ## Open
 

@@ -9,7 +9,7 @@ Purpose: move the Viking left to right through the streamed segments, handle jum
 - **Auto-jump:** when the Viking reaches the edge of a gap and the player has not jumped, he jumps automatically with a jump that clears the gap. An idle Viking never falls into a pit.
 - **Dropping into a pit:** only happens when the player jumps early so the Viking comes down inside the gap, short of the far edge. If the pit is a cave entrance, the Viking enters the course; otherwise it is a pit fall.
 - **Drop-in:** after a death or a pit fall, the Viking falls from the top of the screen and lands a little ahead, then keeps running. After a death he lands about a block ahead of where he died; after a pit fall, just past the pit. The air column he falls through may hold coins or enemies (see the drop-in pass in [Level builder](level-builder.md)). He can hit them on the way down.
-- **Pit fall:** no death and no damage; a drop-in, and `PIT_FALLEN` is dispatched.
+- **Pit fall:** no damage, but it counts as a death that costs progress. A drop-in just past the pit, `PIT_FALLEN` is dispatched, and the level builder extends the level so the boss is a full level's length away again.
 - **Sprint:** a button, visible only when `has_sprint` is true (Legs owned). Multiplies run speed for its duration, then cools down. Socks raise the multiplier.
 - **Steps up:** a rise of one block is walked over; higher rises need a jump (auto-jump also handles steps the main route requires).
 

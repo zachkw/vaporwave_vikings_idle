@@ -32,7 +32,7 @@
 | Material | Pelts, leather, demon hide and other drops, used for money, the Village and artefact upgrades |
 | Slot | A marked spot in a segment where the spawner may place an enemy, coins or a box |
 | Pickup | A timed power found during a run, such as Magnetism or Dead eye |
-| Pit | A gap in the surface; a fall is a drop-in just past it, unless it is a cave entrance |
+| Pit | A gap in the surface. A fall is a drop-in just past it that extends the level by a full length, unless the pit is a cave entrance |
 | Portal | After a full clear, a doorway to a random biome |
 | Reducer | A pure function that turns state plus action into the next state |
 | Segment | A hand-made piece of surface level; the level builder chains segments together |

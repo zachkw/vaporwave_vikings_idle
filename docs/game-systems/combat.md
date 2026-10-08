@@ -40,8 +40,8 @@ crit_chance = cap × rating / (rating + k)                      (proposed, C3)
 - Health regenerates after `regen_delay_s` without taking damage, at `regen_per_second_pct` of max health per second.
 - At zero health the Viking dies: a short death animation, then he drops back in from the top of the screen about a block ahead, with full health, and keeps running (see the drop-in in [Runner](runner.md)). Gold and gear are kept. No confirmation screen. Placeholder total interruption: under 1.5 s.
 - If he dies during an elite fight, he lands just in front of the elite and the fight starts again; the elite keeps its damage (proposed).
-- If he dies to a boss: open (C6). Proposed: the area repeats from its start, boss at full health.
-- Pit falls never cause damage or death.
+- If he dies to a boss: a brand-new level is built (new seed, same biome and level number) and he starts at its beginning. The boss is at full health when he gets there again.
+- Pit falls cause no damage, but count as a death that costs progress: see [Runner](runner.md).
 - Proposed: active dimension effects survive death (tentative decision); timed pickups end (C2).
 
 ## Content data

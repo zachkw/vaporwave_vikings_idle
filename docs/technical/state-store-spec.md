@@ -81,8 +81,8 @@ What a level is worth (damage, defence, gold boost, cost) is not in the save. It
 | Run | `COIN_COLLECTED` | coin kind, count, from sky | Pays coin gold |
 | Run | `ENEMY_KILLED` | enemy id, role, dimension, crit | Pays enemy gold with crit and source boosts, counts the kill, may add a material |
 | Run | `PLAYER_DAMAGED` | amount | Lowers health |
-| Run | `PLAYER_DIED` | cause | Counts the death, restores health, moves the Viking a block ahead (boss deaths: C6) |
-| Run | `PIT_FALLEN` | none | Moves the Viking just past the pit; no death |
+| Run | `PLAYER_DIED` | cause | Counts the death, restores health, moves the Viking a block ahead; if the cause is the boss, starts a new level (new seed, same biome and level number) |
+| Run | `PIT_FALLEN` | none | Counts the fall, moves the Viking just past the pit, resets distance-to-boss to a full level (the builder extends the level) |
 | Run | `SPRINT_USED` | none | Starts the sprint and its cooldown |
 | Run | `BOSS_DEFEATED` | boss id | Pays the boss, marks the biome beaten, advances the level |
 | Run | `WORLD_ADVANCED` | none | Raises the World+ level, clears this world's badges |

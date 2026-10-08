@@ -5,7 +5,7 @@ How the player moves through the world, and how ascension resets and rebuilds th
 ## Areas, levels and bosses
 
 - Each biome is played as a run of surface levels, each about 5 minutes long and ending in a boss.
-- The boss fight is automatic and checks damage, health and defence. Win and the Viking advances to the next level or biome and earns a badge. Lose and the area repeats; gold and gear are kept, and the player farms until strong enough.
+- The boss fight is automatic and checks damage, health and defence. Win and the Viking advances to the next level or biome and earns a badge. Lose and a brand-new level is built for the same biome and level number, and the Viking starts at its beginning; gold and gear are kept, so he farms until strong enough.
 - If the Viking is far too weak, the boss kills him at once with a signature move.
 - Defeating a boss advances automatically; there is no confirmation screen.
 - Open: how many levels per biome, and what raises a biome's level within a world (W1).
