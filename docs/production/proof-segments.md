@@ -24,6 +24,8 @@ Platforms are one-way: the Viking jumps up through them and lands on top. Pits a
 - A pit fall drops him back in from the sky just past the pit and extends the level by a full length.
 - At the end of a level the next one is built and joined on seamlessly.
 - The background has five layers scrolling at different speeds.
+- Portrait and landscape layouts: in portrait the game fills the top half and the menu panel docks below; in landscape the game fills the screen and a Menu button slides the same panel in as a drawer from the right, over the game, without moving the camera. The camera always fits the 15-block height to the game view.
+- A placeholder Gear tab with four rows (Sword, Chest, Helmet, Legs), linear costs, and buy buttons that go green or red against the gold earned by running. Other tabs are stubs.
 
 ## Files
 
@@ -38,16 +40,21 @@ Platforms are one-way: the Viking jumps up through them and lands on top. Pits a
 | `systems/viking.gd`, `scenes/viking/viking.tscn` | Placeholder Viking: auto-run, tap jump, auto-jump, pit-fall signal, drop-in |
 | `systems/run.gd`, `scenes/run/run.tscn` | The run: builds levels, streams segments, camera, HUD, drop-ins and extension |
 | `systems/parallax_placeholder.gd`, `scenes/backgrounds/proof_background.tscn` | Placeholder parallax background |
-| `tests/run_tests.gd` | 46 headless tests |
+| `systems/layout.gd` | Portrait or landscape detection, game rect, panel docking and the drawer |
+| `systems/menu_panel.gd`, `scenes/ui/menu_panel.tscn` | The menu panel: nav bar, tabs, placeholder gear rows |
+| `tests/run_tests.gd` | 64 headless tests |
 
 ## Running it
 
 - **Play:** open the `vaporwave-vikings-idle` folder in Godot 4.6 and press Play. Tap, click or press Space to jump.
-- **Tests:** from that folder, `godot --headless --path . --script res://tests/run_tests.gd`. All 46 pass on Godot 4.6 stable: library and linter checks, the seam rule, determinism, 10,000 random levels with no failures, extension, and physics simulations of an idle Viking, a pit fall and an early tap.
+- **Portrait:** run with `--resolution 480x960`, or resize the window taller than wide; the layout switches live.
+- **Tests:** from that folder, `godot --headless --path . --script res://tests/run_tests.gd`. All 64 pass on Godot 4.6 stable: library and linter checks, the seam rule, determinism, 10,000 random levels with no failures, extension, physics simulations of an idle Viking, a pit fall and an early tap, both layouts and the drawer, and the placeholder gear purchases.
+
+The base viewport is 480 by 480 with `canvas_items` stretch, so UI is designed at about 480 units across in either orientation and scales up on phones.
 
 ## Not in the proof
 
-The `Store` autoload and actions (the run keeps its own counters for now), enemies, coins, boxes, the boss, gear and saving. Those come next, following the [first build](first-build.md) order.
+The `Store` autoload and actions (the run and the panel keep their own counters for now), enemies, coins, boxes, the boss, real gear data from `content/gear.json`, and saving. Those come next, following the [first build](first-build.md) order.
 
 ## Physics numbers used
 

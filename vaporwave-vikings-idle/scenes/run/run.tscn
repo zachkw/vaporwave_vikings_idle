@@ -1,8 +1,15 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://systems/run.gd" id="1_run"]
 [ext_resource type="PackedScene" path="res://scenes/viking/viking.tscn" id="2_viking"]
 [ext_resource type="PackedScene" path="res://scenes/backgrounds/proof_background.tscn" id="3_background"]
+[ext_resource type="Script" path="res://systems/layout.gd" id="4_layout"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menu_panel.tscn" id="5_panel"]
+
+[sub_resource type="StyleBoxFlat" id="drawer_bg"]
+bg_color = Color(0.08, 0.04, 0.14, 1)
+border_width_left = 2
+border_color = Color(0.95, 0.4, 0.85, 1)
 
 [node name="Run" type="Node2D"]
 script = ExtResource("1_run")
@@ -15,14 +22,61 @@ script = ExtResource("1_run")
 
 [node name="Camera" type="Camera2D" parent="."]
 
+[node name="Layout" type="Node" parent="."]
+script = ExtResource("4_layout")
+
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="Info" type="Label" parent="HUD"]
 offset_left = 16.0
 offset_top = 12.0
-offset_right = 940.0
-offset_bottom = 100.0
+offset_right = 470.0
+offset_bottom = 60.0
 mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.1, 0.03, 0.2, 1)
 theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+
+[node name="AbilityStrip" type="HBoxContainer" parent="HUD"]
+offset_left = 16.0
+offset_top = 400.0
+offset_right = 200.0
+offset_bottom = 456.0
+
+[node name="Sprint" type="Button" parent="HUD/AbilityStrip"]
+custom_minimum_size = Vector2(96, 56)
+layout_mode = 2
+text = "Sprint"
+
+[node name="MenuButton" type="Button" parent="HUD"]
+offset_left = 840.0
+offset_top = 424.0
+offset_right = 944.0
+offset_bottom = 472.0
+text = "Menu"
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 5
+
+[node name="Dock" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Dim" type="ColorRect" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+color = Color(0, 0, 0, 0.45)
+
+[node name="Drawer" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Bg" type="Panel" parent="UI/Drawer"]
+layout_mode = 0
+theme_override_styles/panel = SubResource("drawer_bg")
+
+[node name="MenuPanel" parent="UI" instance=ExtResource("5_panel")]

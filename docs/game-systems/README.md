@@ -17,7 +17,7 @@ Every spec uses the same sections: **Purpose, Rules, Content data, State and act
 | [Gear shop](gear-shop.md) | Slots, brackets, linear costs, stats, shop rows | Yes |
 | [Courses](courses.md) | Entering, playing and failing assault courses; rewards; farms | Yes (one course) |
 | [Level flow](level-flow.md) | Level start, boss, advance, badges, World+, portals | Partly |
-| [HUD and menus](hud-and-menus.md) | What is on screen and in the menus | Partly |
+| [HUD and menus](hud-and-menus.md) | Portrait and landscape layouts, menu panel and drawer, HUD | Yes (layout + gear tab) |
 | [Backgrounds and parallax](backgrounds.md) | Layered scrolling backgrounds per biome | Yes |
 | [Later systems](later-systems.md) | Artefacts and weapons, pickups, ascension, Village, away gold | No |
 

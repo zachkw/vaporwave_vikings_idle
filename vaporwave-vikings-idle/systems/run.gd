@@ -10,6 +10,8 @@ const CAMERA_LEAD_PX := 300.0
 
 @export var base_seed := 12345
 
+const SEGMENT_HEIGHT_BLOCKS := 15.0
+
 var builder: LevelBuilder
 var block_px := 32.0
 var level_length_blocks := 1500
@@ -29,6 +31,12 @@ var levels_completed := 0
 @onready var camera: Camera2D = $Camera
 @onready var segments_root: Node2D = $Segments
 @onready var hud_label: Label = $HUD/Info
+@onready var layout: Layout = $Layout
+@onready var menu_panel: Control = $UI/MenuPanel
+@onready var sprint_button: Button = $HUD/AbilityStrip/Sprint
+
+var gold := 0.0
+var _game_rect := Rect2()
 
 
 func _ready() -> void:
@@ -40,10 +48,31 @@ func _ready() -> void:
 	viking.global_position = Vector2(4.0 * block_px, -2.0 * block_px)
 	viking.pit_fallen.connect(_on_pit_fallen)
 	_update_stream()
+	layout.game_rect_changed.connect(_on_game_rect_changed)
+	layout.setup($UI, menu_panel, $UI/Dock, $UI/Drawer, $UI/Dim, $HUD/MenuButton)
+	menu_panel.close_requested.connect(layout.close_drawer)
+	sprint_button.pressed.connect(func() -> void: viking.request_jump())
+
+
+## Fit the 15-block segment height to the game view and keep the camera
+## centred on it, whatever the orientation.
+func _on_game_rect_changed(rect: Rect2) -> void:
+	_game_rect = rect
+	var view := layout.view_size()
+	var world_h := SEGMENT_HEIGHT_BLOCKS * block_px
+	var zoom := rect.size.y / world_h
+	camera.zoom = Vector2(zoom, zoom)
+	# Camera2D centres its target on the viewport. To show the world in the game
+	# rect instead, aim the camera below the world centre by the screen difference.
+	camera.offset = Vector2(0, (view.y * 0.5 - (rect.position.y + rect.size.y * 0.5)) / zoom)
+	$HUD/AbilityStrip.position = Vector2(16, rect.size.y - 72)
+	$HUD/MenuButton.position = Vector2(view.x - 120, view.y - 56)
 
 
 func _physics_process(_delta: float) -> void:
-	camera.global_position = Vector2(viking.global_position.x + CAMERA_LEAD_PX, -7.5 * block_px)
+	camera.global_position = Vector2(viking.global_position.x + CAMERA_LEAD_PX / camera.zoom.x * 0.5, -SEGMENT_HEIGHT_BLOCKS * 0.5 * block_px)
+	gold += float(Content.load_json("res://content/economy.json")["gold_per_metre"]) * viking.velocity.x * _delta / block_px
+	menu_panel.set_gold(gold)
 	if viking.global_position.x > level_end_x:
 		levels_completed += 1
 		_start_level(level_index + 1, level_end_x)
@@ -157,5 +186,5 @@ func current_segment_id() -> String:
 
 
 func _update_hud() -> void:
-	hud_label.text = "Level %d   segment %s\nTo level end: %d m   Pit falls: %d   Auto-jumps: %d\nTap or Space to jump. Jump early before a pit to fall in." % [
-		level_index + 1, current_segment_id(), int(distance_to_level_end_m()), pit_falls, viking.auto_jumps]
+	hud_label.text = "Gold %d   Level %d   %s\nTo level end: %d m   Pit falls: %d   Auto-jumps: %d" % [
+		int(gold), level_index + 1, "portrait" if layout.is_portrait else "landscape", int(distance_to_level_end_m()), pit_falls, viking.auto_jumps]

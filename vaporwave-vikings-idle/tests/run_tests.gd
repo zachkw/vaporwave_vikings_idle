@@ -124,7 +124,57 @@ func _simulation_tests() -> void:
 	for i in 180:
 		await physics_frame
 	expect(run.pit_falls == falls_before + 1, "an early tap lands the Viking in the pit")
+	await _layout_tests(run)
 	run.queue_free()
+
+
+func _layout_tests(run: Node) -> void:
+	print("== Layout: landscape drawer, then portrait dock ==")
+	var layout: Layout = run.layout
+	var panel: Control = run.menu_panel
+	var cam: Camera2D = run.camera
+
+	var land := Vector2(960, 480)
+	layout.set_override_size(land)
+	await process_frame
+	expect(not layout.is_portrait, "960x480 is landscape")
+	expect(panel.get_parent().name == "Drawer", "panel lives in the drawer in landscape")
+	expect(not layout.drawer_open, "drawer starts closed")
+	expect(layout.game_rect().size == land, "game view fills the screen in landscape")
+	expect(is_equal_approx(cam.zoom.y, 480.0 / 480.0), "camera fits 15 blocks to 480 px (zoom %.3f)" % cam.zoom.y)
+	layout.open_drawer()
+	for i in 20:
+		await process_frame
+	expect(layout.drawer_open and run.get_node("UI/Drawer").position.x < land.x, "drawer slides in")
+	expect(layout.game_rect().size == land, "open drawer does not change the game view")
+	layout.close_drawer()
+	for i in 20:
+		await process_frame
+	expect(not layout.drawer_open, "drawer closes")
+
+	var port := Vector2(480, 960)
+	layout.set_override_size(port)
+	await process_frame
+	expect(layout.is_portrait, "480x960 is portrait")
+	expect(panel.get_parent().name == "Dock", "panel docks to the bottom in portrait")
+	expect(is_equal_approx(layout.game_rect().size.y, 480.0), "game view is the top half in portrait")
+	expect(is_equal_approx(cam.zoom.y, 480.0 / 480.0), "camera still fits 15 blocks to the game view")
+	expect(not layout.drawer_open, "no drawer in portrait")
+	expect(panel.current_tab == "Gear", "tab survives the rotation")
+
+	layout.set_override_size(land)
+	await process_frame
+	expect(panel.get_parent().name == "Drawer", "rotating back moves the panel to the drawer again")
+
+	print("== Placeholder gear panel ==")
+	panel.set_gold(1000.0)
+	panel._buy("sword")
+	expect(int(panel.levels.get("sword", 0)) == 1 and is_equal_approx(panel.gold, 990.0), "buying a sword level costs 10 gold")
+	panel._buy("sword")
+	expect(is_equal_approx(panel.gold, 975.0), "second level costs 15 gold (linear)")
+	panel.set_gold(3.0)
+	var buy: Button = panel.get_node("%Rows/sword/H/Buy")
+	expect(buy.disabled, "buy button disabled when gold is short")
 
 
 func _next_pit_start(run: Node, after_x: float) -> float:
