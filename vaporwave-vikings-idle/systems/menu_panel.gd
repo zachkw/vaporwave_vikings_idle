@@ -4,18 +4,14 @@
 extends PanelContainer
 
 const TABS := ["Gear", "Artefacts", "Unlocks", "Ascension", "Village", "Shop"]
-const PLACEHOLDER_GEAR := [
-	{"id": "sword", "name": "Sword", "effect": "+2 damage, +2% enemy gold per level", "base": 10, "step": 5},
-	{"id": "chest", "name": "Chest", "effect": "+1 defence, +1% all gold per level", "base": 10, "step": 5},
-	{"id": "helmet", "name": "Helmet", "effect": "+10 health, +2% boss gold per level", "base": 10, "step": 5},
-	{"id": "legs", "name": "Legs", "effect": "Grants sprint, +2% elite gold per level", "base": 10, "step": 5},
-]
 
 signal close_requested
 
 var gold := 0.0
 var levels := {}
+var unlocked := {}
 var current_tab := "Gear"
+var gear: Array = []
 
 @onready var _title: Label = %Title
 @onready var _rows: VBoxContainer = %Rows
@@ -24,6 +20,8 @@ var current_tab := "Gear"
 
 
 func _ready() -> void:
+	gear = Content.load_json("res://content/gear.json")
+	gear.sort_custom(func(a, b): return int(a["order"]) < int(b["order"]))
 	for tab in TABS:
 		var b := Button.new()
 		b.text = tab
@@ -45,7 +43,16 @@ func set_close_visible(show_close: bool) -> void:
 
 func set_gold(value: float) -> void:
 	gold = value
-	_refresh_rows()
+	# A slot unlocks the first time the wallet reaches its bracket, and stays unlocked.
+	var newly := false
+	for item in gear:
+		if not unlocked.get(item["id"], false) and gold >= float(item["bracket"]):
+			unlocked[item["id"]] = true
+			newly = true
+	if newly:
+		_rebuild_rows()
+	else:
+		_refresh_rows()
 
 
 func _select_tab(tab: String) -> void:
@@ -64,8 +71,17 @@ func _rebuild_rows() -> void:
 		l.text = "%s: coming in a later build." % current_tab
 		_rows.add_child(l)
 		return
-	for item in PLACEHOLDER_GEAR:
-		_rows.add_child(_make_gear_row(item))
+	var next_locked: Dictionary = {}
+	for item in gear:
+		if unlocked.get(item["id"], false):
+			_rows.add_child(_make_gear_row(item))
+		elif next_locked.is_empty():
+			next_locked = item
+	if not next_locked.is_empty():
+		var l := Label.new()
+		l.text = "%s unlocks at %s gold held" % [next_locked["name"], _short(float(next_locked["bracket"]))]
+		l.modulate = Color(0.8, 0.8, 0.9)
+		_rows.add_child(l)
 	_refresh_rows()
 
 
@@ -95,13 +111,14 @@ func _make_gear_row(item: Dictionary) -> Control:
 	return row
 
 
+## Linear level cost: base + step x level. See docs/game-systems/gear-shop.md.
 func next_cost(item: Dictionary) -> float:
-	return float(item["base"]) + float(item["step"]) * float(levels.get(item["id"], 0))
+	return float(item["base_cost"]) + float(item["step"]) * float(levels.get(item["id"], 0))
 
 
 func _buy(id: String) -> void:
-	for item in PLACEHOLDER_GEAR:
-		if item["id"] == id and gold >= next_cost(item):
+	for item in gear:
+		if item["id"] == id and unlocked.get(id, false) and gold >= next_cost(item):
 			gold -= next_cost(item)
 			levels[id] = int(levels.get(id, 0)) + 1
 	_refresh_rows()
@@ -110,7 +127,7 @@ func _buy(id: String) -> void:
 func _refresh_rows() -> void:
 	if current_tab != "Gear":
 		return
-	for item in PLACEHOLDER_GEAR:
+	for item in gear:
 		var row := _rows.get_node_or_null(item["id"])
 		if row == null:
 			continue

@@ -167,14 +167,31 @@ func _layout_tests(run: Node) -> void:
 	expect(panel.get_parent().name == "Drawer", "rotating back moves the panel to the drawer again")
 
 	print("== Placeholder gear panel ==")
-	panel.set_gold(1000.0)
+	# A fresh panel, so the gold earned during the simulation does not pre-unlock slots.
+	panel = load("res://scenes/ui/menu_panel.tscn").instantiate()
+	root.add_child(panel)
+	await process_frame
+	panel.set_gold(0.0)
+	expect(panel.unlocked.get("sword", false) and panel.unlocked.get("helmet", false), "sword, chest and helmet unlock at start")
+	expect(not panel.unlocked.get("legs", false), "legs are locked until 100 gold is held")
+	panel.set_gold(999.0)
+	expect(panel.unlocked.get("legs", false) and not panel.unlocked.get("boots", false), "legs unlock at 100 gold; boots wait for 1000")
 	panel._buy("sword")
-	expect(int(panel.levels.get("sword", 0)) == 1 and is_equal_approx(panel.gold, 990.0), "buying a sword level costs 10 gold")
+	expect(int(panel.levels.get("sword", 0)) == 1 and is_equal_approx(panel.gold, 998.0), "first sword level costs 1 gold")
 	panel._buy("sword")
-	expect(is_equal_approx(panel.gold, 975.0), "second level costs 15 gold (linear)")
+	expect(is_equal_approx(panel.gold, 996.0), "second sword level costs 2 gold (linear)")
+	panel._buy("chest")
+	expect(is_equal_approx(panel.gold, 986.0), "first chest level costs 10 gold")
+	panel._buy("helmet")
+	expect(is_equal_approx(panel.gold, 886.0), "first helmet level costs 100 gold")
+	panel._buy("legs")
+	expect(is_equal_approx(panel.gold, 636.0), "first legs level costs 250 gold")
 	panel.set_gold(3.0)
-	var buy: Button = panel.get_node("%Rows/sword/H/Buy")
+	var buy: Button = panel.get_node("%Rows/helmet/H/Buy")
 	expect(buy.disabled, "buy button disabled when gold is short")
+	var sword_buy: Button = panel.get_node("%Rows/sword/H/Buy")
+	expect(not sword_buy.disabled, "cheap sword level still affordable with 3 gold")
+	panel.queue_free()
 
 
 func _next_pit_start(run: Node, after_x: float) -> float:

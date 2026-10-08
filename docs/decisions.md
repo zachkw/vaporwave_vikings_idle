@@ -106,6 +106,7 @@ Last updated 8 October 2026 (second pass).
 - A **surface level** (the normal ground run from start to boss) lasts about **5 minutes**.
 - **Proof segments:** prove the level builder with five 48-block segments, all entering and exiting on row 2: flat, one pit, one floating platform, two platforms, two pits. Claude picked the sizes (3-block pits, 6-block platforms at row 5). See [Proof segments](production/proof-segments.md).
 - **Backgrounds** are parallax: several layers scrolling at different speeds. See [Backgrounds and parallax](game-systems/backgrounds.md).
+- **Opening gear costs** scale slot by slot for the early game: Sword 1 gold, Chest 10, Helmet 100, Legs 250 at level 1, each rising linearly. Placeholder values, in `content/gear.json`.
 - **UI layout** follows the idle-runner standard (Slayer Legend as the reference). Portrait: the game in the top half, an always-open menu panel in the bottom half. Landscape: the game fills the screen and a button opens the same panel as a drawer from the right, overlaid on the game without changing the view. Bottom nav: Gear, Artefacts, Unlocks (with achievements), Ascension, Village, Shop. Abilities such as sprint are buttons on the game view in both orientations; the wand is never a button, it is a tap in mid-air. See [HUD and menus](game-systems/hud-and-menus.md).
 - Surface segments do not all start and end at the same height, so the level builder chains them by their seam rows with an algorithm; enemy spawning is part of that algorithm. See [Level builder](game-systems/level-builder.md).
 

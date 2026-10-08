@@ -70,32 +70,22 @@ Purpose: every number the game uses lives in JSON under `vaporwave-vikings-idle/
 
 ### `gear.json` (first ten slots)
 
-Rule used for placeholders: `base_cost = bracket / 10` (10 for the starting three), `step = base_cost / 2`. Gold boosts add 2 percent of their source per level.
+Rule used for placeholders (decided 8 Oct for the opening four): the first levels scale up slot by slot so each new piece is a small step up in price, Sword 1, Chest 10, Helmet 100, Legs 250. From Boots on, `base_cost = bracket / 2`. `step = base_cost / 2` everywhere, so a slot's level cost rises linearly. Gold boosts add 2 percent of their source per level.
 
-```json
-[
-  { "id": "sword",     "order": 1,  "bracket": 0,      "base_cost": 10,    "step": 5,
-    "per_level": { "damage": 2, "gold_enemy_pct": 2 } },
-  { "id": "chest",     "order": 2,  "bracket": 0,      "base_cost": 10,    "step": 5,
-    "per_level": { "defence": 1, "gold_all_pct": 1 } },
-  { "id": "helmet",    "order": 3,  "bracket": 0,      "base_cost": 10,    "step": 5,
-    "per_level": { "health": 10, "gold_boss_pct": 2 } },
-  { "id": "legs",      "order": 4,  "bracket": 100,    "base_cost": 10,    "step": 5,
-    "per_level": { "gold_elite_pct": 2 }, "grants": ["sprint"] },
-  { "id": "boots",     "order": 5,  "bracket": 1000,   "base_cost": 100,   "step": 50,
-    "per_level": { "gold_metre_pct": 2 } },
-  { "id": "gloves",    "order": 6,  "bracket": 10000,  "base_cost": 1000,  "step": 500,
-    "per_level": { "crit_rating": 2, "gold_enemy_pct": 2 } },
-  { "id": "shoulders", "order": 7,  "bracket": 1e5,    "base_cost": 1e4,   "step": 5e3,
-    "per_level": { "gold_basic_pct": 2 } },
-  { "id": "bracers",   "order": 8,  "bracket": 1e7,    "base_cost": 1e6,   "step": 5e5,
-    "per_level": { "gold_coin_pct": 2 } },
-  { "id": "belt",      "order": 9,  "bracket": 1e9,    "base_cost": 1e8,   "step": 5e7,
-    "per_level": { "gold_coin_pct": 2 } },
-  { "id": "cloak",     "order": 10, "bracket": 1e11,   "base_cost": 1e10,  "step": 5e9,
-    "per_level": { "gold_dimensional_pct": 2 } }
-]
-```
+| Slot | Bracket (gold held) | Level 1 cost | Step per level |
+| --- | --- | --- | --- |
+| Sword | 0 | 1 | 1 |
+| Chest | 0 | 10 | 5 |
+| Helmet | 0 | 100 | 50 |
+| Legs | 100 | 250 | 125 |
+| Boots | 1,000 | 1,000 | 500 |
+| Gloves | 10,000 | 5,000 | 2,500 |
+| Shoulders | 10^5 | 5 x 10^4 | 2.5 x 10^4 |
+| Bracers | 10^7 | 5 x 10^6 | 2.5 x 10^6 |
+| Belt | 10^9 | 5 x 10^8 | 2.5 x 10^8 |
+| Cloak | 10^11 | 5 x 10^10 | 2.5 x 10^10 |
+
+Each entry also carries `name`, `per_level` stats and an `effect` string for the shop row. The file is `vaporwave-vikings-idle/content/gear.json`.
 
 The remaining twelve slots follow the ladder in [Gear and artefacts](../game-design/gear-and-artefacts.md) and are added when they enter scope.
 
