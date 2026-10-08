@@ -76,7 +76,7 @@ These are full-screen overlays in both orientations.
 - `scenes/ui/menu_panel.tscn`: the panel with its nav bar and tabs. Instanced once by the run scene.
 - `scenes/ui/hud.tscn`: top bar, health, effects, ability strip, menu button.
 - `systems/layout.gd`: watches `get_viewport().size_changed`, decides portrait or landscape, sets the game view's rect, re-parents the panel between the bottom dock and the drawer, and tells the camera its view height.
-- Drawer: a `Control` anchored to the right edge, slid in and out with a short tween; a dim overlay behind it catches outside taps.
+- Drawer: a `Control` anchored to the right edge, slid in and out with a short tween; an invisible full-screen catcher behind it closes it on an outside tap; the game is not dimmed.
 - Project settings allow both orientations (`window/handheld/orientation = sensor`). The base viewport is 480 by 480 with `canvas_items` stretch, so the UI is laid out at about 480 units across in both orientations and scales up on phones.
 - Built in the proof on 8 Oct: `systems/layout.gd`, `systems/menu_panel.gd`, with tests for both orientations and the drawer.
 

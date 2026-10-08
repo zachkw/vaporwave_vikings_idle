@@ -68,7 +68,7 @@ anchors_preset = 0
 visible = false
 layout_mode = 3
 anchors_preset = 0
-color = Color(0, 0, 0, 0.45)
+color = Color(0, 0, 0, 0)
 
 [node name="Drawer" type="Control" parent="UI"]
 visible = false
