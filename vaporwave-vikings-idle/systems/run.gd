@@ -6,7 +6,9 @@ extends Node2D
 const LIBRARY_PATH := "res://content/segments/proof.json"
 const STREAM_AHEAD_PX := 2400.0
 const STREAM_BEHIND_PX := 1200.0
-const CAMERA_LEAD_PX := 300.0
+## The Viking sits at the far left of the game view, one Viking width from the
+## edge, so the player sees as much ground ahead as possible.
+const VIKING_WIDTH_PX := 24.0
 
 @export var base_seed := 12345
 
@@ -40,6 +42,8 @@ var _metres_accum := 0.0
 
 
 func _ready() -> void:
+	# Run after the Viking's physics so the camera follows this frame's position.
+	process_physics_priority = 1
 	var physics: Dictionary = Content.load_json("res://content/viking.json")["physics"]
 	block_px = float(physics["block_px"])
 	level_length_blocks = int(Content.load_json("res://content/economy.json")["level_length_m"])
@@ -73,7 +77,10 @@ func _on_game_rect_changed(rect: Rect2) -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	camera.global_position = Vector2(viking.global_position.x + CAMERA_LEAD_PX / camera.zoom.x * 0.5, -SEGMENT_HEIGHT_BLOCKS * 0.5 * block_px)
+	# Camera2D centres its target, so aim it half a view to the right of the
+	# Viking, minus the left padding (one Viking width) and half his width.
+	var half_view_world := layout.view_size().x * 0.5 / camera.zoom.x
+	camera.global_position = Vector2(viking.global_position.x + half_view_world - 1.5 * VIKING_WIDTH_PX, -SEGMENT_HEIGHT_BLOCKS * 0.5 * block_px)
 	Store.dispatch(Actions.time_advanced(_delta))
 	# Pay distance in whole metres so the reducer is not hit with tiny fractions.
 	_metres_accum += viking.velocity.x * _delta / block_px

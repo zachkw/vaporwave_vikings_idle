@@ -13,6 +13,10 @@ Purpose: move the Viking left to right through the streamed segments, handle jum
 - **Sprint:** a button, visible only when `has_sprint` is true (Legs owned). Multiplies run speed for its duration, then cools down. Socks raise the multiplier.
 - **Steps up:** a rise of one block is walked over; higher rises need a jump (auto-jump also handles steps the main route requires).
 
+## Camera
+
+The Viking stays at the far left of the game view, his left edge one Viking width from the screen edge. The camera follows him horizontally and is fixed vertically on the 15-block segment. This gives the most room to see pits, platforms and enemies coming.
+
 ## Jump limits
 
 These limits are the contract with segment authors (see [Level builder](level-builder.md)). The physics values must produce them at base speed.

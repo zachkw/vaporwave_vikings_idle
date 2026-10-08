@@ -15,7 +15,7 @@ Reference: the standard layout of idle runner games such as Slayer Legend (scree
 | Ability strip | Between the game view and the panel | Along the bottom edge of the game view |
 | Switching | The game listens for the window size changing and re-docks the panel. The menu panel scene is instanced once and moved, never rebuilt | |
 
-The camera always fits the 15-block segment height to the game view's height. Portrait therefore shows less ground ahead; landscape shows more.
+The camera always fits the 15-block segment height to the game view's height, and keeps the Viking at the far left of the view, one Viking width from the edge, so the player sees as much ground ahead as possible (decided 8 Oct). Portrait therefore shows less ground ahead; landscape shows more.
 
 ## HUD (on the game view)
 
