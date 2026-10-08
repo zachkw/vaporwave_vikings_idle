@@ -111,6 +111,14 @@ func _make_gear_row(item: Dictionary) -> Control:
 	return row
 
 
+## Gold per metre from gear: every core piece adds to it. See docs/game-systems/gear-shop.md.
+func gear_gold_per_metre() -> float:
+	var total := 0.0
+	for item in gear:
+		total += float(item["per_level"].get("gold_per_metre", 0.0)) * float(levels.get(item["id"], 0))
+	return total
+
+
 ## Linear level cost: base + step x level. See docs/game-systems/gear-shop.md.
 func next_cost(item: Dictionary) -> float:
 	return float(item["base_cost"]) + float(item["step"]) * float(levels.get(item["id"], 0))

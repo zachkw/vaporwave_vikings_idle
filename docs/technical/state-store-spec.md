@@ -122,7 +122,7 @@ Wand casts and ranged shots are not actions. They matter to the store only throu
 
 | Selector | Returns | Used by |
 | --- | --- | --- |
-| `gold_per_metre` | Gold for one metre, after boots, socks and all-gold boosts | Distance reward, HUD |
+| `gold_per_metre` | Base gold per metre plus every gear slot's `gold_per_metre` × level, then all-gold boosts | Distance reward, HUD |
 | `coin_value(kind)` | Gold for one coin of that kind | Coin reward |
 | `enemy_gold(enemy, crit)` | Gold for a kill, with role, dimension and crit boosts | Kill reward |
 | `damage`, `ranged_damage`, `magic_damage` | Damage per hit for sword, equipped ranged weapon, equipped wand | Combat |

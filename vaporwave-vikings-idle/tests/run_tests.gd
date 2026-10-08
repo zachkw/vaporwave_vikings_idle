@@ -186,6 +186,7 @@ func _layout_tests(run: Node) -> void:
 	expect(is_equal_approx(panel.gold, 886.0), "first helmet level costs 100 gold")
 	panel._buy("legs")
 	expect(is_equal_approx(panel.gold, 636.0), "first legs level costs 250 gold")
+	expect(is_equal_approx(panel.gear_gold_per_metre(), 0.4 + 1.0 + 5.0 + 10.0), "gear adds gold per metre: 2 sword, 1 chest, 1 helmet, 1 legs = 16.4")
 	panel.set_gold(3.0)
 	var buy: Button = panel.get_node("%Rows/helmet/H/Buy")
 	expect(buy.disabled, "buy button disabled when gold is short")

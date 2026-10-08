@@ -25,7 +25,7 @@ Platforms are one-way: the Viking jumps up through them and lands on top. Pits a
 - At the end of a level the next one is built and joined on seamlessly.
 - The background has five layers scrolling at different speeds.
 - Portrait and landscape layouts: in portrait the game fills the top half and the menu panel docks below; in landscape the game fills the screen and a Menu button slides the same panel in as a drawer from the right, over the game, without moving the camera. The camera always fits the 15-block height to the game view.
-- A Gear tab that reads `content/gear.json`: rows appear as their gold-held bracket is reached (Sword, Chest and Helmet at start, Legs at 100 gold, then a hint for the next locked slot), level 1 costs scale Sword 1, Chest 10, Helmet 100, Legs 250, and the cost rises linearly. Buy buttons go green or red against the gold earned by running. Other tabs are stubs.
+- A Gear tab that reads `content/gear.json`: rows appear as their gold-held bracket is reached (Sword, Chest and Helmet at start, Legs at 100 gold, then a hint for the next locked slot), level 1 costs scale Sword 1, Chest 10, Helmet 100, Legs 250, and the cost rises linearly. Every level adds gold per metre, so buying gear visibly speeds up the gold counter. Buy buttons go green or red against the gold earned by running. Other tabs are stubs.
 
 ## Files
 
@@ -43,13 +43,13 @@ Platforms are one-way: the Viking jumps up through them and lands on top. Pits a
 | `systems/layout.gd` | Portrait or landscape detection, game rect, panel docking and the drawer |
 | `systems/menu_panel.gd`, `scenes/ui/menu_panel.tscn` | The menu panel: nav bar, tabs, placeholder gear rows |
 | `content/gear.json` | Gear slots: brackets, level costs, stats |
-| `tests/run_tests.gd` | 71 headless tests |
+| `tests/run_tests.gd` | 72 headless tests |
 
 ## Running it
 
 - **Play:** open the `vaporwave-vikings-idle` folder in Godot 4.6 and press Play. Tap, click or press Space to jump.
 - **Portrait:** run with `--resolution 480x960`, or resize the window taller than wide; the layout switches live.
-- **Tests:** from that folder, `godot --headless --path . --script res://tests/run_tests.gd`. All 71 pass on Godot 4.6 stable: library and linter checks, the seam rule, determinism, 10,000 random levels with no failures, extension, physics simulations of an idle Viking, a pit fall and an early tap, both layouts and the drawer, and the placeholder gear purchases.
+- **Tests:** from that folder, `godot --headless --path . --script res://tests/run_tests.gd`. All 72 pass on Godot 4.6 stable: library and linter checks, the seam rule, determinism, 10,000 random levels with no failures, extension, physics simulations of an idle Viking, a pit fall and an early tap, both layouts and the drawer, and the placeholder gear purchases.
 
 The base viewport is 480 by 480 with `canvas_items` stretch, so UI is designed at about 480 units across in either orientation and scales up on phones.
 

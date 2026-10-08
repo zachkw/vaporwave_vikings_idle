@@ -53,7 +53,7 @@ Last updated 8 October 2026 (second pass).
 - Core gear is bought with gold only. No materials.
 - Material tiers on core gear are parked: not decided, and not meant to be extravagant.
 - Chest carries defence. Health sits on another piece; Helmet was the example, so Helmet = health is likely but not locked.
-- Sword gives damage and gold from enemies slain. Gloves give crit chance and gold from enemies slain.
+- Sword gives damage. Gloves give crit chance. (Both also give gold per metre, as all core gear does; see 8 Oct.)
 - Wizard pieces give gold and magic damage. Ranger pieces give gold and ranged damage (bow and throwing axes). Claude's reading: they are their own rows on the ladder.
 
 ### Materials (7 Oct)
@@ -107,6 +107,7 @@ Last updated 8 October 2026 (second pass).
 - **Proof segments:** prove the level builder with five 48-block segments, all entering and exiting on row 2: flat, one pit, one floating platform, two platforms, two pits. Claude picked the sizes (3-block pits, 6-block platforms at row 5). See [Proof segments](production/proof-segments.md).
 - **Backgrounds** are parallax: several layers scrolling at different speeds. See [Backgrounds and parallax](game-systems/backgrounds.md).
 - **Opening gear costs** scale slot by slot for the early game: Sword 1 gold, Chest 10, Helmet 100, Legs 250 at level 1, each rising linearly. Placeholder values, in `content/gear.json`.
+- **Core gear grants gold per metre plus one effect.** Every core piece adds gold per metre (the passive income, like Idle Slayer's coins per second). On top of that each piece has its own single effect: Sword damage, Chest defence, Helmet health, Legs sprint. No "+2% enemy gold" style boosts on the opening pieces. This replaces the earlier combat stat plus gold boost pairing.
 - **UI layout** follows the idle-runner standard (Slayer Legend as the reference). Portrait: the game in the top half, an always-open menu panel in the bottom half. Landscape: the game fills the screen and a button opens the same panel as a drawer from the right, overlaid on the game without changing the view. Bottom nav: Gear, Artefacts, Unlocks (with achievements), Ascension, Village, Shop. Abilities such as sprint are buttons on the game view in both orientations; the wand is never a button, it is a tap in mid-air. See [HUD and menus](game-systems/hud-and-menus.md).
 - Surface segments do not all start and end at the same height, so the level builder chains them by their seam rows with an algorithm; enemy spawning is part of that algorithm. See [Level builder](game-systems/level-builder.md).
 
@@ -124,7 +125,7 @@ Each has a number so it can be referred to; numbers are never reused. Proposed d
 ### Gear
 
 - G2. Parked: whether core gear has material tiers at all, and whether the Viking's look changes as gear levels.
-- G3. Gold boost for each slot not yet decided. The October proposal is in [Gear and artefacts](game-design/gear-and-artefacts.md).
+- G3. Extra effect for slots 5 to 17 not yet decided. Proposals are in [Gear and artefacts](game-design/gear-and-artefacts.md).
 - G4. Any full-set bonus? Do set pieces also take the matching warrior slot?
 - G5. Set pieces sit at the end of the ladder (10^34 and up), but the bow and wand are found much earlier. Is that gap intended?
 - G6. Does an unlocked slot stay unlocked if gold drops below its bracket? [Yes]

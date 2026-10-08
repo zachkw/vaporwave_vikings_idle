@@ -71,7 +71,8 @@ func _on_game_rect_changed(rect: Rect2) -> void:
 
 func _physics_process(_delta: float) -> void:
 	camera.global_position = Vector2(viking.global_position.x + CAMERA_LEAD_PX / camera.zoom.x * 0.5, -SEGMENT_HEIGHT_BLOCKS * 0.5 * block_px)
-	gold += float(Content.load_json("res://content/economy.json")["gold_per_metre"]) * viking.velocity.x * _delta / block_px
+	var gold_per_metre: float = float(Content.load_json("res://content/economy.json")["gold_per_metre"]) + menu_panel.gear_gold_per_metre()
+	gold += gold_per_metre * viking.velocity.x * _delta / block_px
 	menu_panel.set_gold(gold)
 	if viking.global_position.x > level_end_x:
 		levels_completed += 1

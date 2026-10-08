@@ -8,39 +8,39 @@ Gear is the main gold sink: the thing the player can always spend on. Artefacts 
 - Each slot is levelled with gold. Core gear never needs materials.
 - Slots unlock by **gold held in the wallet**, on a widening ladder. Reaching the bracket makes the slot available; the player still buys level 1 before it does anything. Proposed: once unlocked it stays unlocked even if gold drops (G6).
 - Unlock order follows how exotic the piece is: warrior pieces first, under-layers and jewellery in the middle, ranger and wizard pieces last.
-- A piece can carry a combat stat and a gold boost.
+- Every core piece adds **gold per metre**, the game's passive income (like coins per second in Idle Slayer, since the Viking never stops moving). Each piece also has one extra effect: a combat stat, an ability, or later a boost to one gold source. Decided 8 Oct.
 - Material tiers (leather, then the next material, ×2 and a new look) are parked (G2).
 
 ### Unlock ladder
 
 Brackets are placeholders. They start about 10× apart, widen to 100×, then 1,000×.
 
-| # | Piece | Group | Gold held to unlock | Combat stat | Gold boost |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Sword | Warrior | Start | Damage | Gold from enemies slain |
-| 2 | Chest | Warrior | Start | Defence | Proposed: all gold |
-| 3 | Helmet | Warrior | Start | Health (likely) | Proposed: boss gold |
-| 4 | Legs | Warrior | 10^2 | Grants sprint | Proposed: elite gold |
-| 5 | Boots | Warrior | 10^3 | | Proposed: gold per metre |
-| 6 | Gloves | Warrior | 10^4 | Crit chance | Gold from enemies slain |
-| 7 | Shoulders | Warrior | 10^5 | | Proposed: basic enemy gold |
-| 8 | Bracers | Warrior | 10^7 | | Proposed: gold per coin |
-| 9 | Belt | Warrior | 10^9 | | Proposed: gold per coin |
-| 10 | Cloak | Warrior | 10^11 | | Proposed: dimensional enemy gold |
-| 11 | Undershirt | Under-layer | 10^13 | | Proposed: all gold |
-| 12 | Socks | Under-layer | 10^16 | Sprint speed bonus | Proposed: gold per metre |
-| 13 | Underwear | Under-layer | 10^19 | | Proposed: elite gold |
-| 14 | Beard ring | Jewellery | 10^22 | | Proposed: boss gold |
-| 15 | Finger ring | Jewellery | 10^25 | | Proposed: all gold |
-| 16 | Necklace | Jewellery | 10^28 | | Proposed: all gold |
-| 17 | Earring | Jewellery | 10^31 | | Proposed: dimensional enemy gold |
-| 18 | Ranger coif | Ranger set | 10^34 | Ranged damage | Gold |
-| 19 | Ranger vambraces | Ranger set | 10^37 | Ranged damage | Gold |
-| 20 | Leather chaps | Ranger set | 10^40 | Ranged damage | Gold |
-| 21 | Wizard hat | Wizard set | 10^43 | Magic damage | Gold |
-| 22 | Wizard robe | Wizard set | 10^46 | Magic damage | Gold |
+| # | Piece | Group | Gold held to unlock | Extra effect |
+| --- | --- | --- | --- | --- |
+| 1 | Sword | Warrior | Start | Damage |
+| 2 | Chest | Warrior | Start | Defence |
+| 3 | Helmet | Warrior | Start | Health |
+| 4 | Legs | Warrior | 10^2 | Grants sprint at level 1 |
+| 5 | Boots | Warrior | 10^3 | Run speed (proposed) |
+| 6 | Gloves | Warrior | 10^4 | Crit chance |
+| 7 | Shoulders | Warrior | 10^5 | Basic enemy gold (proposed) |
+| 8 | Bracers | Warrior | 10^7 | Coin gold (proposed) |
+| 9 | Belt | Warrior | 10^9 | Elite gold (proposed) |
+| 10 | Cloak | Warrior | 10^11 | Dimensional enemy gold (proposed) |
+| 11 | Undershirt | Under-layer | 10^13 | Proposed: all gold |
+| 12 | Socks | Under-layer | 10^16 | Sprint speed bonus |
+| 13 | Underwear | Under-layer | 10^19 | Proposed: elite gold |
+| 14 | Beard ring | Jewellery | 10^22 | Proposed: boss gold |
+| 15 | Finger ring | Jewellery | 10^25 | Proposed: all gold |
+| 16 | Necklace | Jewellery | 10^28 | Proposed: all gold |
+| 17 | Earring | Jewellery | 10^31 | Proposed: dimensional enemy gold |
+| 18 | Ranger coif | Ranger set | 10^34 | Ranged damage |
+| 19 | Ranger vambraces | Ranger set | 10^37 | Ranged damage |
+| 20 | Leather chaps | Ranger set | 10^40 | Ranged damage |
+| 21 | Wizard hat | Wizard set | 10^43 | Magic damage |
+| 22 | Wizard robe | Wizard set | 10^46 | Magic damage |
 
-"Proposed" gold boosts come from the October proposal and are not confirmed (G3). The 17 regular pieces end near 10^31, matching June's ~10^30 target; the sets push the ladder to about 10^46 (E1).
+Every row also adds gold per metre; the amount per level grows with the slot's bracket so the newest slot is always the best income buy. "Proposed" extra effects for slots 5 to 17 come from the October proposal and are not confirmed (G3). The 17 regular pieces end near 10^31, matching June's ~10^30 target; the sets push the ladder to about 10^46 (E1).
 
 Hidden or small slots (undershirt, underwear, socks, rings, necklace, earring) may only need an icon, not art on the Viking.
 

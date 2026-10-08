@@ -7,7 +7,7 @@ Purpose: let the player buy gear levels with gold, unlock new slots as gold grow
 - 22 slots in a fixed order (see [Gear and artefacts](../game-design/gear-and-artefacts.md)). The first build uses the ten warrior slots.
 - **Unlocking.** A slot unlocks the first time the wallet holds at least its `bracket`. Once unlocked it stays unlocked. Unlocking gives no level; the player buys level 1.
 - **Cost.** `next_level_cost = base_cost + step × level`. Linear, per slot.
-- **Stats.** Each level adds the slot's `per_level` values. Gold boosts are percentages that add up within one source (proposed; P3).
+- **Stats.** Each level adds the slot's `per_level` values. Every core slot has a `gold_per_metre` value, plus one extra effect (damage, defence, health, an ability, or later a percentage boost to one gold source). Percentage boosts add up within one source (proposed; P3).
 - **Grants.** Some slots grant an ability at level 1: Legs grant sprint.
 - **One tap, one level.** Bulk buy is a later extra.
 - The shop is open from the run screen; the run keeps going behind it (proposed).
@@ -17,7 +17,7 @@ Purpose: let the player buy gear levels with gold, unlock new slots as gold grow
 | Part | Shows |
 | --- | --- |
 | Icon | The slot's art |
-| Name and effect | For example "Sword: +2 damage, +2% enemy gold per level" |
+| Name and effect | For example "Sword: +0.2 gold per metre, +2 damage per level" |
 | Level | Current level |
 | Buy button (right) | Next cost; green when `can_afford`, red when not; disabled when red |
 
@@ -46,6 +46,7 @@ Selectors: `next_level_cost(slot)`, `can_afford(slot)`, `next_slot_unlock`, plus
 ## Acceptance
 
 - A new player sees Sword, Chest and Helmet buyable; Legs appear locked until 100 gold is held.
+- Buying any gear level visibly raises the gold-per-second readout.
 - Buying a level subtracts exactly `base_cost + step × level`.
 - The server's spend check accepts every purchase made through the shop (shared test vectors).
 - Sprint button appears the moment Legs level 1 is bought.

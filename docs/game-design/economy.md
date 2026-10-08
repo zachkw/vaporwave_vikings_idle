@@ -8,7 +8,7 @@ The Viking earns gold from three things he passes while running:
 
 | Source | What pays |
 | --- | --- |
-| Distance | Gold per metre |
+| Distance | Gold per metre: the passive income. Every core gear piece adds to it, so it is the Idle Slayer coins-per-second equivalent |
 | Coins | Gold per coin; coins sit along the run, in sky-coin lines, in gold rushes and in farm courses |
 | Enemies | Gold per kill, by role: basic, elite, boss and dimensional |
 
@@ -52,7 +52,7 @@ That totals 10 gold per metre, or 50 gold per second at 5 metres per second.
 
 ## Spending
 
-- **Gear levels:** the main sink. See [Gear and artefacts](gear-and-artefacts.md) for the unlock ladder and the linear level cost.
+- **Gear levels:** the main sink, and the main source: each level adds gold per metre plus the piece's own effect. See [Gear and artefacts](gear-and-artefacts.md) for the unlock ladder and the linear level cost.
 - **Artefact levels:** gold, materials or both (P2).
 - **Talents:** bought with ascension points, not gold.
 

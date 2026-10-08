@@ -21,7 +21,7 @@ damage dealt   = attack damage × (crit ? crit_damage_mult : 1)
 damage taken   = enemy attack × 100 / (100 + defence)        (proposed)
 ```
 
-- Sword damage = `sword_damage` + Sword level × `per_level.damage`.
+- Sword damage = `sword_damage` + Sword level × `per_level.damage`. (The Sword's other effect is gold per metre, like all core gear.)
 - Defence comes from Chest; health from the health piece (probably Helmet).
 
 ### Crits
