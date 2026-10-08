@@ -63,4 +63,4 @@ See [Progression](progression.md) and [Village](village.md).
 | [Economy](economy.md) | The gold model, crits, costs, away gold, daily rewards, ads |
 | [Progression](progression.md) | Areas, bosses, World+, portals, ascension |
 | [Village](village.md) | Buildings, garden and seeds |
-| [Level generation](level-generation.md) | How surface levels are assembled from tiles |
+| [Level builder](../game-systems/level-builder.md) | How surface levels are chained from segments (build spec) |

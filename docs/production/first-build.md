@@ -14,6 +14,7 @@ The first playable build is one biome, Dark Forest, with a light backend. Its jo
 | Controls | Auto-run, tap to jump, auto-jump at pit edges, sprint button |
 | Setbacks | Death restarts the level keeping gold and gear; pit falls drop back in from the sky |
 | Shop | Gear rows with green/red buy buttons |
+| Segments | A Dark Forest library of about 33 hand-made segments across layers 0 to 2 that passes the [library linter](../game-systems/level-builder.md) |
 
 ## Not in the first build
 
@@ -23,7 +24,7 @@ Artefacts and wands, pickups, farm courses, World+, portals, ascension, the Vill
 
 - `Store` autoload with the slices listed in the [state store spec](../technical/state-store-spec.md).
 - Device save at checkpoints and on background.
-- Segment builder and queue; `POST /api/v1/sync` on the backend with the revision, time, gold-earned and gold-spent checks.
+- Batch builder and queue; `POST /api/v1/sync` on the backend with the revision, time, gold-earned and gold-spent checks.
 - Guest sign-in only.
 
 ## Build order
@@ -34,7 +35,7 @@ Each step is playable or testable on its own.
 2. Shop rows reading `next_level_cost` and `can_afford`, dispatching `GEAR_LEVEL_BOUGHT`.
 3. Running, coins and enemies in Dark Forest dispatching the run actions; death and pit falls.
 4. The boss fight and level advance.
-5. Checkpoint triggers and the segment builder, logging segments to the console.
+5. Checkpoint triggers and the batch builder, logging batches to the console.
 6. `POST /sync` on the backend, and the three answers handled in the store.
 7. The course, the ingredient and the `effects` and `unlocks` slices.
 
@@ -44,4 +45,4 @@ A player can start fresh, run through Dark Forest, buy gear, unlock and use spri
 
 ## Open
 
-T1 surface generated from tiles, T2 which ingredient and course, G1 level cost curve, E2 starting balance.
+T2 which ingredient, E2 starting balance. Numbers for the build live in [content data](../game-systems/content-data.md).

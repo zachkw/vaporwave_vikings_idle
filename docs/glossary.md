@@ -12,11 +12,12 @@
 | Auto-consume | A rule that eats an ingredient automatically, for example on entering a biome |
 | Away gold | Reduced gold earned while the app is closed, measured on the server's clock |
 | Badge | Marks a biome beaten in the current world |
+| Batch | The changes between two checkpoints, sent to the server in a sync |
 | Basic, elite, boss | Enemy roles: packs, run-stopping fights, end-of-area gate |
 | Biome | A themed world (Grassland, Dark Forest, Volcano Land, Frost Mountain), built from one template |
 | Bracket | The amount of gold held that unlocks the next gear slot |
-| Checkpoint | A moment the store saves and closes a sync segment |
-| Connector row | The floor row where one tile joins the next |
+| Checkpoint | A moment the store saves and closes a sync batch |
+| Layer | One of the allowed floor heights where one segment joins the next |
 | Crit | A random stronger hit that also pays more gold |
 | Device save | The full state as JSON on the phone; the working copy |
 | Dimension | What the Viking sees after eating an ingredient: a colour shift, a background set piece, extra enemies |
@@ -28,15 +29,15 @@
 | Ingredient | A leaf, mushroom, flower or herb that opens a dimension; raw from boxes, mixed from the garden |
 | Loadout | The equipped wand and ranged weapon |
 | Material | Pelts, leather, demon hide and other drops, used for money, the Village and artefact upgrades |
+| Slot | A marked spot in a segment where the spawner may place an enemy, coins or a box |
 | Pickup | A timed power found during a run, such as Magnetism or Dead eye |
 | Pit | A gap in the surface; a fall drops the Viking back in from the sky, unless it is a cave entrance |
 | Portal | After a full clear, a doorway to a random biome |
 | Reducer | A pure function that turns state plus action into the next state |
-| Segment | The difference between two checkpoints, sent to the server |
+| Segment | A hand-made piece of surface level; the level builder chains segments together |
 | Selector | A function that reads a derived value from the state, such as next cost |
 | Store | The single place player state lives on the device |
 | Talent, talent web | Permanent upgrades bought with ascension points; gateways open whole systems |
-| Tile | An authored piece of surface route that the level builder chains together |
 | Trimmed | A sync answer: gold above the possible amount was removed |
 | Village | Buildings unlocked by talents that automate production and feed gold |
 | World+ | After every biome is beaten, the same biomes again, harder and richer |

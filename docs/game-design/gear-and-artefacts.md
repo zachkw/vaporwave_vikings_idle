@@ -48,14 +48,14 @@ Open: full-set bonus and whether set pieces also take the matching warrior slot 
 
 ### Level cost
 
-Each level costs more than the last. The curve is open (G1): June's candidate is
+Levels are cheap, repeatable and linear (decided 8 Oct): each level costs a fixed step more than the last.
 
 ```text
-next_level_cost = base_cost × 1.15 ^ current_level
-bulk_cost(level, count) = base_cost × 1.15 ^ level × (1.15 ^ count − 1) / 0.15
+next_level_cost = base_cost + step × current_level
+bulk_cost(level, count) = count × base_cost + step × (count × level + count × (count − 1) / 2)
 ```
 
-October's notes call levels "cheap, repeatable and linear". Pick one before tuning.
+`base_cost` and `step` are set per slot in the content tables. Because slots unlock on an exponential gold ladder, later slots have much larger base costs; the ladder, not the per-level curve, carries the exponential growth.
 
 ### Shop
 

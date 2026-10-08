@@ -20,14 +20,31 @@ This folder is the single source of truth for Vaporwave Vikings Idle. Design and
 | [Economy](game-design/economy.md) | Gold model, starting balance, away gold, daily rewards, ads |
 | [Progression](game-design/progression.md) | Areas, bosses, World+, portals, ascension, talent web |
 | [Village](game-design/village.md) | Buildings, garden and seeds |
-| [Level generation](game-design/level-generation.md) | Surface levels built from authored tiles |
+
+## Game systems (build-ready specs)
+
+| Doc | Covers |
+| --- | --- |
+| [Game systems index](game-systems/README.md) | Spec template, Godot project layout, coding rules |
+| [Content data](game-systems/content-data.md) | Shared JSON tables and first-build placeholder values |
+| [Runner](game-systems/runner.md) | Movement, jump limits, auto-jump, sprint, pit falls |
+| [Level builder](game-systems/level-builder.md) | Chaining segments across layers, beat plans, spawning passes, library linter |
+| [Enemies and spawning](game-systems/enemies-and-spawning.md) | Roles, stop-and-fight, boss signature move, spawn tables |
+| [Combat](game-systems/combat.md) | Attacks, damage, defence, crits, regen, death |
+| [Dimensions](game-systems/dimensions.md) | Boxes, eating, effects, colour shifts |
+| [Gear shop](game-systems/gear-shop.md) | Slots, brackets, linear costs, shop rows |
+| [Courses](game-systems/courses.md) | Entering, failing, clearing, farms |
+| [Level flow](game-systems/level-flow.md) | Levels, bosses, biomes, World+, portals |
+| [HUD and menus](game-systems/hud-and-menus.md) | On-screen elements and menus |
+| [Later systems](game-systems/later-systems.md) | What remaining systems need before they are built |
 
 ## Technical
 
 | Doc | Covers |
 | --- | --- |
 | [Architecture](technical/architecture.md) | Client, backend, trust boundary, endpoints |
-| [State store spec](technical/state-store-spec.md) | State tree, actions, selectors, saving, sync, server checks |
+| [State store spec](technical/state-store-spec.md) | State tree, actions, selectors, saving, sync |
+| [Validation](technical/validation.md) | Sync endpoints, the time, gold and spend checks, away gold, tests |
 | [Platform authentication](technical/platform-authentication.md) | Apple, Google and Google Play sign-in |
 
 ## Production
@@ -36,6 +53,10 @@ This folder is the single source of truth for Vaporwave Vikings Idle. Design and
 | --- | --- |
 | [First build](production/first-build.md) | Dark Forest scope, build order, done criteria |
 | [Roadmap](production/roadmap.md) | What's done and what's next |
+
+## Art
+
+[Art](art/README.md) is a placeholder folder: principles so far, planned docs, and a starting [animation list](art/animations.md).
 
 [Glossary](glossary.md) defines the shared terms.
 

@@ -52,7 +52,7 @@ That totals 10 gold per metre, or 50 gold per second at 5 metres per second.
 
 ## Spending
 
-- **Gear levels:** the main sink. See [Gear and artefacts](gear-and-artefacts.md) for the unlock ladder and cost curve (G1).
+- **Gear levels:** the main sink. See [Gear and artefacts](gear-and-artefacts.md) for the unlock ladder and the linear level cost.
 - **Artefact levels:** gold, materials or both (P2).
 - **Talents:** bought with ascension points, not gold.
 
@@ -79,8 +79,8 @@ While the app is closed the Viking earns gold only, at a reduced rate. Bosses, u
 - **Daily login bonus.** A conventional daily reward with a consecutive-day streak. No ad needed. Rewards, cycle length and missed-day rules are open.
 - **Double away gold.** Each away-gold payout offers one optional rewarded ad that doubles it. Declining keeps the normal payout. It does not affect the daily streak.
 - **Course retry.** Failing an assault course offers an ad for another attempt. See [Courses and unlocks](courses-and-unlocks.md).
-- Each ad reward is granted once, for its own purpose.
+- Each ad reward is granted once, for its own purpose. There is no server-side ad verification (decided 8 Oct).
 
 ## Open
 
-- E1 top gold number, E2 starting split, E3 away rates, G1 level cost curve, P3 how same-source boosts stack, P5 gem coins (sapphire 2g, ruby 3g, emerald 4g in June).
+- E1 top gold number, E2 starting split, E3 away rates, P3 how same-source boosts stack, P5 gem coins (sapphire 2g, ruby 3g, emerald 4g in June).

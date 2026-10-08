@@ -2,7 +2,7 @@
 
 This is the source of truth for the design. When any other doc disagrees with this one, this one wins, and the other doc should be fixed.
 
-Last updated 8 October 2026.
+Last updated 8 October 2026 (second pass).
 
 ## How to use this file
 
@@ -89,20 +89,30 @@ Last updated 8 October 2026.
 - Player state lives in one Redux-style store: actions, reducers, selectors.
 - The game is playable offline and validated later. The device save is the working copy.
 - Sync sends only the difference since the last sync. The server checks that the gold in it was possible in the time played.
+- See [Validation](technical/validation.md).
 - Saving happens at checkpoints and when the app closes or goes to the background.
 - See [State store spec](technical/state-store-spec.md).
 
 ### Documentation (8 Oct)
 
 - The `docs/` folder in this repo is the single source of truth. The June docs were removed once this set covered them.
+- Docs are organised as: `game-design/` (what and why), `game-systems/` (build-ready specs per system), `technical/` (architecture, state, validation), `art/` (to be filled), `production/`.
+- Surface pieces are called **segments**; the sync unit is called a **batch**.
+- Surface segments do not all start and end at the same height, so the level builder chains them across layers with an algorithm; enemy spawning is part of that algorithm. See [Level builder](game-systems/level-builder.md).
+
+### Validation and build choices (8 Oct)
+
+- June's stricter anti-cheat layer is deleted entirely: seeded level replay, route reward checks, efficiency caps, trust scores, bans and server-side ad verification. Only the light model stays (time check, gold bound, spend check). Design hardening fresh if cheating ever matters.
+- Ascension and talent purchases need a successful sync first. (Was T3.)
+- Gear levels cost a linear amount more each level, as October said. Not June's 1.15x. (Was G1.)
+- The surface is built from small hand-made segments chained together. Assault courses are whole hand-made levels. (Was T1.)
 
 ## Open questions
 
-Each has a number so it can be referred to. Proposed defaults, where there is one, are in brackets.
+Each has a number so it can be referred to; numbers are never reused. Proposed defaults, where there is one, are in brackets. Resolved: G1, T1, T3 (8 Oct).
 
 ### Gear
 
-- G1. Level cost: 1.15x per level (June) or linear (October)?
 - G2. Parked: whether core gear has material tiers at all, and whether the Viking's look changes as gear levels.
 - G3. Gold boost for each slot not yet decided. The October proposal is in [Gear and artefacts](game-design/gear-and-artefacts.md).
 - G4. Any full-set bonus? Do set pieces also take the matching warrior slot?
@@ -171,13 +181,11 @@ Each has a number so it can be referred to. Proposed defaults, where there is on
 
 ### Build and tech
 
-- T1. Is the surface generated from authored tiles, with only the courses hand-made?
-- T2. Which ingredient and which course go in the first build? Does it include the Village or ascension?
-- T3. Can the player ascend offline? [No: ascension and talent purchases need a sync first]
+- T2. Which ingredient goes in the first build: spirit leaf (forest spirits) or evil mushroom (demon trolls)? [Spirit leaf] The first build has no Village or ascension.
 - T4. When two devices disagree, who wins? [Ask the player which save to keep]
 - T5. If trimmed gold was already spent? [Wallet stops at zero, purchases stay]
 - T6. Margin on the server's gold bound? [2 times the expected rate]
-- T7. Any cap on how long unvalidated offline play can run? [None; old segments merged hourly]
+- T7. Any cap on how long unvalidated offline play can run? [None; old batches merged hourly]
 - T8. Do bag inventory (ingredients, materials) and the Village reset on ascension?
 
 ### Parked

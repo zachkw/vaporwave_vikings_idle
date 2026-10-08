@@ -4,7 +4,7 @@ One store on the device holds everything about the player. Gameplay never change
 
 The store saves to the device at every checkpoint and whenever the app goes to the background. It sends the server only the difference since the last accepted sync. The server checks that the gold in that difference was possible in the time played, then accepts it or trims it.
 
-Decided 7 October 2026: Redux-style store, offline play validated later, difference-only sync with a gold bound. Everything else here is a proposal unless [decisions](../decisions.md) says otherwise.
+Decided 7 to 8 October 2026: Redux-style store, offline play validated later, difference-only sync with a gold bound, ascension only after a successful sync. Everything else here is a proposal unless [decisions](../decisions.md) says otherwise.
 
 ## How it works
 
@@ -15,7 +15,7 @@ flowchart LR
     R --> S[(State)]
     S --> Sel[Selectors] -->|read| G
     S -->|at checkpoints| D[Device save]
-    D --> Seg[Segment: changes since sync]
+    D --> Seg[Batch: changes since sync]
     Seg --> Srv[Server check: time and gold bounds]
     Srv -->|accepted or trimmed| A
 ```
@@ -30,7 +30,7 @@ Every change to the player follows the same loop: something happens, an action d
 - **Effects listen, they don't own.** Sound, particles, saving and networking react to actions. If they need to change something they dispatch another action.
 - **State is plain data.** Dictionaries, arrays, numbers and strings only, so the whole tree turns into JSON as it stands.
 
-In Godot 4.6 this is one autoload, `Store`, with `dispatch(action)`, `select(name, args)` and a `changed(slice)` signal. Reducers, selectors and the segment builder are plain scripts with no scene dependencies, so they can be tested without running the game.
+In Godot 4.6 this is one autoload, `Store`, with `dispatch(action)`, `select(name, args)` and a `changed(slice)` signal. Reducers, selectors and the batch builder are plain scripts with no scene dependencies, so they can be tested without running the game.
 
 Gold is a 64-bit float: exact to about 15 digits and good to 10^308, well past the 10^46 the gear ladder draft implies. Affordability checks compare full values, never the rounded label.
 
@@ -53,7 +53,7 @@ One tree, fourteen slices. Each slice has one reducer and a fixed answer to "wha
 | `stats` | Counters: kills by enemy role, coins, metres, deaths, times each plant was eaten | Lifetime counters kept, run counters reset |
 | `ascension` | `level` (equals points earned), `points_unspent`, talents and their ranks | Kept |
 | `village` | Buildings, garden plots, seeds, villagers, seed achievements | Open (V4) |
-| `sync` | Last accepted server revision, the baseline it was built on, queued segments, last sync time | Kept |
+| `sync` | Last accepted server revision, the baseline it was built on, queued batches, last sync time | Kept |
 
 `settings` (sound, auto-consume rules) sits beside the tree and never resets.
 
@@ -105,8 +105,8 @@ What a level is worth (damage, defence, gold boost, cost) is not in the save. It
 | Ascension | `TALENT_BOUGHT` | talent id | Spends points, raises the talent's rank |
 | Away | `AWAY_GOLD_CLAIMED` | seconds away, gold | Pays the reduced away rate |
 | System | `STATE_LOADED` | saved state | Replaces state after migrating it to the current save format |
-| System | `CHECKPOINT_REACHED` | reason | Closes the current sync segment and queues it |
-| System | `SYNC_ACCEPTED` | server revision | Drops the accepted segments, moves the baseline forward |
+| System | `CHECKPOINT_REACHED` | reason | Closes the current sync batch and queues it |
+| System | `SYNC_ACCEPTED` | server revision | Drops the accepted batches, moves the baseline forward |
 | System | `SYNC_TRIMMED` | server revision, gold removed | Same, and takes the trimmed gold out of the wallet |
 | System | `SYNC_REJECTED` | server state | Replaces state with the server's copy |
 
@@ -152,7 +152,7 @@ Close cannot be the only save. Phones stop background apps without warning, so t
 
 ### Checkpoints
 
-A checkpoint saves and closes off a sync segment. These trigger one:
+A checkpoint saves and closes off a sync batch. These trigger one:
 
 - A boss fight ends, win or lose
 - The level or biome changes, including portals and World+
@@ -164,7 +164,7 @@ A checkpoint saves and closes off a sync segment. These trigger one:
 
 ### What gets sent
 
-Between two checkpoints the store builds a **segment**: the difference, not the state. Reducers add to running totals as they pay gold, and the builder compares gear, artefacts, unlocks and progress with how they stood when the segment opened.
+Between two checkpoints the store builds a **batch**: the difference, not the state. Reducers add to running totals as they pay gold, and the builder compares gear, artefacts, unlocks and progress with how they stood when the batch opened.
 
 ```json
 {
@@ -181,23 +181,23 @@ Between two checkpoints the store builds a **segment**: the difference, not the 
 }
 ```
 
-A segment is a few hundred bytes. A sync request carries the server revision it builds on plus every queued segment in order.
+A batch is a few hundred bytes. A sync request carries the server revision it builds on plus every queued batch in order.
 
 ### When it sends
 
 - **Online:** at a checkpoint, but no more than once every two minutes, to keep server cost low. Also on launch and, as a best effort, when the app goes to the background.
-- **Offline:** segments queue on the device and play carries on. They are sent in order when a connection returns.
-- **Long offline spells:** old queued segments are merged into one-hour blocks so the queue stays small.
+- **Offline:** batches queue on the device and play carries on. They are sent in order when a connection returns.
+- **Long offline spells:** old queued batches are merged into one-hour blocks so the queue stays small.
 
 | Answer | Meaning | Store does |
 | --- | --- | --- |
-| Accepted | Everything was within bounds | Drops the sent segments and records the new revision |
+| Accepted | Everything was within bounds | Drops the sent batches and records the new revision |
 | Trimmed | Gold earned was above what was possible | Same, and removes the excess gold from the wallet, never below zero |
 | Rejected | The request cannot be valid (wrong order, impossible purchase) | Replaces the device state with the server copy |
 
 ### Time away
 
-On launch the game first sends anything queued, then asks the server for away gold. The server measures the gap with its own clock and applies the away rates in [Economy](../game-design/economy.md). If the game launches offline, it estimates from the device clock and records the claim in a segment, which the server checks later.
+On launch the game first sends anything queued, then asks the server for away gold. The server measures the gap with its own clock and applies the away rates in [Economy](../game-design/economy.md). If the game launches offline, it estimates from the device clock and records the claim in a batch, which the server checks later.
 
 ### Two devices
 
@@ -205,35 +205,7 @@ The server keeps one revision number per player. A request built on an older rev
 
 ## Server checks
 
-The server asks one question of each segment: could this much gold have been earned in this much time by this player? Five checks, in order:
-
-1. **Revision and order.** The request builds on the server's current revision, and segment numbers continue from the last accepted one.
-2. **Time.** Play seconds plus away seconds across all segments cannot exceed the real time since the last accepted sync, by the server's clock. This covers changed device clocks and speed hacks.
-3. **Gold earned.** Each segment's gold must be at or under the allowed amount below.
-4. **Gold spent.** Gold spent must equal the content-table cost of the level changes reported, and the wallet can never go below zero.
-5. **Unlocks and progress.** A gear slot can only unlock if the wallet could have reached its bracket. A boss or course result must belong to the level the player was on. Ascension points must match lifetime gold.
-
-```latex
-\text{allowed gold} = \text{rate} \times \text{play seconds} \times \text{margin} + \text{away rate} \times \text{away seconds} + \text{boss and course rewards reported}
-```
-
-`rate` is `expected_gold_per_second` for the server's copy of the player with the segment's changes applied, so purchases made mid-segment get the benefit of the doubt. `margin` covers what the average leaves out: pickups, crit luck, sky coins, sprint and farm courses. Proposed start: 2 (T6).
-
-A segment that fails check 3 has its gold cut to the allowed amount (Trimmed). One that fails 1, 2, 4 or 5 is Rejected.
-
-**What the server stores per player:** the state copy, its revision number, the server time of the last sync, and a short log of recent segments and trims.
-
-**What this does not do.** It caps totals; it cannot tell a player earning at the maximum rate from a script doing the same. That is acceptable while there are no leaderboards or purchases to protect.
-
-### Later hardening
-
-The June design had a stricter model, left out for now. If it is ever needed, these are the pieces, and the `counts` in each segment are kept so they can be added without changing the game:
-
-- Rebuild each level from its seed on the server and check coins and kills against what was actually placed.
-- Mark mutually exclusive rewards (high route vs low route) in tile data.
-- Per-segment efficiency caps (for example 90 percent of the theoretical maximum on dense tiles).
-- A trust score that tightens limits for accounts that keep hitting the cap, up to restricting offline play or banning.
-- Verified rewarded-ad completion through the ad provider, with each ad reward granted once.
+The server validates every sync request with a time check, a gold bound and a spend check. The full rules, request and response shapes, and error cases are in [Validation](validation.md).
 
 ## Backend changes
 
@@ -249,10 +221,10 @@ The June design had a stricter model, left out for now. If it is ever needed, th
 | Discovery | One assault course, one ingredient unlock | Artefacts, pickups, farm courses |
 | Effects | One dimension ingredient eaten from surface boxes | Mixed form, auto-consume, timed pickups |
 | Saving | Device save at checkpoints and on background | Save migration between versions |
-| Sync | Segment builder, queue, `POST /sync` with checks 1 to 4 | Check 5, away gold, two-device choice |
+| Sync | Batch builder, queue, `POST /sync` with checks 1 to 4 | Check 5, away gold, two-device choice |
 
 Empty slices for the later parts exist from day one so adding them does not change the save format. Build order is in [First build](../production/first-build.md).
 
 ## Open
 
-T3 ascending offline, T4 two devices, T5 trimming spent gold, T6 margin, T7 offline cap, T8 inventory and Village on ascension, G1 level cost curve, G6 slot unlock memory, D1 and D2 effect timers. All are in [decisions](../decisions.md).
+T4 two devices, T5 trimming spent gold, T6 margin, T7 offline cap, T8 inventory and Village on ascension, G6 slot unlock memory, D1 and D2 effect timers. All are in [decisions](../decisions.md).

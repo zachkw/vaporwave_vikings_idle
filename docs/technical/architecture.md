@@ -24,9 +24,9 @@ sequenceDiagram
     loop Play, online or offline
         C->>C: Actions, reducers, device save at checkpoints
     end
-    C->>S: POST /sync (base revision + queued segments)
+    C->>S: POST /sync (base revision + queued batches)
     S->>S: Check time, gold earned, gold spent, unlocks
-    S->>DB: Apply segments, new revision
+    S->>DB: Apply batches, new revision
     S-->>C: Accepted, Trimmed or Rejected
 ```
 
@@ -34,24 +34,24 @@ sequenceDiagram
 
 - The device save is the working copy. The game never waits on the network to play.
 - The server owns the validated copy: the latest accepted state, its revision, and the server time of the last sync.
-- The server judges plausibility, not every frame: could this much gold have been earned in this much time? See the server checks in the [state store spec](state-store-spec.md).
+- The server judges plausibility, not every frame: could this much gold have been earned in this much time? See [Validation](validation.md).
 - Away gold is always measured on the server's clock.
-- Ascension and talent purchases need a successful sync first (proposed, T3).
+- Ascension and talent purchases need a successful sync first (decided 8 Oct).
 
 ## Client (Godot)
 
 | System | Responsibility |
 | --- | --- |
-| `Store` autoload | Owns state, `dispatch`, selectors, `changed` signal, segment builder |
+| `Store` autoload | Owns state, `dispatch`, selectors, `changed` signal, batch builder |
 | Runner | Moves the Viking, auto-jump at pit edges, tap jump, sprint |
-| Level builder | Assembles surface levels from tiles (see [Level generation](../game-design/level-generation.md)) |
+| Level builder | Chains surface levels from segments (see [Level builder](../game-systems/level-builder.md)) |
 | Combat | Sword, equipped ranged weapon and wand, crit rolls, elites, bosses, death |
 | Spawner | Places enemies from `enemy_pool(biome)`, including active dimensions |
 | Effects | Colour shifts, dimension set pieces, particles, sound; reacts to actions |
 | Courses | Hand-made sky and cave levels, one-fall failure, ad retry |
 | Shop and menus | Gear rows, artefacts, unlocks, ascension and talents, Village |
 | Save | Writes `user://save.json` at checkpoints and on background |
-| Sync | Sends queued segments, applies Accepted / Trimmed / Rejected |
+| Sync | Sends queued batches, applies Accepted / Trimmed / Rejected |
 
 Mobile notes: save whenever the app leaves the screen; keep combat readable under the colour shifts; keep progression maths independent of frame rate.
 
@@ -67,8 +67,8 @@ Express, TypeScript and Vitest, with in-memory storage for now. See `backend-ser
 | `POST` | `/api/v1/auth/apple`, `/google`, `/google-play` | Built (needs platform credentials) |
 | `GET` | `/api/v1/profile` | Built |
 | `POST` | `/api/v1/run/start`, `/api/v1/run/report` | Built; to be replaced by `/sync` |
-| `POST` | `/api/v1/upgrade/purchase` | Built; purchases move into sync segments |
-| `POST` | `/api/v1/sync` | To build: checks and applies segments |
+| `POST` | `/api/v1/upgrade/purchase` | Built; purchases move into sync batches |
+| `POST` | `/api/v1/sync` | To build: checks and applies batches |
 | `POST` | `/api/v1/away/claim` | To build: server-clock away gold |
 
 Platform sign-in details are in [Platform authentication](platform-authentication.md).
@@ -83,4 +83,4 @@ Gear costs and stats, enemy gold, spawn rates, brackets and away rates live in c
 
 - Database and hosting (none chosen; in-memory today).
 - Analytics, crash reporting and the ad provider.
-- Where tile and content data live (proposed shared JSON).
+- Where segment and content data live (proposed shared JSON under `vaporwave-vikings-idle/content/`).
