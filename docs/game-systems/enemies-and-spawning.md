@@ -17,7 +17,7 @@ Purpose: define every enemy as data, decide what spawns where, and run the basic
 
 1. When the Viking's front reaches the enemy's stop line, the runner halts and the fight starts.
 2. Both sides attack on their own intervals. The Viking's ranged weapon and wand keep firing as usual.
-3. If the enemy dies, the runner resumes. If the Viking dies, see [Combat](combat.md).
+3. If the enemy dies, the runner resumes. If the Viking dies, he drops back in just in front of an elite and fights again; against a boss see C6 in [Combat](combat.md).
 
 ### Boss signature move
 

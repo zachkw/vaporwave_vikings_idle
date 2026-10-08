@@ -43,8 +43,10 @@ Enemy roles are separate from which dimension an enemy belongs to. A dimensional
 - The Viking has health and defence. Chest gives defence; another gear piece (probably the Helmet) gives health.
 - He dies regularly on a normal surface run, every few minutes for most of the game.
 - Health regenerates gradually but generously out of combat.
-- Death restarts the level after a quick resurrection with full health. Gold and gear are kept. There is no confirmation screen; running resumes on its own.
-- Pits are not a death. A fall drops the Viking back onto the level from the sky, a bit further along. Sometimes there are coins in the sky to fall through, so falling can be worth it.
+- Death does not restart the level. The Viking drops back in from the sky about a block ahead, with full health, and keeps running. Very little interruption, no confirmation screen. Gold and gear are kept.
+- Sometimes there are coins or enemies in the air to hit on the way down.
+- Pits are not a death either. A fall drops the Viking back in from the sky just past the pit, the same way.
+- Dying to a boss: open (C6); proposed, the area repeats so the player can farm more gold.
 - Open: what exactly kills him on the surface (C1), and whether death clears timed pickups (C2). Death probably does not end dimension effects (tentative).
 
 ## Bosses

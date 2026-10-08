@@ -8,7 +8,8 @@ Purpose: move the Viking left to right through the streamed segments, handle jum
 - **Tap on the ground:** jump. **Tap in mid-air:** cast the wand if one is equipped, otherwise nothing. Taps on UI buttons never jump.
 - **Auto-jump:** when the Viking reaches the edge of a gap and the player has not jumped, he jumps automatically with a jump that clears the gap. An idle Viking never falls into a pit.
 - **Dropping into a pit:** only happens when the player jumps early so the Viking comes down inside the gap, short of the far edge. If the pit is a cave entrance, the Viking enters the course; otherwise it is a pit fall.
-- **Pit fall:** no death and no damage. The screen fades, the Viking drops back in from the top of the screen a few segments further on (placeholder: 2 segments), and dispatches `PIT_FALLEN`. If the landing segment has a `sky_coins` slot, he falls through its coins.
+- **Drop-in:** after a death or a pit fall, the Viking falls from the top of the screen and lands a little ahead, then keeps running. After a death he lands about a block ahead of where he died; after a pit fall, just past the pit. The air column he falls through may hold coins or enemies (see the drop-in pass in [Level builder](level-builder.md)). He can hit them on the way down.
+- **Pit fall:** no death and no damage; a drop-in, and `PIT_FALLEN` is dispatched.
 - **Sprint:** a button, visible only when `has_sprint` is true (Legs owned). Multiplies run speed for its duration, then cools down. Socks raise the multiplier.
 - **Steps up:** a rise of one block is walked over; higher rises need a jump (auto-jump also handles steps the main route requires).
 
@@ -57,4 +58,4 @@ Reads: `has_sprint`, `sprint_speed_bonus`, `run.sprint_cooldown`.
 
 ## Open
 
-C4 double jump and jump dash. Pit-fall respawn distance. L6 sky coins.
+C4 double jump and jump dash. Exact drop-in distances and fall speed.

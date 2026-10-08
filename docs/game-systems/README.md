@@ -9,7 +9,7 @@ Every spec uses the same sections: **Purpose, Rules, Content data, State and act
 | Spec | System | First build |
 | --- | --- | --- |
 | [Content data](content-data.md) | The JSON tables every system reads, shared with the server | Yes |
-| [Runner](runner.md) | Movement, jumping, auto-jump, sprint, pit falls | Yes |
+| [Runner](runner.md) | Movement, jumping, auto-jump, sprint, drop-ins after death and pit falls | Yes |
 | [Level builder](level-builder.md) | Chaining hand-made segments into surface levels, and the spawning passes | Yes |
 | [Enemies and spawning](enemies-and-spawning.md) | Enemy definitions, roles, spawn tables, elites, bosses | Yes |
 | [Combat](combat.md) | Sword, ranged, wand, damage, defence, health, crits, death | Yes |

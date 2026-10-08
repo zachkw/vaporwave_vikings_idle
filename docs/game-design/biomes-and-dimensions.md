@@ -30,7 +30,7 @@ Each biome has three kinds of level, so each asset pack needs tiles for all thre
 
 Sky and cave levels are hand-made assault courses. See [Courses and unlocks](courses-and-unlocks.md).
 
-**Pits.** The surface has pits. Some lead to caves; an upgrade (likely a talent) always shows which ones. Falling into an ordinary pit is not a death: the Viking drops back in from the sky further along, sometimes through a line of sky coins.
+**Pits.** The surface has pits. Some lead to caves; an upgrade (likely a talent) always shows which ones. Falling into an ordinary pit is not a death: the Viking drops back in from the sky just past the pit, sometimes through coins or enemies.
 
 ## Dimensions
 

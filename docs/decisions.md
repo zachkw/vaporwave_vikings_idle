@@ -28,7 +28,7 @@ Last updated 8 October 2026 (second pass).
 
 ### Death, pits and bosses (7 Oct)
 
-- The Viking dies regularly on a normal surface run, every few minutes for most of the game. Death restarts the level and keeps gold and gear.
+- The Viking dies regularly on a normal surface run, every few minutes for most of the game. Gold and gear are kept. (What happens next was changed on 8 Oct: see below.)
 - Pits are not a death. Falling in drops the Viking back onto the level from the sky, a bit further along. Sometimes there are coins in the sky to fall through, so falling can be the best move. Pits that are cave entrances still lead to caves.
 - The boss is always an automatic fight at the end of the area. If the Viking is very weak the boss kills him at once with a signature move (the giant frog's tongue grabs him and eats him).
 - Enemy roles are basic, elite and boss. Elites stop the Viking: he halts and fights until one of them dies.
@@ -98,7 +98,11 @@ Last updated 8 October 2026 (second pass).
 - The `docs/` folder in this repo is the single source of truth. The June docs were removed once this set covered them.
 - Docs are organised as: `game-design/` (what and why), `game-systems/` (build-ready specs per system), `technical/` (architecture, state, validation), `art/` (to be filled), `production/`.
 - Surface pieces are called **segments**; the sync unit is called a **batch**.
-- Surface segments do not all start and end at the same height, so the level builder chains them across layers with an algorithm; enemy spawning is part of that algorithm. See [Level builder](game-systems/level-builder.md).
+- **Death does not restart the level.** The Viking drops back in from the sky a little ahead (about a block) and keeps running, with very little interruption. Sometimes there are coins or enemies to hit as he falls. Pit falls work the same way, landing just past the pit.
+- Segment seams can sit at **any row**; the level builder matches them.
+- Segments have **one route**; higher platforms inside a segment can hold bonus coins or enemies, but there are no forks.
+- A **surface level** (the normal ground run from start to boss) lasts about **5 minutes**.
+- Surface segments do not all start and end at the same height, so the level builder chains them by their seam rows with an algorithm; enemy spawning is part of that algorithm. See [Level builder](game-systems/level-builder.md).
 
 ### Validation and build choices (8 Oct)
 
@@ -135,6 +139,7 @@ Each has a number so it can be referred to; numbers are never reused. Proposed d
 - C3. Can coins crit? Is the crit-chance dampener accepted?
 - C4. Do double jump and jump dash (June) still exist?
 - C5. How weak is "very weak" for the boss's instant kill, and is there a warning?
+- C6. Dying to the boss: drop in and fight again with the boss at full health, or repeat the area to farm? [Repeat the area; otherwise an idle player loops on the boss without earning]
 
 ### Ingredients and dimensions
 
@@ -178,6 +183,11 @@ Each has a number so it can be referred to; numbers are never reused. Proposed d
 - E1. Top gold number at launch (the draft gear ladder implies about 10^31, or 10^46 with sets).
 - E2. Starting split between distance, coins and enemy gold.
 - E3. Away-gold rates (June proposed 50, 25, 10, 5 and 1 percent).
+
+### Level building
+
+- L3. Seam tolerance: up 1 row, down 3 (proposed), or exact match only?
+- L5. How often is a course due, and how is it chosen?
 
 ### Build and tech
 

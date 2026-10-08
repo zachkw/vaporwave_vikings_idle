@@ -28,7 +28,7 @@ This folder is the single source of truth for Vaporwave Vikings Idle. Design and
 | [Game systems index](game-systems/README.md) | Spec template, Godot project layout, coding rules |
 | [Content data](game-systems/content-data.md) | Shared JSON tables and first-build placeholder values |
 | [Runner](game-systems/runner.md) | Movement, jump limits, auto-jump, sprint, pit falls |
-| [Level builder](game-systems/level-builder.md) | Chaining segments across layers, beat plans, spawning passes, library linter |
+| [Level builder](game-systems/level-builder.md) | Chaining segments by seam rows, beat plans, spawning and drop-in passes, library linter |
 | [Enemies and spawning](game-systems/enemies-and-spawning.md) | Roles, stop-and-fight, boss signature move, spawn tables |
 | [Combat](game-systems/combat.md) | Attacks, damage, defence, crits, regen, death |
 | [Dimensions](game-systems/dimensions.md) | Boxes, eating, effects, colour shifts |

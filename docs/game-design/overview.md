@@ -20,7 +20,7 @@ The game is one core loop with three systems around it.
 4. The player spends gold on gear levels. New gear slots open as gold grows; the Legs unlock sprint.
 5. He is stronger and richer, and the loop repeats.
 
-Setbacks loop straight back in: a pit fall drops him back in from the sky, and a death restarts the level with gold and gear kept.
+Setbacks barely interrupt: after a death or a pit fall he drops back in from the sky a little ahead, sometimes through coins or enemies, with gold and gear kept.
 
 ### What players find (minutes)
 

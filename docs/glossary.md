@@ -3,7 +3,7 @@
 | Term | Meaning |
 | --- | --- |
 | Action | A message saying what happened (`ENEMY_KILLED`), dispatched to the store |
-| Area | A run of surface levels ending in a boss |
+| Area | A surface level: the normal ground run, about 5 minutes, ending in a boss |
 | Artefact | An item found in an assault course that unlocks an ability and boosts a gold source; starts at level 0 |
 | Ascension | The optional reset that banks ascension points; nothing survives unless a talent makes it permanent |
 | Ascension level | Equals ascension points earned; one point, one level |
@@ -17,7 +17,8 @@
 | Biome | A themed world (Grassland, Dark Forest, Volcano Land, Frost Mountain), built from one template |
 | Bracket | The amount of gold held that unlocks the next gear slot |
 | Checkpoint | A moment the store saves and closes a sync batch |
-| Layer | One of the allowed floor heights where one segment joins the next |
+| Drop-in | How the Viking returns after a death or pit fall: falling from the sky a little ahead and running on |
+| Seam | Where one segment joins the next, at the floor rows of its exit and entry |
 | Crit | A random stronger hit that also pays more gold |
 | Device save | The full state as JSON on the phone; the working copy |
 | Dimension | What the Viking sees after eating an ingredient: a colour shift, a background set piece, extra enemies |
@@ -31,11 +32,12 @@
 | Material | Pelts, leather, demon hide and other drops, used for money, the Village and artefact upgrades |
 | Slot | A marked spot in a segment where the spawner may place an enemy, coins or a box |
 | Pickup | A timed power found during a run, such as Magnetism or Dead eye |
-| Pit | A gap in the surface; a fall drops the Viking back in from the sky, unless it is a cave entrance |
+| Pit | A gap in the surface; a fall is a drop-in just past it, unless it is a cave entrance |
 | Portal | After a full clear, a doorway to a random biome |
 | Reducer | A pure function that turns state plus action into the next state |
 | Segment | A hand-made piece of surface level; the level builder chains segments together |
 | Selector | A function that reads a derived value from the state, such as next cost |
+| Surface level | Same as area: the normal ground run, as opposed to sky and cave courses |
 | Store | The single place player state lives on the device |
 | Talent, talent web | Permanent upgrades bought with ascension points; gateways open whole systems |
 | Trimmed | A sync answer: gold above the possible amount was removed |
