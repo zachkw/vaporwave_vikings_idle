@@ -17,7 +17,7 @@ func _run() -> void:
 	var target := int(Content.load_json("res://content/economy.json")["level_length_m"])
 
 	print("== Library ==")
-	expect(library.size() == 5, "library has 5 segments")
+	expect(library.size() == 9, "library has 9 segments")
 	for seg in library:
 		expect(int(seg["width"]) == 48, "%s is 48 blocks wide" % seg["id"])
 		expect(int(seg["entry_row"]) == 2 and int(seg["exit_row"]) == 2, "%s enters and exits on row 2" % seg["id"])
@@ -65,7 +65,10 @@ func _run() -> void:
 	expect(fallbacks == 0, "no fallbacks (got %d)" % fallbacks)
 	expect(bad == 0, "every level passes the check (failures: %d)" % bad)
 	expect(repeats == 0, "no segment repeats back to back (got %d)" % repeats)
-	expect(usage.size() == 5, "all 5 segments get used")
+	expect(usage.size() == 8, "all segments except the cave entrance get used when no cave is due")
+	var with_cave := builder.build_level(99, target, 2, true)
+	expect(with_cave["ids"].has("proof_cave_entrance"), "a cave entrance is placed when due")
+	expect(builder.get_segment(with_cave["ids"][-1])["roles"].has("boss_arena") and builder.get_segment(with_cave["ids"][-2])["roles"].has("boss_approach"), "level ends with boss approach then boss arena")
 	print("   length range: %d to %d m (target %d)" % [min_len, max_len, target])
 	print("   usage: %s" % str(usage))
 
@@ -102,6 +105,9 @@ func _simulation_tests() -> void:
 	expect(viking.auto_jumps > 0, "auto-jump fired at pits (%d)" % viking.auto_jumps)
 	expect(Store.gold() > 200.0, "running paid gold into the Store (%d)" % int(Store.gold()))
 	expect(is_equal_approx(float(Store.state["run"]["distance_m"]), floorf(metres)) or absf(float(Store.state["run"]["distance_m"]) - metres) < 2.0, "Store distance matches the Viking (%d m)" % int(Store.state["run"]["distance_m"]))
+	expect(int(Store.state["stats"]["run"]["coins"]) > 0, "coins on the floor were picked up (%d)" % int(Store.state["stats"]["run"]["coins"]))
+	expect(int(Store.state["stats"]["run"]["kills"].get("basic", 0)) > 0, "the sword killed vine plants on the way (%d)" % int(Store.state["stats"]["run"]["kills"].get("basic", 0)))
+	expect(float(Store.state["run"]["health"]) > 0.0, "vine plants did not kill the Viking (health %d)" % int(Store.state["run"]["health"]))
 
 	print("== Simulation: jumping early drops into a pit and extends the level ==")
 	viking.auto_jump_enabled = false
@@ -129,8 +135,195 @@ func _simulation_tests() -> void:
 	for i in 180:
 		await get_tree().physics_frame
 	expect(run.pit_falls == falls_before + 1, "an early tap lands the Viking in the pit")
+	await _gameplay_tests(run)
 	await _layout_tests(run)
 	run.queue_free()
+
+
+## Teleport the Viking so he drops in at a world x, and let him land.
+func _teleport(run: Node, world_x: float) -> void:
+	run.viking.drop_in(world_x, -8.0 * 32.0)
+	run.viking.blocker = null
+	run._update_stream()
+	for i in 90:
+		await get_tree().physics_frame
+
+
+func _track_entry(run: Node, id: String, after_x: float = -INF) -> Dictionary:
+	for entry in run.track:
+		if entry["id"] == id and float(entry["x"]) > after_x:
+			return entry
+	return {}
+
+
+func _gameplay_tests(run: Node) -> void:
+	var viking: Viking = run.viking
+	var st: Dictionary = Store.state
+	var B := 32.0
+
+	print("== Elite: the moss golem stops the Viking, kills a weak one, then dies to a healthy one ==")
+	var arena := _track_entry(run, "proof_elite_arena", viking.global_position.x)
+	expect(not arena.is_empty(), "an elite arena lies ahead")
+	Store.dispatch(Actions.player_damaged(float(st["run"]["health"]) - 1.0, "elite"))
+	expect(is_equal_approx(float(st["run"]["health"]), 1.0), "Viking weakened to 1 health")
+	var deaths_before := int(st["stats"]["lifetime"]["deaths"])
+	await _teleport(run, float(arena["x"]) + 22.0 * B)
+	var stopped := false
+	var frames := 0
+	while frames < 60 * 6 and not stopped:
+		await get_tree().physics_frame
+		frames += 1
+		if viking.blocker != null and is_instance_valid(viking.blocker) and viking.velocity.x == 0.0 and viking.is_on_floor():
+			stopped = true
+	expect(stopped, "the golem stopped the Viking at its stop line")
+	var golem: Enemy = viking.blocker
+	expect(golem != null and golem.role == "elite", "the blocker is the elite")
+	frames = 0
+	while frames < 60 * 8 and int(st["stats"]["lifetime"]["deaths"]) == deaths_before:
+		await get_tree().physics_frame
+		frames += 1
+	expect(int(st["stats"]["lifetime"]["deaths"]) == deaths_before + 1, "the golem killed the 1-health Viking")
+	expect(is_equal_approx(float(st["run"]["health"]), Selectors.max_health(st)), "death restored health")
+	expect(run.distance_to_level_end_m() >= run.level_length_blocks * 0.9, "death to an elite extends the level like a pit fall (%d m to go)" % int(run.distance_to_level_end_m()))
+	frames = 0
+	while frames < 60 * 15 and (golem == null or not is_instance_valid(golem) or golem.health > 0.0):
+		await get_tree().physics_frame
+		frames += 1
+		if not is_instance_valid(golem):
+			break
+	expect(int(st["stats"]["lifetime"]["kills"].get("elite", 0)) >= 1, "after dropping back in, the healthy Viking killed the golem")
+	for i in 60:
+		await get_tree().physics_frame
+	expect(viking.velocity.x > 0.0, "the Viking runs on once the golem is dead")
+	expect(Store.gold() > 0.0, "the kill paid gold")
+
+	print("== Boss: the giant frog eats a weak Viking and a new level is built ==")
+	var old_level_index: int = run.level_index
+	var old_track_x: float = float(run.track[0]["x"])
+	var arena_entry: Dictionary = run.track[-1]
+	expect(run.builder.get_segment(arena_entry["id"])["roles"].has("boss_arena"), "the track ends in the boss arena")
+	deaths_before = int(st["stats"]["lifetime"]["deaths"])
+	await _teleport(run, float(arena_entry["x"]) + 20.0 * B)
+	frames = 0
+	while frames < 60 * 8 and int(st["stats"]["lifetime"]["deaths"]) == deaths_before:
+		await get_tree().physics_frame
+		frames += 1
+	expect(int(st["stats"]["lifetime"]["deaths"]) == deaths_before + 1, "the frog's tongue ate the fresh Viking at once")
+	expect(run.visit_counter == 1 and run.level_index == old_level_index, "a new level was built for the same level number")
+	expect(float(run.track[0]["x"]) > old_track_x, "the new level starts ahead of the old one")
+	for i in 120:
+		await get_tree().physics_frame
+	expect(viking.is_on_floor() and viking.global_position.x > old_track_x, "the Viking dropped into the new level and landed")
+
+	print("== Boss: a strong Viking beats the frog and the next level begins ==")
+	Store.dispatch(Actions.distance_travelled(1000000.0))
+	Store.dispatch(Actions.gear_level_bought("sword", 300))
+	expect(Store.damage() >= 600.0, "300 sword levels give a heavy hit (%d)" % int(Store.damage()))
+	arena_entry = run.track[-1]
+	await _teleport(run, float(arena_entry["x"]) + 20.0 * B)
+	frames = 0
+	while frames < 60 * 20 and not run.boss_beaten:
+		await get_tree().physics_frame
+		frames += 1
+	expect(run.boss_beaten, "the giant frog was beaten")
+	expect(int(st["stats"]["lifetime"]["kills"].get("boss", 0)) == 1, "boss kill counted")
+	frames = 0
+	while frames < 60 * 20 and run.level_index == old_level_index:
+		await get_tree().physics_frame
+		frames += 1
+	expect(run.level_index == old_level_index + 1, "running past the dead boss starts level %d" % (old_level_index + 2))
+	expect(int(st["run"]["level_index"]) == run.level_index, "Store knows the new level")
+	expect(int(st["progress"]["bosses_beaten"]) == 1, "progress counts the beaten boss")
+
+	print("== Course: the Triple Jump Cave ==")
+	Store.dispatch(Actions.player_died("test"))  # fresh health for the cave
+	var cave := _track_entry(run, "proof_cave_entrance", viking.global_position.x)
+	expect(not cave.is_empty(), "a cave entrance was placed because the course is due")
+	var cave_pit: Array = run.builder.get_segment("proof_cave_entrance")["pits"][0]
+	viking.auto_jump_enabled = false
+	await _teleport(run, float(cave["x"]) + (float(cave_pit[0]) - 6.0) * B)
+	frames = 0
+	while frames < 60 * 6 and run.course_node == null:
+		await get_tree().physics_frame
+		frames += 1
+	expect(run.course_node != null and run.course_id == "df_cave_a1", "falling into the cave pit enters the Triple Jump Cave")
+	expect(viking.in_course, "the Viking is in the course")
+	expect(not run.segments_root.visible, "the surface is hidden while underground")
+	var pit_falls_before := int(st["stats"]["run"]["pit_falls"])
+	frames = 0
+	while frames < 60 * 10 and not run.course_overlay.visible:
+		await get_tree().physics_frame
+		frames += 1
+	expect(run.course_overlay.visible, "an idle Viking falls into the first pit and the course fails")
+	expect(int(st["stats"]["run"]["pit_falls"]) == pit_falls_before, "a course fall is not a surface pit fall")
+	run._retry_course()
+	for i in 60:
+		await get_tree().physics_frame
+	expect(not run.course_overlay.visible and viking.is_on_floor(), "retry drops the Viking back at the start")
+	var course_x0: float = run.course_node.global_position.x
+	var jumped_at: Array = []
+	frames = 0
+	var pits_local := [12.0, 22.0, 32.0]
+	while frames < 60 * 20 and run.course_node != null:
+		await get_tree().physics_frame
+		frames += 1
+		var local_blocks := (viking.global_position.x - course_x0) / B
+		for px in pits_local:
+			if not jumped_at.has(px) and local_blocks >= px - 1.2 and viking.is_on_floor():
+				viking.request_jump()
+				jumped_at.append(px)
+	expect(jumped_at.size() == 3, "three taps, three jumps")
+	expect(run.course_node == null and not viking.in_course, "reaching the far side completes the course")
+	expect(Selectors.is_course_completed(st, "df_cave_a1"), "course recorded as complete")
+	expect(Selectors.is_ingredient_unlocked(st, "spirit_leaf"), "spirit leaf unlocked as the reward")
+	expect(run.segments_root.visible, "back on the surface")
+	for i in 90:
+		await get_tree().physics_frame
+	expect(viking.is_on_floor() and viking.global_position.y < 0.0, "landed back on the surface past the cave")
+	viking.auto_jump_enabled = true
+
+	print("== Dimension: eating a spirit leaf shifts the world and reveals spirits ==")
+	expect(Selectors.colour_shift(st) == Color.WHITE, "no tint without an effect")
+	Store.dispatch(Actions.ingredient_eaten("spirit_leaf", "raw", "box"))
+	expect(Selectors.is_effect_active(st, "spirit_leaf"), "spirit leaf effect is active")
+	expect(Selectors.colour_shift(st) != Color.WHITE and run.tint.color != Color.WHITE, "the world tints while the dimension is open")
+	var seg_meta: Dictionary = run.builder.get_segment("proof_flat")
+	var holder := Node2D.new()
+	run.add_child(holder)
+	var placed: Dictionary = Spawner.fill(holder, seg_meta, "dark_forest", 5, 7, B)
+	var spirits := 0
+	for child in holder.get_node("Spawned").get_children():
+		if child is Enemy and child.dimension == "spirit_leaf":
+			spirits += 1
+	expect(spirits > 0, "forest spirits fill the air slots while the leaf is active (%d)" % spirits)
+	holder.queue_free()
+	Store.dispatch(Actions.time_advanced(61.0))
+	expect(not Selectors.is_effect_active(st, "spirit_leaf"), "the raw leaf wears off after its timer")
+	expect(Selectors.colour_shift(st) == Color.WHITE, "tint returns to normal")
+	Store.dispatch(Actions.ingredient_eaten("spirit_leaf", "mixed", "garden"))
+	expect(Selectors.is_effect_active(st, "spirit_leaf"), "a mixed leaf lasts")
+	Store.dispatch(Actions.time_advanced(600.0))
+	expect(Selectors.is_effect_active(st, "spirit_leaf"), "...through time")
+	Store.dispatch(Actions.level_started("dark_forest", 5, 1))
+	expect(not Selectors.is_effect_active(st, "spirit_leaf"), "...until the level ends")
+
+	print("== Ingredient boxes appear once the ingredient is unlocked ==")
+	var box_meta: Dictionary = {}
+	for seg in run.builder.library:
+		if seg.get("slots", {}).get("box") != null:
+			box_meta = seg
+			break
+	expect(not box_meta.is_empty(), "a proof segment has a box slot")
+	var holder2 := Node2D.new()
+	run.add_child(holder2)
+	Spawner.fill(holder2, box_meta, "dark_forest", 5, 7, B)
+	var boxes := 0
+	for child in holder2.get_node("Spawned").get_children():
+		if child.get("ingredient_id") != null:
+			boxes += 1
+	expect(boxes == 1, "the box spawns with the unlocked spirit leaf")
+	holder2.queue_free()
+	await get_tree().process_frame
 
 
 func _layout_tests(run: Node) -> void:
@@ -148,6 +341,7 @@ func _layout_tests(run: Node) -> void:
 	expect(layout.game_rect().size == land, "game view fills the screen in landscape")
 	expect(is_equal_approx(cam.zoom.y, 480.0 / 480.0), "camera fits 15 blocks to 480 px (zoom %.3f)" % cam.zoom.y)
 	await get_tree().physics_frame
+	await get_tree().physics_frame  # the camera follows in _physics_process; let one full step run
 	var viking_left_screen_x: float = (run.viking.global_position.x - 12.0 - cam.global_position.x) * cam.zoom.x + land.x * 0.5
 	expect(absf(viking_left_screen_x - 24.0) < 2.0, "Viking's left edge sits one Viking width from the screen edge (%.0f px)" % viking_left_screen_x)
 	layout.open_drawer()

@@ -35,6 +35,7 @@ func dispatch(action: Dictionary) -> void:
 	GearReducer.reduce(state, action)
 	WalletReducer.reduce(state, action)
 	RunReducer.reduce(state, action)
+	EffectsReducer.reduce(state, action)
 	if action["type"] != Actions.TIME_ADVANCED and action["type"] != Actions.DISTANCE_TRAVELLED:
 		action_log.append(action)
 	changed.emit(action)
@@ -53,3 +54,8 @@ func is_unlocked(slot: String) -> bool: return Selectors.is_unlocked(state, slot
 func next_slot_unlock() -> Dictionary: return Selectors.next_slot_unlock(state)
 func has_sprint() -> bool: return Selectors.has_sprint(state)
 func run_speed_mult() -> float: return Selectors.run_speed_mult(state)
+func health() -> float: return float(state["run"]["health"])
+func max_health() -> float: return Selectors.max_health(state)
+func damage() -> float: return Selectors.damage(state)
+func defence() -> float: return Selectors.defence(state)
+func sprint_cooldown() -> float: return float(state["run"]["sprint_cooldown_s"])

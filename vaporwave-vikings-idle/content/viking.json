@@ -23,5 +23,7 @@
     "jump_buffer_s": 0.1,
     "drop_in_height_row": 14,
     "probe_ahead_px": 20
-  }
+  },
+  "attack_range_blocks": 1.5,
+  "death_pause_s": 1.2
 }

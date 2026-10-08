@@ -5,10 +5,37 @@
   "sync_margin": 2,
   "level_length_m": 1500,
   "away_bands": [
-    { "from_h": 0,   "to_h": 12,   "rate": 0.50 },
-    { "from_h": 12,  "to_h": 24,   "rate": 0.25 },
-    { "from_h": 24,  "to_h": 48,   "rate": 0.10 },
-    { "from_h": 48,  "to_h": 168,  "rate": 0.05 },
-    { "from_h": 168, "to_h": null, "rate": 0.01 }
-  ]
+    {
+      "from_h": 0,
+      "to_h": 12,
+      "rate": 0.5
+    },
+    {
+      "from_h": 12,
+      "to_h": 24,
+      "rate": 0.25
+    },
+    {
+      "from_h": 24,
+      "to_h": 48,
+      "rate": 0.1
+    },
+    {
+      "from_h": 48,
+      "to_h": 168,
+      "rate": 0.05
+    },
+    {
+      "from_h": 168,
+      "to_h": null,
+      "rate": 0.01
+    }
+  ],
+  "coin_line_fill": 0.8,
+  "box_fill": 1.0,
+  "drop_in": {
+    "nothing": 0.5,
+    "coins": 0.35,
+    "enemies": 0.15
+  }
 }

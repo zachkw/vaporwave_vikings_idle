@@ -1,10 +1,36 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://systems/run.gd" id="1_run"]
 [ext_resource type="PackedScene" path="res://scenes/viking/viking.tscn" id="2_viking"]
 [ext_resource type="PackedScene" path="res://scenes/backgrounds/proof_background.tscn" id="3_background"]
 [ext_resource type="Script" path="res://systems/layout.gd" id="4_layout"]
 [ext_resource type="PackedScene" path="res://scenes/ui/menu_panel.tscn" id="5_panel"]
+
+[sub_resource type="StyleBoxFlat" id="hp_bg"]
+bg_color = Color(0.1, 0.03, 0.2, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="hp_fill"]
+bg_color = Color(0.95, 0.3, 0.45, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="overlay_bg"]
+bg_color = Color(0.08, 0.04, 0.14, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.95, 0.4, 0.85, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="drawer_bg"]
 bg_color = Color(0.08, 0.04, 0.14, 1)
@@ -22,21 +48,113 @@ script = ExtResource("1_run")
 
 [node name="Camera" type="Camera2D" parent="."]
 
+[node name="Tint" type="CanvasModulate" parent="."]
+
 [node name="Layout" type="Node" parent="."]
 script = ExtResource("4_layout")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
-[node name="Info" type="Label" parent="HUD"]
-offset_left = 16.0
-offset_top = 12.0
-offset_right = 470.0
-offset_bottom = 60.0
+[node name="Hud" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 960.0
+offset_bottom = 480.0
 mouse_filter = 2
+
+[node name="TopLeft" type="VBoxContainer" parent="HUD/Hud"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 300.0
+offset_bottom = 120.0
+mouse_filter = 2
+
+[node name="Gold" type="Label" parent="HUD/Hud/TopLeft"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.03, 0.2, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+text = "0 gold"
+
+[node name="Health" type="ProgressBar" parent="HUD/Hud/TopLeft"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 14)
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 2
+theme_override_styles/background = SubResource("hp_bg")
+theme_override_styles/fill = SubResource("hp_fill")
+value = 100.0
+show_percentage = false
+
+[node name="Effects" type="Label" parent="HUD/Hud/TopLeft"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 1, 0.8, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.03, 0.2, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+
+[node name="TopRight" type="VBoxContainer" parent="HUD/Hud"]
+layout_mode = 0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -300.0
+offset_top = 8.0
+offset_right = -12.0
+offset_bottom = 100.0
+grow_horizontal = 0
+mouse_filter = 2
+alignment = 0
+
+[node name="Level" type="Label" parent="HUD/Hud/TopRight"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.1, 0.03, 0.2, 1)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 14
+text = "Dark Forest 1"
+
+[node name="Boss" type="Label" parent="HUD/Hud/TopRight"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.8, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.03, 0.2, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+
+[node name="NextUnlock" type="Label" parent="HUD/Hud/TopRight"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 1, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.03, 0.2, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+
+[node name="Toast" type="Label" parent="HUD/Hud"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 40.0
+offset_right = 200.0
+offset_bottom = 70.0
+grow_horizontal = 2
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.03, 0.2, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 16
 
 [node name="AbilityStrip" type="HBoxContainer" parent="HUD"]
 offset_left = 16.0
@@ -80,3 +198,56 @@ layout_mode = 0
 theme_override_styles/panel = SubResource("drawer_bg")
 
 [node name="MenuPanel" parent="UI" instance=ExtResource("5_panel")]
+
+[node name="CourseOverlay" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Box" type="PanelContainer" parent="UI/CourseOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -80.0
+offset_right = 150.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("overlay_bg")
+
+[node name="VBox" type="VBoxContainer" parent="UI/CourseOverlay/Box"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="UI/CourseOverlay/Box/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+text = "You fell!"
+
+[node name="Hint" type="Label" parent="UI/CourseOverlay/Box/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+autowrap_mode = 3
+theme_override_font_sizes/font_size = 12
+text = "Tap to jump over each pit. Reach the far side to find what is hidden here."
+
+[node name="Retry" type="Button" parent="UI/CourseOverlay/Box/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Try again"
+
+[node name="Return" type="Button" parent="UI/CourseOverlay/Box/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Back to the surface"

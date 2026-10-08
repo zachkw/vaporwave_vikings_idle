@@ -109,6 +109,9 @@ Last updated 8 October 2026 (second pass).
 - **Opening gear costs** scale slot by slot for the early game: Sword 1 gold, Chest 10, Helmet 100, Legs 250 at level 1, each rising linearly. Placeholder values, in `content/gear.json`.
 - **First ingredient is the spirit leaf** (forest spirits). Was T2.
 - **Only elites and bosses can kill the Viking.** Basic enemies (minions) never kill him. Was C1.
+- **The first course is the Triple Jump Cave** (`df_cave_a1`): a flat cave floor with three 3-block pits, three taps to cross, one fall fails. Reward: the spirit leaf. (8 Oct)
+- **Entering a cave is the player's choice.** While a course is due, one segment carries the cave mouth as a pit. Auto-jump clears it like any other pit, so an idle Viking never drops into a course he cannot tap through; the player enters by tapping early into it. Built that way in the proof; see A5 for how to signal it.
+- **Elites hit from their stop line.** The moss golem (and the frog) damage the Viking while he is held at the stop line, so a stand-off is never free. Basics only hit on contact. (8 Oct)
 - **Dying to an elite** plays the death sequence and resets the level the way a pit fall does: the Viking drops back in and the boss is a full level away again. Claude's reading of "reset the death and do the death sequence"; confirm. Was C7.
 - **Start at 0 gold.** A new game begins with no gold and coins served along the floor from the first screen, so the player can buy the 1-gold Sword within seconds. (Asked as E2; the split between distance, coins and kills stays a tuning item.)
 - **Core gear grants gold per metre plus one effect.** Every core piece adds gold per metre (the passive income, like Idle Slayer's coins per second). On top of that each piece has its own single effect: Sword damage, Chest defence, Helmet health, Legs sprint. No "+2% enemy gold" style boosts on the opening pieces. This replaces the earlier combat stat plus gold boost pairing.
@@ -166,6 +169,7 @@ Each has a number so it can be referred to; numbers are never reused. Proposed d
 - A2. Is there an access system? Any limit on ad retries?
 - A3. Where does the Viking come back to on the surface?
 - A4. How often do farm courses appear, and how rich are they?
+- A5. How the cave mouth is signalled so players know to tap into it (a glowing pit, a sign, a prompt the first time?). The proof has no marker yet.
 
 ### Artefacts, weapons and pickups
 

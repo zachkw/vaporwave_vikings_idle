@@ -1,0 +1,8 @@
+[
+  { "id": "vine_plant",    "name": "Vine plant",    "role": "basic", "health": 10,   "attack": 5,  "attack_interval_s": 1.0, "gold": 25,  "flying": false, "colour": [0.35, 0.75, 0.3] },
+  { "id": "moss_golem",    "name": "Moss golem",    "role": "elite", "health": 120,  "attack": 8,  "attack_interval_s": 1.0, "gold": 150, "flying": false, "colour": [0.3, 0.5, 0.35] },
+  { "id": "giant_frog",    "name": "Giant frog",    "role": "boss",  "health": 1500, "attack": 15, "attack_interval_s": 1.5, "gold": 500, "flying": false, "colour": [0.2, 0.65, 0.3],
+    "signature": "tongue_grab", "instant_kill_ratio": 3.0 },
+  { "id": "forest_spirit", "name": "Forest spirit", "role": "basic", "health": 10,   "attack": 4,  "attack_interval_s": 1.0, "gold": 15,  "flying": true,  "colour": [0.6, 1.0, 0.8], "dimension": "spirit_leaf" },
+  { "id": "demon_troll",   "name": "Demon troll",   "role": "basic", "health": 40,   "attack": 10, "attack_interval_s": 1.2, "gold": 15,  "flying": false, "colour": [0.8, 0.2, 0.3], "dimension": "evil_mushroom", "drops": { "demon_hide": 0.5 } }
+]

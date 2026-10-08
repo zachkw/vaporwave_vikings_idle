@@ -16,12 +16,26 @@ GROUND_COLOR = "Color(0.18, 0.55, 0.45, 1)"
 PLATFORM_COLOR = "Color(0.85, 0.35, 0.9, 1)"
 
 # pits: [start_block, end_block)   platforms: (start_block, end_block, top_row)
+# slots: coin lines (from, to, row), ground enemy blocks, elite block, box (block, row)
 SEGMENTS = [
-    {"id": "proof_flat",        "roles": ["start", "run"],      "pits": [],                  "platforms": []},
-    {"id": "proof_pit",         "roles": ["jump"],              "pits": [[22, 25]],          "platforms": []},
-    {"id": "proof_platform",    "roles": ["run", "platform"],   "pits": [],                  "platforms": [[21, 27, 5]]},
-    {"id": "proof_platforms_2", "roles": ["run", "platform"],   "pits": [],                  "platforms": [[12, 18, 5], [30, 36, 5]]},
-    {"id": "proof_pits_2",      "roles": ["jump"],              "pits": [[14, 17], [31, 34]], "platforms": []},
+    {"id": "proof_flat", "roles": ["start", "run", "rest"], "pits": [], "platforms": [],
+     "coins": [[6, 14, 3], [30, 38, 3]], "ground": [20, 22, 24], "elite": None, "box": None},
+    {"id": "proof_pit", "roles": ["jump"], "pits": [[22, 25]], "platforms": [],
+     "coins": [[21, 27, 5]], "ground": [8, 10, 34, 36], "elite": None, "box": [40, 6]},
+    {"id": "proof_platform", "roles": ["run", "platform", "pack"], "pits": [], "platforms": [[21, 27, 5]],
+     "coins": [[21, 27, 7]], "ground": [8, 10, 12, 30, 32], "elite": None, "box": None},
+    {"id": "proof_platforms_2", "roles": ["run", "platform", "coins"], "pits": [], "platforms": [[12, 18, 5], [30, 36, 5]],
+     "coins": [[12, 18, 7], [30, 36, 7], [20, 28, 3]], "ground": [24, 40, 42], "elite": None, "box": [24, 6]},
+    {"id": "proof_pits_2", "roles": ["jump"], "pits": [[14, 17], [31, 34]], "platforms": [],
+     "coins": [[13, 19, 5], [30, 36, 5]], "ground": [6, 24, 26, 42], "elite": None, "box": None},
+    {"id": "proof_elite_arena", "roles": ["elite_arena"], "pits": [], "platforms": [],
+     "coins": [[4, 10, 3]], "ground": [], "elite": 28, "box": None, "weight": 0.6, "cooldown": 3},
+    {"id": "proof_cave_entrance", "roles": ["cave_entrance"], "pits": [[22, 25]], "platforms": [],
+     "coins": [[8, 14, 3]], "ground": [34, 36], "elite": None, "box": None, "flags": ["cave_entrance"], "cave_pit": 0},
+    {"id": "proof_boss_approach", "roles": ["boss_approach"], "pits": [], "platforms": [],
+     "coins": [[4, 20, 3]], "ground": [], "elite": None, "box": [24, 6]},
+    {"id": "proof_boss_arena", "roles": ["boss_arena"], "pits": [], "platforms": [],
+     "coins": [], "ground": [], "elite": 30, "box": None, "flags": ["boss_arena"]},
 ]
 
 
@@ -96,12 +110,19 @@ def main():
             "exit_row": FLOOR_ROW,
             "roles": seg["roles"],
             "difficulty": 1,
-            "weight": 1.0,
-            "cooldown": 1,
+            "weight": seg.get("weight", 1.0),
+            "cooldown": seg.get("cooldown", 1),
             "pits": seg["pits"],
             "platforms": [{"from": a, "to": b, "top_row": r} for a, b, r in seg["platforms"]],
-            "slots": [],
-            "flags": [],
+            "slots": {
+                "coin_lines": [{"from": a, "to": b, "row": r} for a, b, r in seg["coins"]],
+                "ground": seg["ground"],
+                "elite": seg["elite"],
+                "box": {"block": seg["box"][0], "row": seg["box"][1]} if seg["box"] else None,
+                "air": [{"block": x, "row": 6} for x in range(4, WIDTH - 4, 8)],
+            },
+            "flags": seg.get("flags", []),
+            "cave_pit": seg.get("cave_pit"),
         })
     out = os.path.join(root, "content", "segments", "proof.json")
     with open(out, "w", newline="\n") as f:

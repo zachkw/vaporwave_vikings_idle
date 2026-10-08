@@ -1,0 +1,5 @@
+[
+  { "id": "df_cave_a1", "name": "Triple Jump Cave", "biome": "dark_forest", "kind": "cave", "tier": "A",
+    "scene": "res://scenes/courses/df_cave_a1.tscn",
+    "reward": { "type": "ingredient", "id": "spirit_leaf" } }
+]

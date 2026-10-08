@@ -47,6 +47,17 @@ static func coin_value(state: Dictionary, _kind: String = "gold") -> float:
 	return base * (1.0 + gear_stat(state, "gold_coin_pct") / 100.0) * (1.0 + gear_stat(state, "gold_all_pct") / 100.0)
 
 
+## Gold for a kill: base gold with the role's percentage boost, all-gold boost, and crit.
+static func enemy_gold(state: Dictionary, enemy: Dictionary, crit: bool = false) -> float:
+	var role_key := "gold_%s_pct" % enemy["role"]
+	if enemy.get("dimension", "") != "":
+		role_key = "gold_dimensional_pct"
+	var g := float(enemy["gold"]) * (1.0 + gear_stat(state, role_key) / 100.0) * (1.0 + gear_stat(state, "gold_all_pct") / 100.0)
+	if crit:
+		g *= float(Content.load_json("res://content/viking.json")["crit"]["base_gold_mult"])
+	return g
+
+
 static func damage(state: Dictionary) -> float:
 	var viking: Dictionary = Content.load_json("res://content/viking.json")
 	return float(viking["sword_damage"]) + gear_stat(state, "damage")
@@ -94,3 +105,48 @@ static func next_slot_unlock(state: Dictionary) -> Dictionary:
 
 static func gold(state: Dictionary) -> float:
 	return float(state["wallet"]["gold"])
+
+
+static func ingredient(id: String) -> Dictionary:
+	for ing in Content.load_json("res://content/ingredients.json"):
+		if ing["id"] == id:
+			return ing
+	return {}
+
+
+static func course(id: String) -> Dictionary:
+	for c in Content.load_json("res://content/courses.json"):
+		if c["id"] == id:
+			return c
+	return {}
+
+
+static func active_effects(state: Dictionary) -> Array:
+	return state.get("effects", [])
+
+
+static func is_effect_active(state: Dictionary, ingredient_id: String) -> bool:
+	for e in active_effects(state):
+		if e["id"] == ingredient_id:
+			return true
+	return false
+
+
+static func is_ingredient_unlocked(state: Dictionary, ingredient_id: String) -> bool:
+	return state["unlocks"]["ingredients"].has(ingredient_id)
+
+
+static func is_course_completed(state: Dictionary, course_id: String) -> bool:
+	return state["unlocks"]["courses"].has(course_id)
+
+
+## Blend of every active dimension's colour shift, white when none.
+static func colour_shift(state: Dictionary) -> Color:
+	var c := Color(1, 1, 1)
+	for e in active_effects(state):
+		var ing := ingredient(e["id"])
+		if ing.is_empty():
+			continue
+		var shift: Array = ing["colour_shift"]
+		c = c * Color(shift[0], shift[1], shift[2])
+	return c

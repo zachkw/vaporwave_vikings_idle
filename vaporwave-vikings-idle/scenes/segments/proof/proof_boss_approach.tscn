@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://systems/segment.gd" id="1_segment"]
+
+[sub_resource type="RectangleShape2D" id="ground_0"]
+size = Vector2(1536, 64)
+
+[node name="proof_boss_approach" type="Node2D"]
+script = ExtResource("1_segment")
+segment_id = "proof_boss_approach"
+width_blocks = 48
+entry_row = 2
+exit_row = 2
+
+[node name="Entry" type="Marker2D" parent="."]
+position = Vector2(0, -64)
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(1536, -64)
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ground0" type="StaticBody2D" parent="Terrain"]
+position = Vector2(768.0, -32.0)
+
+[node name="Shape" type="CollisionShape2D" parent="Terrain/Ground0"]
+shape = SubResource("ground_0")
+
+[node name="Visual" type="ColorRect" parent="Terrain/Ground0"]
+offset_left = -768.0
+offset_top = -32.0
+offset_right = 768.0
+offset_bottom = 32.0
+mouse_filter = 2
+color = Color(0.18, 0.55, 0.45, 1)

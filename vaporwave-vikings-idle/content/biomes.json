@@ -1,0 +1,8 @@
+[
+  { "id": "dark_forest", "name": "Dark Forest", "order": 2,
+    "basic": ["vine_plant"], "elite": ["moss_golem"], "boss": "giant_frog",
+    "pack_size": { "min": 2, "max": 4 },
+    "ingredients": ["spirit_leaf", "evil_mushroom"],
+    "segment_library": "res://content/segments/proof.json",
+    "levels": 3 }
+]

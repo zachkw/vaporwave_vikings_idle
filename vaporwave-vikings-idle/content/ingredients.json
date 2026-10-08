@@ -1,0 +1,6 @@
+[
+  { "id": "spirit_leaf",   "name": "Spirit leaf",   "found_in": ["dark_forest"], "works_in": ["dark_forest"],
+    "reveals": ["forest_spirit"], "raw_timer_s": 60, "colour_shift": [0.75, 1.0, 0.85], "air_fill": 0.6 },
+  { "id": "evil_mushroom", "name": "Evil mushroom", "found_in": ["dark_forest"], "works_in": ["dark_forest"],
+    "reveals": ["demon_troll"],   "raw_timer_s": 60, "colour_shift": [1.0, 0.7, 0.75], "air_fill": 0.0 }
+]

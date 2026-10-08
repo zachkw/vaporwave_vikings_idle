@@ -11,6 +11,10 @@ static func reduce(state: Dictionary, action: Dictionary) -> void:
 			_earn(state, Selectors.gold_per_metre(state) * float(action["metres"]))
 		Actions.COIN_COLLECTED:
 			_earn(state, Selectors.coin_value(state, action["kind"]) * int(action["count"]))
+		Actions.ENEMY_KILLED:
+			var data := Spawner.enemy_data(action["enemy_id"])
+			if not data.is_empty():
+				_earn(state, Selectors.enemy_gold(state, data, bool(action.get("crit", false))))
 		Actions.GEAR_LEVEL_BOUGHT:
 			# Cost check happens in the gear reducer; it marks the action as applied.
 			if action.get("_applied", false):

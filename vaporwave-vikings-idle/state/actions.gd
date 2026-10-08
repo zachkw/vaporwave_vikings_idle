@@ -14,6 +14,11 @@ const PIT_FALLEN := "PIT_FALLEN"
 const SPRINT_USED := "SPRINT_USED"
 const BOSS_DEFEATED := "BOSS_DEFEATED"
 const LEVEL_STARTED := "LEVEL_STARTED"
+# Discovery and effects
+const COURSE_ENTERED := "COURSE_ENTERED"
+const COURSE_FAILED := "COURSE_FAILED"
+const COURSE_COMPLETED := "COURSE_COMPLETED"
+const INGREDIENT_EATEN := "INGREDIENT_EATEN"
 # Shop
 const GEAR_LEVEL_BOUGHT := "GEAR_LEVEL_BOUGHT"
 # System
@@ -59,6 +64,22 @@ static func boss_defeated(boss_id: String) -> Dictionary:
 
 static func level_started(biome: String, level_index: int, level_seed: int) -> Dictionary:
 	return {"type": LEVEL_STARTED, "biome": biome, "level_index": level_index, "level_seed": level_seed}
+
+
+static func course_entered(course_id: String) -> Dictionary:
+	return {"type": COURSE_ENTERED, "course_id": course_id}
+
+
+static func course_failed(course_id: String) -> Dictionary:
+	return {"type": COURSE_FAILED, "course_id": course_id}
+
+
+static func course_completed(course_id: String, reward: Dictionary) -> Dictionary:
+	return {"type": COURSE_COMPLETED, "course_id": course_id, "reward": reward}
+
+
+static func ingredient_eaten(ingredient_id: String, form: String = "raw", source: String = "box") -> Dictionary:
+	return {"type": INGREDIENT_EATEN, "ingredient_id": ingredient_id, "form": form, "source": source}
 
 
 static func gear_level_bought(slot: String, count: int = 1) -> Dictionary:
