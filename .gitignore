@@ -4,3 +4,6 @@ dist/
 .DS_Store
 *.log
 
+
+# Cowork session outputs
+Claude outputs/
