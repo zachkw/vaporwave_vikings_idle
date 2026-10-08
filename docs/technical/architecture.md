@@ -1,104 +1,86 @@
-# Technical Architecture
+# Architecture
 
-## Planned Project Layout
+A Godot mobile client that plays from its own save, and a small Node.js backend that keeps a validated copy. The player state model is in the [state store spec](state-store-spec.md).
+
+## Layout
 
 ```text
 Vaporwave Vikings Idle/
-  docs/
-  godot-client/
-  backend-service/
+  docs/                     design and technical docs (this folder is the source of truth)
+  vaporwave-vikings-idle/   Godot 4.6 project, mobile renderer (empty so far)
+  backend-service/          Node.js + Express + TypeScript REST service
 ```
 
-The repository starts documentation-first. The Godot client and Node.js backend service can be added once the initial design and technical boundaries are clear.
-
-## High-Level Flow
+## How the parts talk
 
 ```mermaid
 sequenceDiagram
-    participant Client as Godot Client
-    participant API as Node.js Backend
-    participant DB as Persistence
-
-    Client->>API: Login or resume session
-    API->>DB: Load account and profile
-    API-->>Client: Auth token, profile, content version
-    Client->>API: Start run
-    API->>DB: Create run session
-    API-->>Client: Run session id, content version, seed lease, generation context
-    Client->>Client: Play segment through state store actions
-    Client->>API: Submit action-log delta
-    API->>API: Validate delta
-    API->>DB: Commit accepted rewards
-    API-->>Client: Reconciliation, flags, updated profile, refreshed seed lease
+    participant C as Godot client
+    participant S as Backend
+    participant DB as Storage
+    C->>S: Sign in (guest, Apple, Google, Google Play)
+    S->>DB: Load account and state copy
+    S-->>C: Session token, server revision, content version
+    loop Play, online or offline
+        C->>C: Actions, reducers, device save at checkpoints
+    end
+    C->>S: POST /sync (base revision + queued segments)
+    S->>S: Check time, gold earned, gold spent, unlocks
+    S->>DB: Apply segments, new revision
+    S-->>C: Accepted, Trimmed or Rejected
 ```
 
-## Trust Boundaries
+## Trust boundary
 
-Normal active play requires internet with routine server checkpoints every two minutes to keep operating costs low. A proposed 1-2-minute retry allowance after a checkpoint is due gives an absolute limit of 3-4 minutes of provisional progress since the last accepted state. The recommended two-minute retry allowance remains unconfirmed. Closed-app progression initially grants gold only. These are separate systems: the retry allowance supports intermittent connectivity, while away income compensates time not actively playing. Exact retry timing and away-income rates remain open.
+- The device save is the working copy. The game never waits on the network to play.
+- The server owns the validated copy: the latest accepted state, its revision, and the server time of the last sync.
+- The server judges plausibility, not every frame: could this much gold have been earned in this much time? See the server checks in the [state store spec](state-store-spec.md).
+- Away gold is always measured on the server's clock.
+- Ascension and talent purchases need a successful sync first (proposed, T3).
 
-The client can present predicted rewards quickly, but the backend owns durable progression. Any profile-changing action should be accepted by the server before it becomes final.
+## Client (Godot)
 
-Server-owned state should include:
+| System | Responsibility |
+| --- | --- |
+| `Store` autoload | Owns state, `dispatch`, selectors, `changed` signal, segment builder |
+| Runner | Moves the Viking, auto-jump at pit edges, tap jump, sprint |
+| Level builder | Assembles surface levels from tiles (see [Level generation](../game-design/level-generation.md)) |
+| Combat | Sword, equipped ranged weapon and wand, crit rolls, elites, bosses, death |
+| Spawner | Places enemies from `enemy_pool(biome)`, including active dimensions |
+| Effects | Colour shifts, dimension set pieces, particles, sound; reacts to actions |
+| Courses | Hand-made sky and cave levels, one-fall failure, ad retry |
+| Shop and menus | Gear rows, artefacts, unlocks, ascension and talents, Village |
+| Save | Writes `user://save.json` at checkpoints and on background |
+| Sync | Sends queued segments, applies Accepted / Trimmed / Rejected |
 
-- Account identity.
-- Player profile.
-- Gold and resource balances.
-- Upgrade levels.
-- Gear inventory and equipped gear.
-- Run sessions and accepted run reports.
-- Server-issued map seeds and generation algorithm versions.
-- Seed leases, profile versions, and accepted deltas.
-- Economy ledger entries.
-- Content and balance version used for validation.
+Mobile notes: save whenever the app leaves the screen; keep combat readable under the colour shifts; keep progression maths independent of frame rate.
 
-Client-owned or client-predicted state can include:
+## Backend
 
-- Local visual effects.
-- In-progress run animation.
-- Temporary reward previews.
-- Predicted state store and pending action log.
-- Cached profile data.
-- User settings.
+Express, TypeScript and Vitest, with in-memory storage for now. See `backend-service/README.md` for running it.
 
-## Backend Responsibilities
+| Method | Path | Status |
+| --- | --- | --- |
+| `GET` | `/health` | Built |
+| `GET` | `/api/v1/config` | Built (content and economy config) |
+| `POST` | `/api/v1/auth/guest` | Built |
+| `POST` | `/api/v1/auth/apple`, `/google`, `/google-play` | Built (needs platform credentials) |
+| `GET` | `/api/v1/profile` | Built |
+| `POST` | `/api/v1/run/start`, `/api/v1/run/report` | Built; to be replaced by `/sync` |
+| `POST` | `/api/v1/upgrade/purchase` | Built; purchases move into sync segments |
+| `POST` | `/api/v1/sync` | To build: checks and applies segments |
+| `POST` | `/api/v1/away/claim` | To build: server-clock away gold |
 
-- Authenticate players.
-- Store profiles.
-- Issue run sessions.
-- Validate action-log deltas and progress reports.
-- Commit rewards.
-- Process purchases and upgrades.
-- Serve content and economy configuration.
-- Issue deterministic map seeds for run sessions.
-- Issue and refresh seed leases.
-- Reconstruct generated tile ranges for validation.
-- Produce telemetry for balancing and cheat detection.
+Platform sign-in details are in [Platform authentication](platform-authentication.md).
 
-## Client Responsibilities
+Every gold change should leave a ledger entry so the economy can be audited later.
 
-- Run the side-scrolling gameplay.
-- Dispatch gameplay actions through the client state store.
-- Generate route tiles from server-issued map seeds.
-- Present upgrades, gear, and progression.
-- Cache enough data for smooth mobile play.
-- Submit action-log deltas on handshake/report intervals.
-- Handle network failures gracefully.
-- Reconcile predicted rewards with server-accepted rewards.
+## Shared content
 
-## Initial Technology Direction
+Gear costs and stats, enemy gold, spawn rates, brackets and away rates live in content tables that both the client and the server read. Proposed: versioned JSON in the repo, imported by Godot and by the backend, with the content version stored in each save.
 
-- Game client: Godot.
-- Backend service: Node.js.
-- Database: to be decided.
-- Hosting: to be decided.
-- Analytics and crash reporting: to be decided.
-- Auth provider: to be decided.
+## Open
 
-## Key Architectural Questions
-
-- Should backend code be plain JavaScript or TypeScript?
-- Which Node.js web framework should be used?
-- What persistence layer should own player state?
-- Should content configuration be stored in database rows, versioned JSON, Godot resources, or a shared content package?
-- Which shared deterministic RNG should be used by Godot and Node.js?
-- What retry allowance and waiting-state behavior best support intermittent reception at the confirmed two-minute checkpoint cadence?
+- Database and hosting (none chosen; in-memory today).
+- Analytics, crash reporting and the ad provider.
+- Where tile and content data live (proposed shared JSON).

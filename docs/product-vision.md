@@ -1,46 +1,25 @@
-# Product Vision
+# Product vision
 
-## Summary
-
-Vaporwave Vikings, Idle is a mobile idle action game built around an auto-running side-scroller. Players collect coins, defeat enemies, earn gold and other resources, then convert those resources into upgrades that make future runs stronger and more profitable.
-
-The game combines a readable action layer with classic idle compounding. A run should feel energetic and rewarding even when the player is only making light-touch decisions, while long-term progression should be driven by gear, power upgrades, ability upgrades, and gold generation multipliers.
+Vaporwave Vikings Idle is a mobile idle runner. A Viking runs on his own, earns gold from distance, coins and kills, and turns it into gear that makes him earn faster. When he eats the right plant he sees into another dimension, the screen goes vaporwave, and more enemies, and more gold, pour in.
 
 ## Pillars
 
-### Kinetic Auto-Running
+- **Always running, always earning.** The Viking is always moving and every few seconds pays out something visible: coins, kills, a purchase.
+- **Idle compounding.** Gold buys power and income, which buys more gold. Numbers climb from a handful of gold to scientific notation.
+- **The hallucination hook.** Eating ingredients opens dimensions that change the screen and the enemy pool. It is the game's signature and its look.
+- **Neon Norse.** Vikings through a vaporwave lens: bold silhouettes, mythic weapons, runic motifs, saturated colour shifts.
+- **Volume over polish.** Lots to chase matters more than finish. One art style, multiplied with AI.
+- **Plays anywhere, checked later.** The game runs from the device save, online or not. The server keeps a validated copy and trims what was not possible.
 
-The player is always moving forward. The game should feel active, readable, and generous with feedback: coins are collected, enemies are defeated, rewards appear, and the player's build visibly improves over time.
+## Player promise
 
-### Idle Compounding
+Every session, however short, ends with visible progress: more gold, a new gear level, a new slot, a new unlock, or a boss down.
 
-Gold is the primary resource and the main engine of progression. Players spend gold on power and gear that increase both combat effectiveness and gold generation, creating the familiar idle loop of earning, upgrading, and earning faster.
+## References
 
-### Server-Authorized Progression
+- Idle Slayer for runner-plus-idle structure, gear, ascension and the Village.
+- Small village idle games (light Clash of Clans) for the Village.
 
-The Godot client should be responsive and fun, but the backend owns durable progression. Player reports are validated against expected boundaries before rewards become authoritative.
+## Platforms
 
-### Neon Norse Identity
-
-The fantasy is Vikings through a vaporwave lens: bold silhouettes, mythic weapons, runic motifs, saturated color, and a retro-futurist sense of excess.
-
-## Reference Points
-
-- Slayer Idle style gear and upgrade progression.
-- Mobile idle RPG resource compounding.
-- Auto-running side-scroller collection and combat.
-- Server validation patterns from live-service mobile games.
-
-## Target Platforms
-
-The initial target is the main mobile platforms:
-
-- iOS
-- Android
-
-Future platform support should be evaluated after the mobile core loop, backend validation, and monetization model are proven.
-
-## Player Promise
-
-Every run should create visible progress. Even short sessions should produce gold, upgrade opportunities, and a sense that the character is becoming more powerful.
-
+iOS and Android first. Anything else waits until the core loop, sync and monetisation are proven.

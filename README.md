@@ -8,8 +8,8 @@ The project is planned as:
 - `vaporwave-vikings-idle/` - Godot game client.
 - `backend-service/` - Node.js REST backend service.
 
-The backend will authorize player progression, validate reported run results, and maintain server-side player state. The client will play smoothly and responsively, but progression writes should be checked by the service before becoming authoritative.
+The game plays from its own device save, online or offline. The backend keeps a validated copy: the client syncs the difference since the last sync, and the server checks the gold in it was possible in the time played.
 
-Start with [docs/README.md](docs/README.md).
+Start with [docs/README.md](docs/README.md). The `docs/` folder is the single source of truth; decisions are logged in [docs/decisions.md](docs/decisions.md).
 
 Backend setup lives in [backend-service/README.md](backend-service/README.md).
