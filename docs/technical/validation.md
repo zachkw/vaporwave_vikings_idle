@@ -90,7 +90,7 @@ Batches are checked one at a time, in order, against the server copy as it stand
 ### 1. Revision and order
 
 - `base_rev` must equal the stored `rev`, else `conflict`.
-- Batch numbers must start at `last_seq + 1` and have no gaps, else `rejected`.
+- Batch numbers must start at `last_seq + 1` and have no gaps, else `rejected`. A merged batch carries `seq_from` as well as `seq` and covers that whole range.
 - `content_version` must be one the server knows, else `rejected` with code `content_version`.
 
 ### 2. Time

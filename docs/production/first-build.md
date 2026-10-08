@@ -36,7 +36,7 @@ Each step is playable or testable on its own.
 2. Done: shop rows reading `next_level_cost` and `can_afford`, dispatching `GEAR_LEVEL_BOUGHT`.
 3. Done: running, coins and enemies in Dark Forest dispatching the run actions; death and pit falls.
 4. Done: the boss fight and level advance.
-5. Checkpoint triggers and the batch builder, logging batches to the console.
+5. Done: checkpoint triggers (level end, boss death, course end, purchase burst) and the batch builder, with the queue, merging of old batches, the request body and the three server answers handled in the store; batches print to the console in debug builds.
 6. `POST /sync` on the backend, and the three answers handled in the store.
 7. Done (ahead of 5 and 6): the Triple Jump Cave, the spirit leaf and the `effects` and `unlocks` slices.
 

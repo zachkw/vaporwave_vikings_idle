@@ -138,6 +138,7 @@ func _simulation_tests() -> void:
 	await _gameplay_tests(run)
 	await _layout_tests(run)
 	run.queue_free()
+	Store.log_batches = false
 
 
 ## Teleport the Viking so he drops in at a world x, and let him land.
@@ -421,9 +422,110 @@ func _store_tests() -> void:
 	expect(float(st["run"]["sprint_cooldown_s"]) > 0.0, "sprint starts its cooldown")
 	Store.dispatch(Actions.time_advanced(30.0))
 	expect(is_equal_approx(float(st["run"]["sprint_cooldown_s"]), 0.0), "cooldown ticks down with play time")
-	expect(Store.action_log.size() > 0, "actions are logged for the batch builder")
 	Store.dispatch(Actions.checkpoint_reached("test"))
-	expect(Store.action_log.is_empty(), "checkpoint clears the action log")
+	expect(Store.queued_batches().size() == 1, "checkpoint closes the batch and queues it")
+	await _sync_tests()
+
+
+func _sync_tests() -> void:
+	print("== Sync: batch builder, queue, server answers ==")
+	Store.reset()
+	var st: Dictionary = Store.state
+	expect(st["meta"]["device_id"].begins_with("dev-"), "device id is set (%s)" % st["meta"]["device_id"])
+	expect(st["meta"]["content_version"] != "", "content version is stamped")
+	expect(SyncReducer.is_empty_batch(Store.open_batch()), "a fresh game has an empty open batch")
+	Store.dispatch(Actions.checkpoint_reached("idle"))
+	expect(Store.queued_batches().is_empty(), "an empty checkpoint queues nothing")
+
+	Store.dispatch(Actions.time_advanced(60.0))
+	Store.dispatch(Actions.distance_travelled(310.0))
+	Store.dispatch(Actions.coin_collected("gold", 5))
+	Store.dispatch(Actions.enemy_killed("vine_plant", "basic"))
+	Store.dispatch(Actions.enemy_killed("moss_golem", "elite"))
+	Store.dispatch(Actions.enemy_killed("forest_spirit", "basic", "spirit_leaf"))
+	Store.dispatch(Actions.gear_level_bought("sword", 3))
+	Store.dispatch(Actions.gear_level_bought("chest", 1))
+	Store.dispatch(Actions.player_died("elite"))
+	Store.dispatch(Actions.pit_fallen())
+	Store.dispatch(Actions.ingredient_eaten("spirit_leaf", "raw", "box"))
+	Store.dispatch(Actions.course_completed("df_cave_a1", {"type": "ingredient", "id": "spirit_leaf"}))
+	Store.dispatch(Actions.boss_defeated("giant_frog"))
+	Store.dispatch(Actions.level_started("dark_forest", 1, 99))
+	var open: Dictionary = Store.open_batch()
+	expect(is_equal_approx(float(open["play_seconds"]), 60.0), "open batch counts play seconds")
+	expect(is_equal_approx(float(open["gold_earned"]["distance"]), 310.0), "distance gold by source")
+	expect(is_equal_approx(float(open["gold_earned"]["coins"]), 30.0), "coin gold by source")
+	expect(is_equal_approx(float(open["gold_earned"]["basic"]), 25.0) and is_equal_approx(float(open["gold_earned"]["elite"]), 150.0), "kill gold by role")
+	expect(float(open["gold_earned"]["dimensional"]) > 0.0, "dimensional kills are their own source")
+	expect(is_equal_approx(float(open["gold_spent"]), 1.0 + 2.0 + 3.0 + 10.0), "gold spent sums the linear costs (sword 1+2+3, chest 10)")
+	expect(int(open["counts"]["metres"]) == 310 and int(open["counts"]["coins"]) == 5 and int(open["counts"]["kills_basic"]) == 1 and int(open["counts"]["kills_elite"]) == 1 and int(open["counts"]["kills_dimensional"]) == 1 and int(open["counts"]["deaths"]) == 1 and int(open["counts"]["pit_falls"]) == 1, "counts tally every event")
+	expect(open["changes"]["effects_started"].size() == 1 and open["changes"]["effects_started"][0]["ingredient"] == "spirit_leaf", "effects started are listed")
+	Store.dispatch(Actions.checkpoint_reached("level_end"))
+	expect(Store.queued_batches().size() == 1, "checkpoint queues the batch")
+	var batch: Dictionary = Store.queued_batches()[0]
+	expect(int(batch["seq"]) == 1, "first batch is seq 1")
+	expect(batch["changes"]["gear"].get("sword", []) == [0, 3] and batch["changes"]["gear"].get("chest", []) == [0, 1], "gear changes are [from, to] against the baseline")
+	expect(batch["changes"]["unlocks"]["gear_slots"] == ["legs"], "the slot the wallet unlocked is listed (%s)" % str(batch["changes"]["unlocks"]["gear_slots"]))
+	expect(batch["changes"]["unlocks"]["ingredients"] == ["spirit_leaf"], "the ingredient unlock is listed")
+	expect(batch["changes"]["courses_completed"] == ["df_cave_a1"], "the completed course is listed")
+	expect(batch["changes"]["progress"].get("level", []) == [0, 1], "level advance is [from, to]")
+	expect(SyncReducer.is_empty_batch(Store.open_batch()), "a new empty batch is open")
+	expect(int(Store.state["sync"]["baseline"]["gear"]["sword"]) == 3, "baseline moved to the closed state")
+	var text := JSON.stringify(batch)
+	expect(text.length() < 800, "a batch is a few hundred bytes (%d)" % text.length())
+
+	Store.dispatch(Actions.time_advanced(5.0))
+	Store.dispatch(Actions.distance_travelled(20.0))
+	Store.dispatch(Actions.checkpoint_reached("boss_death"))
+	expect(Store.queued_batches().size() == 2 and int(Store.queued_batches()[1]["seq"]) == 2, "second batch is seq 2")
+	var req := SyncReducer.build_request(Store.state, "req-1")
+	expect(req["base_rev"] == 0 and req["batches"].size() == 2 and req["device_id"] == st["meta"]["device_id"] and req["content_version"] == st["meta"]["content_version"], "sync request carries rev, device, content version and every batch in order")
+
+	var gold_before := Store.gold()
+	Store.dispatch(Actions.sync_accepted(1, 1, "2026-10-08T14:03:11Z"))
+	expect(Store.queued_batches().size() == 1 and int(Store.queued_batches()[0]["seq"]) == 2, "accepted drops the batches up to that seq")
+	expect(int(st["sync"]["rev"]) == 1 and st["sync"]["last_sync_at"] == "2026-10-08T14:03:11Z", "accepted records the revision and time")
+	Store.dispatch(Actions.sync_trimmed(2, 2, [{"seq": 2, "gold_removed": 15.0}]))
+	expect(Store.queued_batches().is_empty() and int(st["sync"]["rev"]) == 2, "trimmed drops its batches and moves the revision")
+	expect(is_equal_approx(Store.gold(), gold_before - 15.0), "trimmed takes the excess out of the wallet")
+	Store.dispatch(Actions.sync_trimmed(3, 2, [{"seq": 2, "gold_removed": 1e9}]))
+	expect(is_equal_approx(Store.gold(), 0.0), "a trim never takes the wallet below zero")
+
+	Store.dispatch(Actions.distance_travelled(5.0))
+	Store.dispatch(Actions.checkpoint_reached("x"))
+	var server_copy := InitialState.make()
+	server_copy["wallet"]["gold"] = 777.0
+	Store.dispatch(Actions.sync_rejected(server_copy, 9, "spend"))
+	expect(is_equal_approx(Store.gold(), 777.0) and int(Store.state["sync"]["rev"]) == 9, "rejected replaces the state with the server copy")
+	expect(Store.queued_batches().is_empty() and SyncReducer.is_empty_batch(Store.open_batch()), "rejected clears the queue and the open batch")
+	expect(Store.state["meta"]["device_id"] == st["meta"]["device_id"], "this device keeps its own id after a replace")
+
+	print("== Sync: a long offline spell merges old batches ==")
+	Store.reset()
+	for i in 40:
+		Store.dispatch(Actions.time_advanced(600.0))
+		Store.dispatch(Actions.distance_travelled(10.0))
+		if i % 10 == 0:
+			Store.dispatch(Actions.gear_level_bought("sword"))
+		Store.dispatch(Actions.checkpoint_reached("level_end"))
+	var q: Array = Store.queued_batches()
+	expect(q.size() <= SyncReducer.MERGE_AFTER, "queue stays at or under %d after 40 checkpoints (%d)" % [SyncReducer.MERGE_AFTER, q.size()])
+	var total_play := 0.0
+	var total_metres := 0
+	var last_seq := 0
+	var contiguous := true
+	for b in q:
+		total_play += float(b["play_seconds"])
+		total_metres += int(b["counts"]["metres"])
+		var from := int(b.get("seq_from", b["seq"]))
+		if from != last_seq + 1:
+			contiguous = false
+		last_seq = int(b["seq"])
+		expect(float(b["play_seconds"]) <= SyncReducer.MERGE_BLOCK_S + 0.01, "no merged block is over an hour (%d s)" % int(b["play_seconds"]))
+	expect(is_equal_approx(total_play, 40.0 * 600.0) and total_metres == 400, "merging loses no play time or counts")
+	expect(contiguous and last_seq == 40, "merged batches cover an unbroken sequence up to 40")
+	expect(q[0]["changes"]["gear"]["sword"] == [0, 1], "a merged gear change keeps the first from and last to")
+	Store.reset()
 
 
 func _save_tests() -> void:

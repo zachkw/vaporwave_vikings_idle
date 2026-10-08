@@ -12,12 +12,12 @@ static func make() -> Dictionary:
 	for item in Content.load_json("res://content/gear.json"):
 		gear[item["id"]] = {"unlocked": float(item["bracket"]) <= 0.0, "level": 0}
 	var viking: Dictionary = Content.load_json("res://content/viking.json")
-	return {
+	var state := {
 		"meta": {
 			"save_format": SAVE_FORMAT,
 			"player_id": "",
 			"device_id": "",
-			"content_version": "",
+			"content_version": String(Content.load_json("res://content/meta.json")["content_version"]),
 		},
 		"wallet": {"gold": 0.0, "lifetime_gold": 0.0},
 		"gear": gear,
@@ -43,5 +43,7 @@ static func make() -> Dictionary:
 		},
 		"ascension": {"level": 0, "points_unspent": 0, "talents": {}},
 		"village": {},
-		"sync": {"rev": 0, "baseline": {}, "queued_batches": [], "last_sync_at": ""},
+		"sync": {},
 	}
+	state["sync"] = SyncReducer.fresh_slice(state)
+	return state

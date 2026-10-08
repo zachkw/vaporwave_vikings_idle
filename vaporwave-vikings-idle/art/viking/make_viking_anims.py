@@ -141,25 +141,40 @@ def run_frames(P):
         frames.append(compose([lr, ll, body, ar]) if a < b else compose([ll, lr, body, ar]))
     return frames
 
-def limb(a, b, col, outline=(46,34,47)):
-    """draw a chunky arm from shoulder a to hand b"""
-    l = Image.new('RGBA', (W,H), (0,0,0,0)); d = ImageDraw.Draw(l)
-    d.line([a, b], fill=outline+(255,), width=6)
-    d.ellipse((a[0]-3,a[1]-3,a[0]+3,a[1]+3), fill=outline+(255,))
-    d.line([a, b], fill=col+(255,), width=4)
-    d.ellipse((a[0]-2,a[1]-2,a[0]+2,a[1]+2), fill=col+(255,))
+def limb(a, b, col, outline=(46,34,47), L1=9, L2=10):
+    """two-bone arm shoulder a -> elbow -> hand b, elbow solved so it hangs back/down"""
+    import math
+    ax, ay = a; bx, by = b
+    d = math.hypot(bx-ax, by-ay)
+    if d < 1: d = 1
+    ux, uy = (bx-ax)/d, (by-ay)/d
+    dd = min(d, L1+L2-0.5)
+    p = (L1*L1 - L2*L2 + dd*dd) / (2*dd)
+    h = math.sqrt(max(L1*L1 - p*p, 0))
+    c1 = (ax + ux*p - uy*h, ay + uy*p + ux*h)
+    c2 = (ax + ux*p + uy*h, ay + uy*p - ux*h)
+    e = max((c1, c2), key=lambda c: c[1] - 0.3*c[0])   # elbow hangs down, slightly back
+    e = (max(round(e[0]), ax - 1), round(e[1]))         # never outside the torso line
+    l = Image.new('RGBA', (W,H), (0,0,0,0)); dr = ImageDraw.Draw(l)
+    for w, c in ((6, outline), (4, col)):
+        dr.line([a, e], fill=c+(255,), width=w); dr.line([e, b], fill=c+(255,), width=w-1)
+        r = w//2 - 1
+        for q in (a, e):
+            dr.ellipse((q[0]-r, q[1]-r, q[0]+r, q[1]+r), fill=c+(255,))
     return l
 
 def attack_frames(P):
     import math
     frames = []
-    G0 = (36, 37)                     # gripping hand in the idle pose
-    grip   = [(36,37), (37,31), (38,25), (38,23), (35,30), (38,36), (38,36), (36,37)]
-    angles = [0, 60, 150, 165, 35, -22, -22, -8]
-    leanx  = [0, -1, -2, -2, 2, 3, 3, 1]
-    leany  = [0, 0, -1, -1, 0, 1, 1, 0]
-    legL   = [0, 0, 4, 4, -8, -10, -10, -4]
-    legR   = [0, 0, -4, -4, 10, 14, 14, 6]
+    G0 = (36, 37)
+    #            idle    lift     wind     wind     hold     hold     mid      strike   impact   impact   recov    recov
+    grip   = [(36,37), (38,34), (41,29), (43,26), (43,25), (43,25), (39,27), (35,30), (38,36), (38,36), (37,37), (36,37)]
+    angles = [0,       45,      95,      115,     120,     120,     80,      35,      -22,     -22,     -12,     -5]
+    leanx  = [0,       -1,      -2,      -2,      -2,      -2,      0,       2,       3,       3,       1,       0]
+    leany  = [0,       0,       -1,      -1,      -1,      -1,      0,       0,       1,       1,       0,       0]
+    legL   = [0,       0,       3,       4,       4,       4,       0,       -5,      -6,      -6,      -3,      0]
+    legR   = [0,       0,       -3,      -4,      -4,      -4,      0,       6,       8,       8,       4,       0]
+    arc    = 7
     LH_REF, RH_REF = (17, 37), (36, 36)
     SH_L, SH_R = (12, 27), (39, 27)
     BUTT = (-15, -1)
@@ -173,14 +188,17 @@ def attack_frames(P):
     for i, ang in enumerate(angles):
         dx, dy = leanx[i], leany[i]
         legs = [xf(P['leg_l'], legL[i], (18,46)), xf(P['leg_r'], legR[i], (32,46))]
-        if i == 0:
+        if i == 0 or i == len(angles)-1 and ang == 0:
             frames.append(compose(legs + [P['body'], P['lsleeve'], P['rsleeve'], P['axe'], P['hands']]))
             continue
         G = (grip[i][0]+dx, grip[i][1]+dy)
         body = xf(P['body'], 0, dx=dx, dy=dy)
         axe = xf(P['axe'], ang, G0, G[0]-G0[0], G[1]-G0[1])
         rh = xf(hr, 0, dx=G[0]-RH_REF[0], dy=G[1]-RH_REF[1])
-        bx, by = rot(BUTT, ang); n = math.hypot(bx, by); d = 7
+        # hands spaced like the idle grip when the axe is low; they slide together for the overhead windup
+        t = min(max((abs(ang) - 45) / 75, 0), 1)
+        d = 17*(1-t) + 7*t
+        bx, by = rot(BUTT, ang); n = math.hypot(bx, by)
         tx, ty = round(G[0] + bx/n*d), round(G[1] + by/n*d)
         lh = xf(hl, 0, dx=tx-LH_REF[0], dy=ty-LH_REF[1])
         shl, shr = (SH_L[0]+dx, SH_L[1]+dy), (SH_R[0]+dx, SH_R[1]+dy)
@@ -188,10 +206,10 @@ def attack_frames(P):
         far_behind = ang > 90
         order = legs + ([larm, lh, body, axe, rarm, rh] if far_behind else [body, larm, axe, lh, rarm, rh])
         f = compose(order)
-        if i == 4:
+        if i == arc:
             ov = Image.new('RGBA', (W,H), (0,0,0,0)); R = 26
-            ImageDraw.Draw(ov).arc((G[0]-R, G[1]-R, G[0]+R, G[1]+R), 215, 350, fill=(210,220,245,120), width=2)
-            ImageDraw.Draw(ov).arc((G[0]-R+3, G[1]-R+3, G[0]+R-3, G[1]+R-3), 230, 345, fill=(210,220,245,60), width=1)
+            ImageDraw.Draw(ov).arc((G[0]-R, G[1]-R, G[0]+R, G[1]+R), 230, 350, fill=(210,220,245,120), width=2)
+            ImageDraw.Draw(ov).arc((G[0]-R+3, G[1]-R+3, G[0]+R-3, G[1]+R-3), 245, 345, fill=(210,220,245,60), width=1)
             fp, op = f.load(), ov.load()
             for y in range(H):
                 for x in range(W):
@@ -232,7 +250,7 @@ if __name__ == '__main__':
     open(f'{OUT}/viking_main_run.piskel', 'w').write(piskel('viking_main_run', run, 12))
     open(f'{OUT}/viking_main_attack.piskel', 'w').write(piskel('viking_main_attack', atk, 12))
     preview(run, f'{OUT}/preview_run.gif', 12)
-    preview(atk, f'{OUT}/preview_attack.gif', 10)
+    preview(atk, f'{OUT}/preview_attack.gif', 12)
     # contact sheets for inspection
     for nm, fr in (('run', run), ('attack', atk)):
         sheet(fr).resize((W*len(fr)*4, H*4), Image.NEAREST).save(f'{OUT}/_contact_{nm}.png')

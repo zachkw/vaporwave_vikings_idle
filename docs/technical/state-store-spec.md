@@ -157,7 +157,7 @@ A checkpoint saves and closes off a sync batch. These trigger one:
 - A boss fight ends, win or lose
 - The level or biome changes, including portals and World+
 - An assault course ends
-- A burst of purchases finishes (a few seconds after the last tap)
+- A burst of purchases finishes (3 seconds after the last tap; a one-shot timer in the Store)
 - An ascension or a talent purchase
 - 60 seconds of play since the last checkpoint
 - The app goes to the background or closes
@@ -182,6 +182,8 @@ Between two checkpoints the store builds a **batch**: the difference, not the st
 ```
 
 A batch is a few hundred bytes. A sync request carries the server revision it builds on plus every queued batch in order.
+
+Built 9 Oct as `state/reducers/sync_reducer.gd`. The wallet reducer notes every gold gain by source (`distance`, `coins`, `basic`, `elite`, `boss`, `dimensional`, `course`) and every spend into the open batch; the sync reducer counts events and, on `CHECKPOINT_REACHED`, diffs gear levels, unlocked slots, ingredients, courses and the level against the baseline snapshot, then queues the batch with the next `seq`. An empty checkpoint (nothing happened) queues nothing. Once the queue holds more than 24 batches the oldest are merged into blocks of up to an hour of play; a merged batch keeps the last member's `seq` and adds `seq_from`, so the server still sees an unbroken sequence. `SyncReducer.build_request(state, request_id)` produces the `POST /sync` body. In debug builds every closed batch is printed to the console as `[batch] <reason> {...}`.
 
 ### When it sends
 

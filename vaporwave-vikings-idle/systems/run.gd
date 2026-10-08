@@ -56,6 +56,7 @@ var _toast_left := 0.0
 
 func _ready() -> void:
 	process_physics_priority = 1
+	Store.log_batches = OS.is_debug_build()
 	var physics: Dictionary = Content.load_json("res://content/viking.json")["physics"]
 	block_px = float(physics["block_px"])
 	level_length_blocks = int(Content.load_json("res://content/economy.json")["level_length_m"])

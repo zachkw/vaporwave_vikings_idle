@@ -24,6 +24,9 @@ const GEAR_LEVEL_BOUGHT := "GEAR_LEVEL_BOUGHT"
 # System
 const STATE_LOADED := "STATE_LOADED"
 const CHECKPOINT_REACHED := "CHECKPOINT_REACHED"
+const SYNC_ACCEPTED := "SYNC_ACCEPTED"
+const SYNC_TRIMMED := "SYNC_TRIMMED"
+const SYNC_REJECTED := "SYNC_REJECTED"
 
 
 static func time_advanced(seconds: float) -> Dictionary:
@@ -92,3 +95,17 @@ static func state_loaded(state: Dictionary) -> Dictionary:
 
 static func checkpoint_reached(reason: String) -> Dictionary:
 	return {"type": CHECKPOINT_REACHED, "reason": reason}
+
+
+static func sync_accepted(rev: int, up_to_seq: int, server_time: String = "") -> Dictionary:
+	return {"type": SYNC_ACCEPTED, "rev": rev, "up_to_seq": up_to_seq, "server_time": server_time}
+
+
+## trims: [{ "seq": int, "gold_removed": float }]
+static func sync_trimmed(rev: int, up_to_seq: int, trims: Array, server_time: String = "") -> Dictionary:
+	return {"type": SYNC_TRIMMED, "rev": rev, "up_to_seq": up_to_seq, "trims": trims, "server_time": server_time}
+
+
+## The server's copy replaces the device state (after migration, like a load).
+static func sync_rejected(server_state: Dictionary, rev: int, code: String = "") -> Dictionary:
+	return {"type": SYNC_REJECTED, "state": server_state, "rev": rev, "code": code}
