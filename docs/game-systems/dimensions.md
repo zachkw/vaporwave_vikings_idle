@@ -4,7 +4,7 @@ Purpose: ingredient boxes, eating ingredients, running dimension effects, and th
 
 ## Rules
 
-- **Unlock first.** An ingredient only appears in boxes once it is unlocked, by clearing the course that holds it.
+- **Unlock first.** An ingredient only appears in boxes once it is unlocked, by clearing the course that holds it. The first build's ingredient is the spirit leaf (decided 8 Oct).
 - **Boxes.** Box slots in segments are filled by the level builder's box pass with unlocked ingredients found in the biome. The Viking knocks a box from below (a jump under it, or auto-collect if he runs through its trigger) and eats the ingredient at once.
 - **Effect.** Eating starts that ingredient's dimension:
   - its colour shift fades in over 1 s,

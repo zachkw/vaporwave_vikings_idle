@@ -8,7 +8,7 @@ Purpose: define every enemy as data, decide what spawns where, and run the basic
 
 | Role | Behaviour |
 | --- | --- |
-| Basic | Comes in packs on ground slots, or alone in air slots if it flies. Touching the Viking deals its attack once per attack interval. Usually dies to one sword hit. |
+| Basic | Comes in packs on ground slots, or alone in air slots if it flies. Touching the Viking deals chip damage once per attack interval but can never kill him. Usually dies to one sword hit. |
 | Elite | Stands in an elite arena. When the Viking reaches it, he stops and both fight until one dies. |
 | Boss | Stands in the boss arena at the end of the level. Same stop-and-fight rule, plus a signature move. |
 | Dimensional | Any role, from an active dimension. Spawned into free slots while its ingredient is active. |
@@ -71,4 +71,4 @@ Reads: `enemy_pool(biome)`, `damage`, `max_health`, `defence` (for the signature
 
 ## Open
 
-C1 what damages the Viking during the normal run (contact only, or attacks too). C5 the instant-kill threshold and a warning. W3 other biomes' enemies.
+C5 the instant-kill threshold and a warning. W3 other biomes' enemies.

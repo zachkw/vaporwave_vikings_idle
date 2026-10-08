@@ -7,8 +7,9 @@ The first playable build is one biome, Dark Forest, with a light backend. Its jo
 | Area | In the first build |
 | --- | --- |
 | Biome | Dark Forest: dark grass, moss stone, water, stumps, tree bridges; night moonlight, dense trees |
-| Enemies | Vine plants (basic), moss golem (elite, stops the Viking), giant frog (boss, tongue-grab instant kill when far too weak) |
-| Dimension | One ingredient, spirit leaf or evil mushroom (T2), eaten from surface boxes, with its colour shift and its enemies |
+| Enemies | Vine plants (basic, chip damage only, cannot kill), moss golem (elite, stops the Viking, can kill), giant frog (boss, tongue-grab instant kill when far too weak) |
+| Start | 0 gold; coins along the floor from the first screen so the 1-gold Sword is bought within seconds |
+| Dimension | Spirit leaf, eaten from surface boxes, with its colour shift and forest spirits |
 | Course | One hand-made assault course (sky or cave), one fall fails, unlocks the ingredient |
 | Gear | The ten warrior pieces, Sword to Cloak, unlocking by gold held; Legs grant sprint |
 | Controls | Auto-run, tap to jump, auto-jump at pit edges, sprint button |
@@ -45,4 +46,4 @@ A player can start fresh, run through Dark Forest, buy gear, unlock and use spri
 
 ## Open
 
-T2 which ingredient, E2 starting balance. Numbers for the build live in [content data](../game-systems/content-data.md).
+E2 balance of sources. Numbers for the build live in [content data](../game-systems/content-data.md).

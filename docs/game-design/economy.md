@@ -44,6 +44,10 @@ To show the method only; the rates are not decisions (E2).
 
 That totals 10 gold per metre, or 50 gold per second at 5 metres per second.
 
+## Start of the game
+
+A new game starts with 0 gold. Coins are served along the floor from the first screen, so the player can buy the 1-gold Sword within seconds and feel the loop at once (decided 8 Oct).
+
 ## Scale
 
 - Numbers should climb from a few gold to scientific notation. Early upgrades arrive fast; later ones spread out.

@@ -107,6 +107,10 @@ Last updated 8 October 2026 (second pass).
 - **Proof segments:** prove the level builder with five 48-block segments, all entering and exiting on row 2: flat, one pit, one floating platform, two platforms, two pits. Claude picked the sizes (3-block pits, 6-block platforms at row 5). See [Proof segments](production/proof-segments.md).
 - **Backgrounds** are parallax: several layers scrolling at different speeds. See [Backgrounds and parallax](game-systems/backgrounds.md).
 - **Opening gear costs** scale slot by slot for the early game: Sword 1 gold, Chest 10, Helmet 100, Legs 250 at level 1, each rising linearly. Placeholder values, in `content/gear.json`.
+- **First ingredient is the spirit leaf** (forest spirits). Was T2.
+- **Only elites and bosses can kill the Viking.** Basic enemies (minions) never kill him. Was C1.
+- **Dying to an elite** plays the death sequence and resets the level the way a pit fall does: the Viking drops back in and the boss is a full level away again. Claude's reading of "reset the death and do the death sequence"; confirm. Was C7.
+- **Start at 0 gold.** A new game begins with no gold and coins served along the floor from the first screen, so the player can buy the 1-gold Sword within seconds. (Asked as E2; the split between distance, coins and kills stays a tuning item.)
 - **Core gear grants gold per metre plus one effect.** Every core piece adds gold per metre (the passive income, like Idle Slayer's coins per second). On top of that each piece has its own single effect: Sword damage, Chest defence, Helmet health, Legs sprint. No "+2% enemy gold" style boosts on the opening pieces. This replaces the earlier combat stat plus gold boost pairing.
 - **UI layout** follows the idle-runner standard (Slayer Legend as the reference). Portrait: the game in the top half, an always-open menu panel in the bottom half. Landscape: the game fills the screen and a button opens the same panel as a drawer from the right, overlaid on the game without changing the view. Bottom nav: Gear, Artefacts, Unlocks (with achievements), Ascension, Village, Shop. Abilities such as sprint are buttons on the game view in both orientations; the wand is never a button, it is a tap in mid-air. See [HUD and menus](game-systems/hud-and-menus.md).
 - Surface segments do not all start and end at the same height, so the level builder chains them by their seam rows with an algorithm; enemy spawning is part of that algorithm. See [Level builder](game-systems/level-builder.md).
@@ -120,7 +124,7 @@ Last updated 8 October 2026 (second pass).
 
 ## Open questions
 
-Each has a number so it can be referred to; numbers are never reused. Proposed defaults, where there is one, are in brackets. Resolved: G1, T1, T3, C6 (8 Oct).
+Each has a number so it can be referred to; numbers are never reused. Proposed defaults, where there is one, are in brackets. Resolved: G1, T1, T3, C6, C1, C7, T2 (8 Oct).
 
 ### Gear
 
@@ -141,12 +145,10 @@ Each has a number so it can be referred to; numbers are never reused. Proposed d
 
 ### Combat and death
 
-- C1. What kills the Viking on the surface: contact damage, elite fights, both?
 - C2. Does death clear timed pickups?
 - C3. Can coins crit? Is the crit-chance dampener accepted?
 - C4. Do double jump and jump dash (June) still exist?
 - C5. How weak is "very weak" for the boss's instant kill, and is there a warning?
-- C7. Does a death to an ordinary enemy also extend the level, like a pit fall? [No: only pits and the boss cost progress]
 
 ### Ingredients and dimensions
 
@@ -188,7 +190,7 @@ Each has a number so it can be referred to; numbers are never reused. Proposed d
 ### Economy
 
 - E1. Top gold number at launch (the draft gear ladder implies about 10^31, or 10^46 with sets).
-- E2. Starting split between distance, coins and enemy gold.
+- E2. Balance of distance, coins and enemy gold once the game is running (the start is decided: 0 gold, coins on the floor).
 - E3. Away-gold rates (June proposed 50, 25, 10, 5 and 1 percent).
 
 ### Level building
@@ -198,7 +200,7 @@ Each has a number so it can be referred to; numbers are never reused. Proposed d
 
 ### Build and tech
 
-- T2. Which ingredient goes in the first build: spirit leaf (forest spirits) or evil mushroom (demon trolls)? [Spirit leaf] The first build has no Village or ascension.
+- T2b. The first build has no Village or ascension (confirmed by omission; flag if wrong).
 - T4. When two devices disagree, who wins? [Ask the player which save to keep]
 - T5. If trimmed gold was already spent? [Wallet stops at zero, purchases stay]
 - T6. Margin on the server's gold bound? [2 times the expected rate]

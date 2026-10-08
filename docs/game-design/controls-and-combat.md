@@ -47,9 +47,10 @@ Enemy roles are separate from which dimension an enemy belongs to. A dimensional
 - Sometimes there are coins or enemies in the air to hit on the way down.
 - Falling into a pit counts as a death that costs progress. The Viking drops back in just past the pit and runs on, but the level is extended so the boss is a full level's length away again, as if he had restarted. No visible restart; gold and gear are kept.
 - Dying to the boss builds a brand-new level (new layout, same biome and level number) and the Viking starts at its beginning.
-- Open (C7): does an ordinary enemy death also extend the level? Proposed: no.
 - Because auto-jump stops an idle Viking from falling in, only a player who jumps early lands in a pit. Doing it on purpose buys more run before the boss: more farming, more chances at boxes and courses.
-- Open: what exactly kills him on the surface (C1), and whether death clears timed pickups (C2). Death probably does not end dimension effects (tentative).
+- Only elites and bosses can kill him. Basic enemies deal chip damage at most; they never finish him (decided 8 Oct).
+- Dying to an elite plays the death sequence, then he drops back in and the level is extended as after a pit fall (Claude's reading, to confirm).
+- Open: whether death clears timed pickups (C2). Death probably does not end dimension effects (tentative).
 
 ## Bosses
 

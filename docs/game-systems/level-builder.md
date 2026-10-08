@@ -178,7 +178,7 @@ Losing to the boss throws the whole level away and runs every pass again with a 
 
 - The level seed is derived from the save: `hash(player_id, world_level, biome, level_index, visit_counter)`. The visit counter rises each time the level is rebuilt after a boss death.
 - Extensions use `hash(level_seed, extension_counter)`.
-- An ordinary death does not rebuild or extend the level; the run continues from the drop-in point (C7 asks whether it should extend).
+- Basic enemies cannot kill the Viking. A death to an elite extends the level like a pit fall (Claude's reading).
 - All random numbers in the builder and spawner come from explicit `RandomNumberGenerator` objects seeded this way, never the global generator, so a level can be rebuilt exactly for debugging.
 
 ## Library linter and coverage tests
@@ -245,4 +245,3 @@ About 33 segments, many of them able to fill two roles. A 1,500 m level uses rou
 
 - L3. Seam tolerance: up 1, down 3 (proposed), or exact match only?
 - L5. How often is a course due, and how is it chosen (tier and biome rules are in [Courses and unlocks](../game-design/courses-and-unlocks.md))?
-- C7. Does an ordinary enemy death also extend the level? [No]

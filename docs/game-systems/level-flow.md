@@ -10,7 +10,7 @@ A surface level lasts about 5 minutes (decided 8 Oct).
 2. **Run.** Segments stream in; enemies, coins and boxes fill as they come.
 3. **Boss.** At the `boss_arena` the boss fight runs (see [Enemies and spawning](enemies-and-spawning.md)).
 4. **Win.** `BOSS_DEFEATED`. The Viking runs off the right edge, the next level starts. Checkpoint.
-5. **Die during the run.** `PLAYER_DIED`. The Viking drops back in about a block ahead and the level carries on.
+5. **Die to an elite.** `PLAYER_DIED`. Death sequence, drop-in, and the level is extended like a pit fall (Claude's reading). Basic enemies cannot kill him.
 6. **Fall into a pit.** `PIT_FALLEN`. The Viking drops back in just past the pit; the level builder extends the level so the boss is a full level's length away again (see Extension in [Level builder](level-builder.md)).
 7. **Die to the boss.** `PLAYER_DIED` with cause `boss`. The level builder builds a brand-new level for the same biome and level number with a new seed, and the Viking starts at its beginning. Checkpoint.
 8. **Biome end.** After the last level of a biome, the next biome in play order starts and the biome's badge is earned.
