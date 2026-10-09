@@ -22,6 +22,7 @@ Purpose: let the player buy gear levels with gold, unlock new slots as gold grow
 | Buy button (right) | Next cost; green when `can_afford`, red when not; disabled when red |
 
 - Rows update instantly after any purchase or gold change.
+- A buy-amount selector in the panel header: **x1, x10, x100, Max**. It applies to every row; a row's button shows the total price for that many levels (the linear sum, `Selectors.level_cost_sum`) and goes red when the wallet cannot cover the whole batch, so a bulk tap never buys a partial amount. Max shows how many levels fit right now (`Selectors.max_affordable_levels`, a binary search on the closed-form cost); when nothing fits it shows the next level's price in red. Built 9 Oct.
 - Below the last unlocked row, one locked row shows the next slot's name and its bracket ("Unlocks at 10K gold held").
 - Numbers use short notation (1.2K, 3.4M, then scientific). Affordability always compares full values.
 

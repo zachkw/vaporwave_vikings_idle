@@ -123,6 +123,23 @@ static func expected_gold_per_second(state: Dictionary, biome_id: String = "") -
 	return per_metre * float(economy["run_speed_mps"]) * run_speed_mult(state)
 
 
+## How many levels of a slot the wallet can buy right now (0 if locked or broke).
+static func max_affordable_levels(state: Dictionary, slot: String, cap: int = 1000000) -> int:
+	if not is_unlocked(state, slot):
+		return 0
+	var gold := float(state["wallet"]["gold"])
+	var level := gear_level(state, slot)
+	var lo := 0
+	var hi := cap
+	while lo < hi:
+		var mid := (lo + hi + 1) / 2
+		if level_cost_sum(slot, level, mid) <= gold:
+			lo = mid
+		else:
+			hi = mid - 1
+	return lo
+
+
 ## Linear cost: base + step x level. See docs/game-systems/gear-shop.md.
 static func next_level_cost(state: Dictionary, slot: String) -> float:
 	var item := gear_item(slot)
