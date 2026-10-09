@@ -1,5 +1,5 @@
 {
-  "content_version": "2026-10-08.1",
+  "content_version": "2026-10-09.1",
   "level_costs": [
     {
       "cost": 1.0,
@@ -50,13 +50,13 @@
       "slot": "gloves"
     },
     {
-      "cost": 50000000000.0,
+      "cost": 30000000.0,
       "count": 1,
       "from_level": 0,
       "slot": "cloak"
     },
     {
-      "cost": 2525000000000.0,
+      "cost": 1515000000.0,
       "count": 1,
       "from_level": 99,
       "slot": "cloak"
@@ -175,7 +175,7 @@
         "vine_plant": 75.0
       },
       "expected_gold_per_second": {
-        "dark_forest": 25765745107.5
+        "dark_forest": 41845107.5
       },
       "gear": {
         "belt": 30,
@@ -189,7 +189,7 @@
         "shoulders": 100,
         "sword": 500
       },
-      "gold_per_metre": 2576574501.0,
+      "gold_per_metre": 4184501.0,
       "name": "late game",
       "run_speed_mult": 2.0
     }

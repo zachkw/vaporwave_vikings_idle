@@ -70,20 +70,20 @@ Purpose: every number the game uses lives in JSON under `vaporwave-vikings-idle/
 
 ### `gear.json` (first ten slots)
 
-Decided 8 Oct: every core piece adds gold per metre plus one extra effect. Opening costs scale slot by slot (Sword 1, Chest 10, Helmet 100, Legs 250); from Boots on, `base_cost = bracket / 2`. `step = base_cost / 2` everywhere, so a slot's level cost rises linearly. Gold per metre per level is about a tenth of the level 1 cost in the early slots, so a level pays for itself in roughly ten metres.
+Decided 8 Oct: every core piece adds gold per metre plus one extra effect. Decided 9 Oct: opening costs follow Idle Slayer's widening gaps (Sword 1, Chest 10, Helmet 100, Legs 250, then 4x, 5x, 6x, 8x, 10x, 12x); from Legs on, `bracket = base_cost / 2` so a slot shows a little before it is affordable. `step = base_cost / 2` everywhere, so a slot's level cost rises linearly. Gold per metre per level pays a level back in 5 metres for the Sword, stretching to about 100 metres for the Cloak.
 
-| Slot | Bracket (gold held) | Level 1 cost | Step | Gold per metre per level | Extra effect per level |
-| --- | --- | --- | --- | --- | --- |
-| Sword | 0 | 1 | 1 | 0.2 | +2 damage |
-| Chest | 0 | 10 | 5 | 1 | +1 defence |
-| Helmet | 0 | 100 | 50 | 5 | +10 health |
-| Legs | 100 | 250 | 125 | 10 | Level 1 grants sprint |
-| Boots | 1,000 | 1,000 | 500 | 25 | +0.5% run speed |
-| Gloves | 10,000 | 5,000 | 2,500 | 100 | +2 crit rating |
-| Shoulders | 10^5 | 5 x 10^4 | 2.5 x 10^4 | 500 | +2% basic enemy gold |
-| Bracers | 10^7 | 5 x 10^6 | 2.5 x 10^6 | 2.5 x 10^4 | +2% coin gold |
-| Belt | 10^9 | 5 x 10^8 | 2.5 x 10^8 | 2.5 x 10^6 | +2% elite gold |
-| Cloak | 10^11 | 5 x 10^10 | 2.5 x 10^10 | 2.5 x 10^8 | +2% dimensional enemy gold |
+| Slot | Bracket (gold held) | Level 1 cost | Step | Gold per metre per level | Pays back in | Extra effect per level |
+| --- | --- | --- | --- | --- | --- | --- |
+| Sword | 0 | 1 | 1 | 0.2 | 5 m | +2 damage |
+| Chest | 0 | 10 | 5 | 1 | 10 m | +1 defence |
+| Helmet | 0 | 100 | 50 | 5 | 20 m | +10 health |
+| Legs | 100 | 250 | 125 | 10 | 25 m | Level 1 grants sprint |
+| Boots | 500 | 1,000 | 500 | 25 | 40 m | +0.5% run speed |
+| Gloves | 2,500 | 5,000 | 2,500 | 100 | 50 m | +2 crit rating |
+| Shoulders | 15K | 30K | 15K | 500 | 60 m | +2% basic enemy gold |
+| Bracers | 125K | 250K | 125K | 3,500 | 71 m | +2% coin gold |
+| Belt | 1.25M | 2.5M | 1.25M | 30K | 83 m | +2% elite gold |
+| Cloak | 15M | 30M | 15M | 300K | 100 m | +2% dimensional enemy gold |
 
 All placeholders until the economy simulation. Each entry carries `name`, `per_level` (with a `gold_per_metre` key and the extra effect) and an `effect` string for the shop row. The file is `vaporwave-vikings-idle/content/gear.json`.
 

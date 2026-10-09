@@ -88,3 +88,7 @@ While the app is closed the Viking earns gold only, at a reduced rate. Bosses, u
 ## Open
 
 - E1 top gold number, E2 starting split, E3 away rates, P3 how same-source boosts stack, P5 gem coins (sapphire 2g, ruby 3g, emerald 4g in June).
+
+## The gear ladder
+
+Decided 9 Oct, after looking at Idle Slayer's first ten pieces. There the opening prices run 6, 50, 750, 16K, 120K, 1.2M, 14M, 580M, 5.4B, 330B: each piece costs roughly 8 to 20 times the one before, and the gaps keep widening right up to the eighteenth piece at 5 x 10^61. The coins-per-second each piece gives per level climbs on the same curve (0.1, 1, 8, 47, 500, 4K, 35K...), so the newest piece is always the best buy and the older ones fade into "buy a few more levels while waiting". Our old draft jumped 100x between pieces 7, 8, 9 and 10 (100K to 10M to 1B), which felt like a wall; the new ladder keeps Zach's opening prices (Sword 1, Chest 10, Helmet 100, Legs 250) and then widens gently, 4x, 5x, 6x, 8x, 10x, 12x, and on to 2,000x by the last set piece. Slots are revealed at half their level 1 cost. Numbers from Boots on are placeholders until the economy simulation (E1, E2).

@@ -467,7 +467,7 @@ func _sync_tests() -> void:
 	var batch: Dictionary = Store.queued_batches()[0]
 	expect(int(batch["seq"]) == 1, "first batch is seq 1")
 	expect(batch["changes"]["gear"].get("sword", []) == [0, 3] and batch["changes"]["gear"].get("chest", []) == [0, 1], "gear changes are [from, to] against the baseline")
-	expect(batch["changes"]["unlocks"]["gear_slots"] == ["legs"], "the slot the wallet unlocked is listed (%s)" % str(batch["changes"]["unlocks"]["gear_slots"]))
+	expect(batch["changes"]["unlocks"]["gear_slots"] == ["legs", "boots"], "the slots the wallet unlocked are listed (%s)" % str(batch["changes"]["unlocks"]["gear_slots"]))
 	expect(batch["changes"]["unlocks"]["ingredients"] == ["spirit_leaf"], "the ingredient unlock is listed")
 	expect(batch["changes"]["courses_completed"] == ["df_cave_a1"], "the completed course is listed")
 	expect(batch["changes"]["progress"].get("level", []) == [0, 1], "level advance is [from, to]")

@@ -125,6 +125,10 @@ Last updated 8 October 2026 (second pass).
 - Gear levels cost a linear amount more each level, as October said. Not June's 1.15x. (Was G1.)
 - The surface is built from small hand-made segments chained together. Assault courses are whole hand-made levels. (Was T1.)
 
+### Gear ladder (9 Oct)
+
+- **Opening costs widen like Idle Slayer's.** Sword 1, Chest 10, Helmet 100, Legs 250, then Boots 1K, Gloves 5K, Shoulders 30K, Bracers 250K, Belt 2.5M, Cloak 30M: gaps of 4x, 5x, 6x, 8x, 10x, 12x, growing to 2,000x by the last set piece. The old 100x jumps between slots 7 to 10 were a wall. A slot is revealed when the wallet holds half its level 1 cost. See [Economy](game-design/economy.md#the-gear-ladder).
+
 ## Open questions
 
 Each has a number so it can be referred to; numbers are never reused. Proposed defaults, where there is one, are in brackets. Resolved: G1, T1, T3, C6, C1, C7, T2 (8 Oct).
