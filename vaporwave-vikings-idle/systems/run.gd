@@ -7,8 +7,9 @@ const STREAM_AHEAD_PX := 2400.0
 const STREAM_BEHIND_PX := 1200.0
 const SEGMENT_HEIGHT_BLOCKS := 15.0
 ## The Viking sits at the far left of the game view, one Viking width from the
-## edge, so the player sees as much ground ahead as possible.
-const VIKING_WIDTH_PX := 24.0
+## edge, so the player sees as much ground ahead as possible. The sprite is
+## about 56 px wide, centred on the body.
+const VIKING_WIDTH_PX := 56.0
 const COURSE_Y_OFFSET := 6000.0
 
 @export var base_seed := 12345

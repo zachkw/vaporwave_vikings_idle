@@ -344,8 +344,8 @@ func _layout_tests(run: Node) -> void:
 	expect(is_equal_approx(cam.zoom.y, 480.0 / 480.0), "camera fits 15 blocks to 480 px (zoom %.3f)" % cam.zoom.y)
 	await get_tree().physics_frame
 	await get_tree().physics_frame  # the camera follows in _physics_process; let one full step run
-	var viking_left_screen_x: float = (run.viking.global_position.x - 12.0 - cam.global_position.x) * cam.zoom.x + land.x * 0.5
-	expect(absf(viking_left_screen_x - 24.0) < 2.0, "Viking's left edge sits one Viking width from the screen edge (%.0f px)" % viking_left_screen_x)
+	var viking_left_screen_x: float = (run.viking.global_position.x - 28.0 - cam.global_position.x) * cam.zoom.x + land.x * 0.5
+	expect(absf(viking_left_screen_x - 56.0) < 2.0, "Viking sprite's left edge sits one Viking width from the screen edge (%.0f px)" % viking_left_screen_x)
 	layout.open_drawer()
 	for i in 20:
 		await get_tree().process_frame

@@ -37,7 +37,7 @@ var _fall_kill_y := INF
 
 @onready var _probe: RayCast2D = $GapProbe
 @onready var _attack_area: Area2D = $AttackArea
-@onready var _visual: ColorRect = $Visual
+@onready var _visual: AnimatedSprite2D = $Visual
 
 
 func _ready() -> void:
@@ -131,10 +131,21 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	_swing(delta)
+	_animate()
 
 	if not _fallen and global_position.y > _fall_kill_y:
 		_fallen = true
 		pit_fallen.emit(global_position.x)
+
+
+## Run while moving on the ground, idle when held or in the air; the attack
+## swing plays over the top at the attack rate and hands back when done.
+func _animate() -> void:
+	if _visual.animation == &"attack" and _visual.is_playing():
+		return
+	var wanted := &"run" if is_on_floor() and velocity.x > 0.0 else &"idle"
+	if _visual.animation != wanted or not _visual.is_playing():
+		_visual.play(wanted)
 
 
 ## Automatic sword: hits the nearest enemy in the attack area on a timer.
@@ -154,8 +165,8 @@ func _swing(delta: float) -> void:
 		return
 	_attack_timer = 1.0 / attacks_per_second
 	target.take_hit(Store.damage())
-	_visual.modulate = Color(1.4, 1.4, 1.4)
-	get_tree().create_timer(0.08).timeout.connect(func() -> void: _visual.modulate = Color.WHITE)
+	# One full swing per attack: 12 frames at 12 fps scaled to the attack rate.
+	_visual.play(&"attack", attacks_per_second)
 
 
 func _jump() -> void:
@@ -174,6 +185,7 @@ func drop_in(world_x: float, top_y: float) -> void:
 	blocker = null
 	_visual.modulate = Color.WHITE
 	_visual.rotation = 0.0
+	_visual.play(&"idle")
 
 
 func _on_store_changed(action: Dictionary) -> void:

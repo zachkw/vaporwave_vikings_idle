@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://systems/viking.gd" id="1_viking"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/viking/viking_frames.tres" id="2_frames"]
 
 [sub_resource type="RectangleShape2D" id="body"]
 size = Vector2(24, 60)
@@ -17,20 +18,11 @@ script = ExtResource("1_viking")
 position = Vector2(0, -30)
 shape = SubResource("body")
 
-[node name="Visual" type="ColorRect" parent="."]
-offset_left = -12.0
-offset_top = -60.0
-offset_right = 12.0
-mouse_filter = 2
-color = Color(1, 0.62, 0.2, 1)
-
-[node name="Helmet" type="ColorRect" parent="."]
-offset_left = -12.0
-offset_top = -64.0
-offset_right = 12.0
-offset_bottom = -52.0
-mouse_filter = 2
-color = Color(0.85, 0.85, 0.95, 1)
+[node name="Visual" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -32)
+sprite_frames = ExtResource("2_frames")
+animation = &"run"
+autoplay = "run"
 
 [node name="GapProbe" type="RayCast2D" parent="."]
 position = Vector2(20, -2)
