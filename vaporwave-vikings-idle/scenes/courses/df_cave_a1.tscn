@@ -48,7 +48,7 @@ shape = SubResource("floor_0")
 offset_left = -192.0
 offset_top = -32.0
 offset_right = 192.0
-offset_bottom = 32.0
+offset_bottom = 160.0
 mouse_filter = 2
 color = Color(0.3, 0.22, 0.4, 1)
 
@@ -62,7 +62,7 @@ shape = SubResource("floor_1")
 offset_left = -112.0
 offset_top = -32.0
 offset_right = 112.0
-offset_bottom = 32.0
+offset_bottom = 160.0
 mouse_filter = 2
 color = Color(0.3, 0.22, 0.4, 1)
 
@@ -76,7 +76,7 @@ shape = SubResource("floor_2")
 offset_left = -112.0
 offset_top = -32.0
 offset_right = 112.0
-offset_bottom = 32.0
+offset_bottom = 160.0
 mouse_filter = 2
 color = Color(0.3, 0.22, 0.4, 1)
 
@@ -90,7 +90,7 @@ shape = SubResource("floor_3")
 offset_left = -208.0
 offset_top = -32.0
 offset_right = 208.0
-offset_bottom = 32.0
+offset_bottom = 160.0
 mouse_filter = 2
 color = Color(0.3, 0.22, 0.4, 1)
 

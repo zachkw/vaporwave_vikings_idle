@@ -346,6 +346,9 @@ func _layout_tests(run: Node) -> void:
 	await get_tree().physics_frame  # the camera follows in _physics_process; let one full step run
 	var viking_left_screen_x: float = (run.viking.global_position.x - 28.0 - cam.global_position.x) * cam.zoom.x + land.x * 0.5
 	expect(absf(viking_left_screen_x - 56.0) < 2.0, "Viking sprite's left edge sits one Viking width from the screen edge (%.0f px)" % viking_left_screen_x)
+	var ground_screen_y: float = (-2.0 * 32.0 - cam.global_position.y) * cam.zoom.y + land.y * 0.5
+	expect(is_equal_approx(ground_screen_y, 368.0), "ground appears 48 px higher in the 480 px game view (%.0f px)" % ground_screen_y)
+	expect(run.get_node("HUD/MenuButton").position == Vector2(840.0, 424.0), "Menu button keeps its screen position")
 	layout.open_drawer()
 	for i in 20:
 		await get_tree().process_frame

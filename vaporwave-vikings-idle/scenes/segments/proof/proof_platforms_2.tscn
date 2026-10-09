@@ -36,7 +36,7 @@ shape = SubResource("ground_0")
 offset_left = -768.0
 offset_top = -32.0
 offset_right = 768.0
-offset_bottom = 32.0
+offset_bottom = 160.0
 mouse_filter = 2
 color = Color(0.18, 0.55, 0.45, 1)
 

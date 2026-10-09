@@ -6,6 +6,8 @@ extends Node2D
 const STREAM_AHEAD_PX := 2400.0
 const STREAM_BEHIND_PX := 1200.0
 const SEGMENT_HEIGHT_BLOCKS := 15.0
+## Keep the world 48 screen pixels higher while the CanvasLayer UI stays fixed.
+const WORLD_RAISE_PX := 48.0
 ## The Viking sits at the far left of the game view, one Viking width from the
 ## edge, so the player sees as much ground ahead as possible. The sprite is
 ## about 56 px wide, centred on the body.
@@ -93,7 +95,7 @@ func _on_game_rect_changed(rect: Rect2) -> void:
 
 func _physics_process(delta: float) -> void:
 	var half_view_world := layout.view_size().x * 0.5 / camera.zoom.x
-	var cam_y := -SEGMENT_HEIGHT_BLOCKS * 0.5 * block_px + (COURSE_Y_OFFSET if course_node != null else 0.0)
+	var cam_y := -SEGMENT_HEIGHT_BLOCKS * 0.5 * block_px + WORLD_RAISE_PX / camera.zoom.y + (COURSE_Y_OFFSET if course_node != null else 0.0)
 	camera.global_position = Vector2(viking.global_position.x + half_view_world - 1.5 * VIKING_WIDTH_PX, cam_y)
 	Store.dispatch(Actions.time_advanced(delta))
 	if course_node != null:
