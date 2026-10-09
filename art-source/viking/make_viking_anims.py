@@ -2,9 +2,17 @@ import json, base64, io, os, sys
 from PIL import Image, ImageDraw
 from collections import Counter
 
-SRC = sys.argv[1] if len(sys.argv) > 1 else '/mnt/user-data/uploads/Vaporwave Vikings Idle/vaporwave-vikings-idle/viking_main_idle.png'
-OUT = sys.argv[2] if len(sys.argv) > 2 else 'out'
-os.makedirs(OUT, exist_ok=True)
+# Builds the Viking run and attack sheets from the hand-drawn idle sprite.
+#   python make_viking_anims.py
+# Reads  ../../vaporwave-vikings-idle/assets/sprites/viking/viking_idle.png
+# Writes sheets next to it, .piskel files here, previews to ../previews, debug parts to ./_debug
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
+ASSETS = os.path.join(ROOT, 'vaporwave-vikings-idle', 'assets', 'sprites', 'viking')
+PREVIEWS = os.path.join(HERE, '..', 'previews')
+DEBUG = os.path.join(HERE, '_debug')
+SRC = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ASSETS, 'viking_idle.png')
+for d in (ASSETS, PREVIEWS, DEBUG): os.makedirs(d, exist_ok=True)
 W = H = 64
 
 SKIN = {(195,167,156),(235,200,167),(156,128,126),(237,213,202),(150,108,108),(123,98,104)}
@@ -229,7 +237,7 @@ def piskel(name, frames, fps):
     b64 = 'data:image/png;base64,' + base64.b64encode(buf.getvalue()).decode()
     layer = {"name": "Layer 1", "opacity": 1, "frameCount": len(frames),
              "chunks": [{"layout": [[i] for i in range(len(frames))], "base64PNG": b64}]}
-    doc = {"modelVersion": 2, "piskel": {"name": name, "description": "generated from viking_main_idle.png",
+    doc = {"modelVersion": 2, "piskel": {"name": name, "description": "generated from viking_idle.png by make_viking_anims.py",
            "fps": fps, "height": H, "width": W, "layers": [json.dumps(layer)]}}
     return json.dumps(doc)
 
@@ -243,15 +251,15 @@ def preview(frames, path, fps, scale=4):
 if __name__ == '__main__':
     im = Image.open(SRC).convert('RGBA')
     P = split(im)
-    for k, v in P.items(): v.save(f'{OUT}/_part_{k}.png')
+    for k, v in P.items(): v.save(f'{DEBUG}/part_{k}.png')
     run = run_frames(P); atk = attack_frames(P)
-    sheet(run).save(f'{OUT}/viking_main_run.png')
-    sheet(atk).save(f'{OUT}/viking_main_attack.png')
-    open(f'{OUT}/viking_main_run.piskel', 'w').write(piskel('viking_main_run', run, 12))
-    open(f'{OUT}/viking_main_attack.piskel', 'w').write(piskel('viking_main_attack', atk, 12))
-    preview(run, f'{OUT}/preview_run.gif', 12)
-    preview(atk, f'{OUT}/preview_attack.gif', 12)
+    sheet(run).save(f'{ASSETS}/viking_run.png')
+    sheet(atk).save(f'{ASSETS}/viking_attack.png')
+    open(f'{HERE}/viking_run.piskel', 'w').write(piskel('viking_run', run, 12))
+    open(f'{HERE}/viking_attack.piskel', 'w').write(piskel('viking_attack', atk, 12))
+    preview(run, f'{PREVIEWS}/viking_run.gif', 12)
+    preview(atk, f'{PREVIEWS}/viking_attack.gif', 12)
     # contact sheets for inspection
     for nm, fr in (('run', run), ('attack', atk)):
-        sheet(fr).resize((W*len(fr)*4, H*4), Image.NEAREST).save(f'{OUT}/_contact_{nm}.png')
+        sheet(fr).resize((W*len(fr)*4, H*4), Image.NEAREST).save(f'{DEBUG}/contact_{nm}.png')
     print('ok')

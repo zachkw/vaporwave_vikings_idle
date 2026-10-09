@@ -4,11 +4,11 @@ A starting list of the obvious animations. Frame counts, timings and style come 
 
 ## The Viking
 
-- [ ] Run (loop)
+- [x] Run (loop) — `assets/sprites/viking/viking_run.png`, generated from the idle; see [asset-structure.md](asset-structure.md)
 - [ ] Sprint (loop, faster run)
 - [ ] Jump: take-off, rise, fall, land
 - [ ] Auto-jump at a pit edge (can reuse jump)
-- [ ] Sword swing (repeating while enemies are in front)
+- [x] Weapon swing (repeating while enemies are in front) — first pass is an axe swing, `viking_attack.png`
 - [ ] Ranged throw or shoot (one per weapon family: bow, axe)
 - [ ] Wand cast in mid-air
 - [ ] Take a hit
@@ -17,7 +17,7 @@ A starting list of the obvious animations. Frame counts, timings and style come 
 - [ ] Resurrection / respawn
 - [ ] Falling in from the sky after a pit fall
 - [ ] Eating an ingredient
-- [ ] Idle (menus, Village)
+- [x] Idle (menus, Village) — single frame, `viking_idle.png`
 - [ ] Caught by a boss's signature move (giant frog tongue grab)
 
 ## Enemies (per enemy)

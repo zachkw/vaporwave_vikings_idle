@@ -15,6 +15,7 @@ This folder will hold the art direction and asset specs. The art is made by the 
 
 | Doc | Will cover | Status |
 | --- | --- | --- |
+| [asset-structure.md](asset-structure.md) | Folder layout, naming, Godot conventions | Done |
 | `style-guide.md` | Style, resolution, palette, outlines, lighting | To write |
 | [animations.md](animations.md) | Every animation the game needs | Started: obvious list |
 | `characters.md` | The Viking and how gear shows on him | To write |
