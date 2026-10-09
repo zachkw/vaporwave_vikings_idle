@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cau4obdphry0v"
-path="res://.godot/imported/viking_idle.png-7c9f0f4aa9023efb6d57d85b175e4172.ctex"
+path="res://.godot/imported/viking_idle.png-d74b54e7ffcef4aea957a58876c99f81.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/sprites/viking/viking_idle.png"
-dest_files=["res://.godot/imported/viking_idle.png-7c9f0f4aa9023efb6d57d85b175e4172.ctex"]
+dest_files=["res://.godot/imported/viking_idle.png-d74b54e7ffcef4aea957a58876c99f81.ctex"]
 
 [params]
 
