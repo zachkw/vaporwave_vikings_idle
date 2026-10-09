@@ -25,8 +25,8 @@ Artefacts and wands, pickups, farm courses, World+, portals, ascension, the Vill
 
 - `Store` autoload with the slices listed in the [state store spec](../technical/state-store-spec.md).
 - Device save at checkpoints and on background.
-- Batch builder and queue; `POST /api/v1/sync` on the backend with the revision, time, gold-earned and gold-spent checks.
-- Guest sign-in only.
+- Done: batch builder and queue; `POST /api/v1/sync` on the backend with the revision, time, gold-earned, gold-spent and progress checks.
+- Done: guest sign-in (the session token is kept on the device).
 
 ## Build order
 
@@ -37,10 +37,10 @@ Each step is playable or testable on its own.
 3. Done: running, coins and enemies in Dark Forest dispatching the run actions; death and pit falls.
 4. Done: the boss fight and level advance.
 5. Done: checkpoint triggers (level end, boss death, course end, purchase burst) and the batch builder, with the queue, merging of old batches, the request body and the three server answers handled in the store; batches print to the console in debug builds.
-6. `POST /sync` on the backend, and the three answers handled in the store.
+6. Done: `POST /api/v1/sync` and `GET /api/v1/state` in `backend-service/`, with the order, time, gold-bound, spend and progress checks reading the game's own content tables; a `Sync` autoload in the game that signs in as a guest, sends the queue at checkpoints (at most every two minutes), on launch and on background, and feeds the three answers into the Store; shared maths pinned by `content/test_vectors.json` on both sides.
 7. Done (ahead of 5 and 6): the Triple Jump Cave, the spirit leaf and the `effects` and `unlocks` slices.
 
-Steps 3, 4 and 7 are playable with placeholder shapes; see the [Dark Forest proof](proof-segments.md).
+Every step is built; what remains for "done when" is the balance pass (E2) and real art. See the [Dark Forest proof](proof-segments.md).
 
 ## Done when
 

@@ -201,6 +201,10 @@ Built 9 Oct as `state/reducers/sync_reducer.gd`. The wallet reducer notes every 
 
 On launch the game first sends anything queued, then asks the server for away gold. The server measures the gap with its own clock and applies the away rates in [Economy](../game-design/economy.md). If the game launches offline, it estimates from the device clock and records the claim in a batch, which the server checks later.
 
+### The client
+
+The `Sync` autoload signs in as a guest the first time (token kept in `user://session.json`), then sends the queue on launch, when the app goes to the background, and at checkpoints no more than once every two minutes (`sync_min_interval_s` in `economy.json`). A request keeps its `request_id` until the server answers, so a retry after a lost reply is idempotent. No connection: the queue waits. `401`: the token is dropped and the next attempt signs in again. `rejected`: `GET /state` and `SYNC_REJECTED` replaces the device state. `conflict`: `GET /state`; if the server copy carries this device's own id the earlier request landed and the client catches up and resends the rest, otherwise the `conflict` signal hands the server copy to the game for T4.
+
 ### Two devices
 
 The server keeps one revision number per player. A request built on an older revision means another device has synced since. Proposed: ask the player which save to keep (T4).
@@ -223,7 +227,7 @@ The server validates every sync request with a time check, a gold bound and a sp
 | Discovery | One assault course, one ingredient unlock | Artefacts, pickups, farm courses |
 | Effects | One dimension ingredient eaten from surface boxes | Mixed form, auto-consume, timed pickups |
 | Saving | Device save at checkpoints and on background | Save migration between versions |
-| Sync | Batch builder, queue, `POST /sync` with checks 1 to 4 | Check 5, away gold, two-device choice |
+| Sync | Done: batch builder, queue, `POST /sync` with checks 1 to 5, the `Sync` client | Away gold, two-device choice (T4), merged-batch cap (T7) |
 
 Empty slices for the later parts exist from day one so adding them does not change the save format. Build order is in [First build](../production/first-build.md).
 

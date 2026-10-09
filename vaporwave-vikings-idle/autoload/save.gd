@@ -14,6 +14,8 @@ var saves := 0
 func _ready() -> void:
 	Store.checkpoint.connect(func(_reason: String) -> void: save())
 	get_tree().auto_accept_quit = false
+	if enabled and FileAccess.file_exists(SAVE_PATH):
+		self.load(SAVE_PATH)
 
 
 func _notification(what: int) -> void:

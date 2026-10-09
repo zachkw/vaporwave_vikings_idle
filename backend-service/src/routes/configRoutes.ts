@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { gameConfig } from "../data/gameConfig";
+import { content } from "../content/content";
 
 export const configRouter = Router();
 
 configRouter.get("/", (_req, res) => {
-  res.json({ config: gameConfig });
+  const c = content();
+  res.json({ content_version: c.version, economy: c.economy, gear: c.gear });
 });
-

@@ -37,5 +37,16 @@
     "nothing": 0.5,
     "coins": 0.35,
     "enemies": 0.15
-  }
+  },
+  "expected_per_metre": {
+    "coins": 0.2,
+    "basic_kills": 0.07,
+    "elite_kills": 0.004,
+    "dimensional_kills": 0.05
+  },
+  "sync_time_slack": {
+    "ratio": 1.05,
+    "seconds": 60
+  },
+  "sync_min_interval_s": 120
 }

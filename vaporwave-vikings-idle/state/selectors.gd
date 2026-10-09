@@ -83,6 +83,46 @@ static func run_speed_mult(state: Dictionary) -> float:
 	return 1.0 + gear_stat(state, "run_speed_pct") / 100.0
 
 
+## Gold for buying `count` levels of a slot starting at `from_level`: the
+## linear sum base + step x level for each level. Shared with the server.
+static func level_cost_sum(slot: String, from_level: int, count: int) -> float:
+	var item := gear_item(slot)
+	if item.is_empty() or count <= 0:
+		return 0.0
+	var total := 0.0
+	for i in count:
+		total += float(item["base_cost"]) + float(item["step"]) * (from_level + i)
+	return total
+
+
+## The reference earning rate the server bounds a batch with: run speed times
+## gold per metre plus the expected coins and kills per metre in the biome, at
+## this state's gear. Sprint, crit, sky coins and luck live inside the margin.
+## Must match expectedGoldPerSecond in backend-service exactly (test vectors).
+static func expected_gold_per_second(state: Dictionary, biome_id: String = "") -> float:
+	var economy: Dictionary = Content.load_json("res://content/economy.json")
+	var per_m: Dictionary = economy["expected_per_metre"]
+	if biome_id == "":
+		biome_id = String(state["run"]["biome"])
+	var biome := {}
+	for b in Content.load_json("res://content/biomes.json"):
+		if b["id"] == biome_id:
+			biome = b
+	var per_metre := gold_per_metre(state) + float(per_m["coins"]) * coin_value(state)
+	if not biome.is_empty():
+		per_metre += float(per_m["basic_kills"]) * enemy_gold(state, Spawner.enemy_data(biome["basic"][0]))
+		per_metre += float(per_m["elite_kills"]) * enemy_gold(state, Spawner.enemy_data(biome["elite"][0]))
+		var dim_gold := 0.0
+		var dim_count := 0
+		for ing_id in biome.get("ingredients", []):
+			for enemy_id in ingredient(ing_id).get("reveals", []):
+				dim_gold += enemy_gold(state, Spawner.enemy_data(enemy_id))
+				dim_count += 1
+		if dim_count > 0:
+			per_metre += float(per_m["dimensional_kills"]) * dim_gold / dim_count
+	return per_metre * float(economy["run_speed_mps"]) * run_speed_mult(state)
+
+
 ## Linear cost: base + step x level. See docs/game-systems/gear-shop.md.
 static func next_level_cost(state: Dictionary, slot: String) -> float:
 	var item := gear_item(slot)

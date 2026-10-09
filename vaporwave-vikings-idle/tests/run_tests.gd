@@ -12,6 +12,7 @@ func _ready() -> void:
 
 
 func _run() -> void:
+	Sync.enabled = false  # simulations dispatch impossible numbers; keep them off the real server
 	var library := LevelBuilder.load_library("res://content/segments/proof.json")
 	var builder := LevelBuilder.new(library)
 	var target := int(Content.load_json("res://content/economy.json")["level_length_m"])
@@ -425,6 +426,7 @@ func _store_tests() -> void:
 	Store.dispatch(Actions.checkpoint_reached("test"))
 	expect(Store.queued_batches().size() == 1, "checkpoint closes the batch and queues it")
 	await _sync_tests()
+	await _sync_client_tests()
 
 
 func _sync_tests() -> void:
@@ -526,6 +528,167 @@ func _sync_tests() -> void:
 	expect(contiguous and last_seq == 40, "merged batches cover an unbroken sequence up to 40")
 	expect(q[0]["changes"]["gear"]["sword"] == [0, 1], "a merged gear change keeps the first from and last to")
 	Store.reset()
+
+
+## A scripted fake server for the sync client.
+class FakeServer:
+	var replies: Array = []
+	var calls: Array = []
+	func reply(status: int, body: Dictionary = {}) -> FakeServer:
+		replies.append({"status": status, "body": body})
+		return self
+	func handle(method: String, path: String, body: Dictionary, auth: bool) -> Dictionary:
+		calls.append({"method": method, "path": path, "body": body, "auth": auth})
+		if replies.is_empty():
+			return {"status": 0, "body": {}}
+		return replies.pop_front()
+
+
+func _queue_two_batches() -> void:
+	var was := Sync.enabled
+	Sync.enabled = false  # checkpoints would otherwise trigger the client mid-test
+	Store.reset()
+	Store.dispatch(Actions.time_advanced(30.0))
+	Store.dispatch(Actions.distance_travelled(100.0))
+	Store.dispatch(Actions.checkpoint_reached("a"))
+	Store.dispatch(Actions.time_advanced(30.0))
+	Store.dispatch(Actions.distance_travelled(100.0))
+	Store.dispatch(Actions.checkpoint_reached("b"))
+	Sync.enabled = was
+
+
+func _sync_client_tests() -> void:
+	print("== Sync client: sign-in, answers, offline, conflicts (fake server) ==")
+	Sync.enabled = true
+	Sync.token = ""
+	Sync.pending_request_id = ""
+	var st: Dictionary
+	var fake := FakeServer.new()
+	Sync.transport = fake.handle
+	_queue_two_batches()
+	fake.reply(201, {"accessToken": "tok-1"}).reply(200, {"result": "accepted", "rev": 1, "up_to_seq": 2, "server_time": "2026-10-09T10:00:00Z"})
+	var r := await Sync.sync_now("test")
+	expect(r == "accepted", "first sync signs in as a guest then is accepted (%s)" % r)
+	expect(fake.calls.size() == 2 and fake.calls[0]["path"] == "/api/v1/auth/guest" and not fake.calls[0]["auth"], "guest sign-in happens first, without a token")
+	expect(fake.calls[1]["path"] == "/api/v1/sync" and fake.calls[1]["auth"] and fake.calls[1]["body"]["batches"].size() == 2 and fake.calls[1]["body"]["base_rev"] == 0, "sync carries both batches on rev 0")
+	expect(Sync.token == "tok-1", "token kept")
+	expect(Store.queued_batches().is_empty() and int(Store.state["sync"]["rev"]) == 1, "accepted cleared the queue and set rev 1")
+	expect(Sync.pending_request_id == "", "request id cleared after an answer")
+	r = await Sync.sync_now("test")
+	expect(r == "nothing" and fake.calls.size() == 2, "nothing queued, nothing sent")
+
+	fake = FakeServer.new()
+	Sync.transport = fake.handle
+	_queue_two_batches()
+	r = await Sync.sync_now("test")
+	expect(r == "failed" and Sync.last_error == "offline", "no connection fails softly")
+	expect(Store.queued_batches().size() == 2, "the queue waits")
+	var first_id: String = fake.calls[0]["body"]["request_id"]
+	expect(first_id != "" and Sync.pending_request_id == first_id, "the request id is kept for the retry")
+	fake.reply(200, {"result": "accepted", "rev": 1, "up_to_seq": 2})
+	r = await Sync.sync_now("test")
+	expect(r == "accepted" and fake.calls[1]["body"]["request_id"] == first_id, "the retry reuses the request id")
+
+	fake = FakeServer.new()
+	Sync.transport = fake.handle
+	_queue_two_batches()
+	st = Store.state
+	var gold := Store.gold()
+	fake.reply(200, {"result": "trimmed", "rev": 1, "up_to_seq": 2, "trims": [{"seq": 1, "gold_removed": 50.0}, {"seq": 2, "gold_removed": 25.0}]})
+	r = await Sync.sync_now("test")
+	expect(r == "trimmed" and is_equal_approx(Store.gold(), gold - 75.0), "trimmed takes the server's figure out of the wallet")
+
+	fake = FakeServer.new()
+	Sync.transport = fake.handle
+	_queue_two_batches()
+	var server_state := InitialState.make()
+	server_state["wallet"]["gold"] = 4242.0
+	fake.reply(422, {"result": "rejected", "rev": 3, "code": "spend"}).reply(200, {"rev": 3, "state": server_state})
+	r = await Sync.sync_now("test")
+	expect(r == "rejected" and fake.calls[1]["method"] == "GET" and fake.calls[1]["path"] == "/api/v1/state", "rejected fetches the server copy")
+	expect(is_equal_approx(Store.gold(), 4242.0) and int(Store.state["sync"]["rev"]) == 3 and Store.queued_batches().is_empty(), "the server copy replaces the device state")
+
+	fake = FakeServer.new()
+	Sync.transport = fake.handle
+	_queue_two_batches()
+	var mine := InitialState.make()
+	mine["meta"]["device_id"] = Store.state["meta"]["device_id"]
+	mine["sync"]["last_seq"] = 1
+	fake.reply(409, {"result": "conflict", "rev": 1}).reply(200, {"rev": 1, "state": mine}).reply(200, {"result": "accepted", "rev": 2, "up_to_seq": 2})
+	r = await Sync.sync_now("test")
+	expect(r == "accepted", "a conflict with our own device catches up and resends")
+	expect(fake.calls.size() == 3 and fake.calls[2]["body"]["base_rev"] == 1 and fake.calls[2]["body"]["batches"].size() == 1 and int(fake.calls[2]["body"]["batches"][0]["seq"]) == 2, "only the batch the server had not seen is resent, on the server's rev")
+	expect(Store.queued_batches().is_empty() and int(Store.state["sync"]["rev"]) == 2, "queue clear at rev 2")
+
+	fake = FakeServer.new()
+	Sync.transport = fake.handle
+	_queue_two_batches()
+	var theirs := InitialState.make()
+	theirs["meta"]["device_id"] = "dev-someone-else"
+	var got_conflict: Array = []
+	var handler := func(s: Dictionary) -> void: got_conflict.append(s)
+	Sync.conflict.connect(handler)
+	fake.reply(409, {"result": "conflict", "rev": 5}).reply(200, {"rev": 5, "state": theirs})
+	r = await Sync.sync_now("test")
+	Sync.conflict.disconnect(handler)
+	expect(r == "conflict" and got_conflict.size() == 1 and got_conflict[0]["meta"]["device_id"] == "dev-someone-else", "a conflict with another device is handed to the game (T4)")
+	expect(Store.queued_batches().size() == 2, "nothing is dropped until the player chooses")
+
+	fake = FakeServer.new()
+	Sync.transport = fake.handle
+	fake.reply(401, {"error": {"code": "expired_access_token"}})
+	r = await Sync.sync_now("test")
+	expect(r == "failed" and Sync.token == "", "a lapsed session clears the token for a fresh sign-in")
+
+	Sync.transport = Sync._http
+	await _sync_e2e_tests()
+
+
+## Runs only when the backend is up on the configured base URL.
+func _sync_e2e_tests() -> void:
+	var probe := HTTPRequest.new()
+	add_child(probe)
+	probe.timeout = 3.0
+	if probe.request(Sync.base_url + "/health") != OK:
+		probe.queue_free()
+		print("== Sync end to end: skipped (no server at %s) ==" % Sync.base_url)
+		return
+	var res: Array = await probe.request_completed
+	probe.queue_free()
+	if int(res[0]) != HTTPRequest.RESULT_SUCCESS or int(res[1]) != 200:
+		print("== Sync end to end: skipped (no server at %s) ==" % Sync.base_url)
+		return
+	print("== Sync end to end against %s ==" % Sync.base_url)
+	Sync.token = ""
+	Sync.pending_request_id = ""
+	Sync.enabled = false
+	Store.reset()
+	Store.dispatch(Actions.time_advanced(20.0))
+	Store.dispatch(Actions.distance_travelled(90.0))
+	Store.dispatch(Actions.coin_collected("gold", 4))
+	Store.dispatch(Actions.enemy_killed("vine_plant", "basic"))
+	Store.dispatch(Actions.gear_level_bought("sword", 3))
+	Store.dispatch(Actions.checkpoint_reached("level_end"))
+	Sync.enabled = true
+	var r := await Sync.sync_now("e2e")
+	expect(r == "accepted", "real server accepts a modest batch (%s %s)" % [r, Sync.last_error])
+	expect(int(Store.state["sync"]["rev"]) == 1 and Store.queued_batches().is_empty(), "rev 1, queue empty")
+	Store.dispatch(Actions.time_advanced(1.0))
+	Store.dispatch(Actions.distance_travelled(100000.0))
+	Sync.enabled = false
+	Store.dispatch(Actions.checkpoint_reached("level_end"))
+	Sync.enabled = true
+	var before := Store.gold()
+	r = await Sync.sync_now("e2e")
+	expect(r == "trimmed" and Store.gold() < before, "real server trims an impossible second of gold (%s)" % r)
+	Store.state["sync"]["rev"] = 0  # pretend another device moved the server on
+	Store.dispatch(Actions.time_advanced(1.0))
+	Store.dispatch(Actions.distance_travelled(1.0))
+	Sync.enabled = false
+	Store.dispatch(Actions.checkpoint_reached("x"))
+	Sync.enabled = true
+	r = await Sync.sync_now("e2e")
+	expect(r == "accepted" and int(Store.state["sync"]["rev"]) == 3, "a stale rev from this device catches up through GET /state (%s)" % r)
 
 
 func _save_tests() -> void:
