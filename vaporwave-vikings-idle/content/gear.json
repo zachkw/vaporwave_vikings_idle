@@ -4,7 +4,7 @@
     "name": "Sword",
     "order": 1,
     "bracket": 0,
-    "base_cost": 1,
+    "base_cost": 2,
     "step": 1,
     "per_level": {
       "gold_per_metre": 0.2,
@@ -17,118 +17,118 @@
     "name": "Chest",
     "order": 2,
     "bracket": 0,
-    "base_cost": 10,
-    "step": 5,
+    "base_cost": 16,
+    "step": 8,
     "per_level": {
-      "gold_per_metre": 1,
+      "gold_per_metre": 1.5,
       "defence": 1
     },
-    "effect": "+1 gold per metre, +1 defence per level"
+    "effect": "+1.5 gold per metre, +1 defence per level"
   },
   {
     "id": "helmet",
     "name": "Helmet",
     "order": 3,
     "bracket": 0,
-    "base_cost": 100,
-    "step": 50,
+    "base_cost": 250,
+    "step": 125,
     "per_level": {
-      "gold_per_metre": 5,
+      "gold_per_metre": 15,
       "health": 10
     },
-    "effect": "+5 gold per metre, +10 health per level"
+    "effect": "+15 gold per metre, +10 health per level"
   },
   {
     "id": "legs",
     "name": "Legs",
     "order": 4,
-    "bracket": 100,
-    "base_cost": 250,
-    "step": 125,
+    "bracket": 2650,
+    "base_cost": 5300,
+    "step": 2650,
     "per_level": {
-      "gold_per_metre": 10
+      "gold_per_metre": 125
     },
     "grants": [
       "sprint"
     ],
-    "effect": "+10 gold per metre per level. Level 1 grants sprint"
+    "effect": "+125 gold per metre per level. Level 1 grants sprint"
   },
   {
     "id": "boots",
     "name": "Boots",
     "order": 5,
-    "bracket": 500,
-    "base_cost": 1000,
-    "step": 500,
+    "bracket": 20000,
+    "base_cost": 40000,
+    "step": 20000,
     "per_level": {
-      "gold_per_metre": 25,
+      "gold_per_metre": 1000,
       "run_speed_pct": 0.5
     },
-    "effect": "+25 gold per metre, +0.5% run speed per level"
+    "effect": "+1K gold per metre, +0.5% run speed per level"
   },
   {
     "id": "gloves",
     "name": "Gloves",
     "order": 6,
-    "bracket": 2500,
-    "base_cost": 5000,
-    "step": 2500,
+    "bracket": 200000,
+    "base_cost": 400000,
+    "step": 200000,
     "per_level": {
-      "gold_per_metre": 100,
+      "gold_per_metre": 8000,
       "crit_rating": 2
     },
-    "effect": "+100 gold per metre, +2 crit rating per level"
+    "effect": "+8K gold per metre, +2 crit rating per level"
   },
   {
     "id": "shoulders",
     "name": "Shoulders",
     "order": 7,
-    "bracket": 15000,
-    "base_cost": 30000,
-    "step": 15000,
+    "bracket": 2350000,
+    "base_cost": 4700000,
+    "step": 2350000,
     "per_level": {
-      "gold_per_metre": 500,
+      "gold_per_metre": 60000,
       "gold_basic_pct": 2
     },
-    "effect": "+500 gold per metre, +2% basic enemy gold per level"
+    "effect": "+60K gold per metre, +2% basic enemy gold per level"
   },
   {
     "id": "bracers",
     "name": "Bracers",
     "order": 8,
-    "bracket": 125000,
-    "base_cost": 250000,
-    "step": 125000,
+    "bracket": 97500000,
+    "base_cost": 195000000,
+    "step": 97500000,
     "per_level": {
-      "gold_per_metre": 3500,
+      "gold_per_metre": 650000,
       "gold_coin_pct": 2
     },
-    "effect": "+3.5K gold per metre, +2% coin gold per level"
+    "effect": "+650K gold per metre, +2% coin gold per level"
   },
   {
     "id": "belt",
     "name": "Belt",
     "order": 9,
-    "bracket": 1250000,
-    "base_cost": 2500000,
-    "step": 1250000,
+    "bracket": 900000000,
+    "base_cost": 1800000000,
+    "step": 900000000,
     "per_level": {
-      "gold_per_metre": 30000,
+      "gold_per_metre": 3000000,
       "gold_elite_pct": 2
     },
-    "effect": "+30K gold per metre, +2% elite gold per level"
+    "effect": "+3M gold per metre, +2% elite gold per level"
   },
   {
     "id": "cloak",
     "name": "Cloak",
     "order": 10,
-    "bracket": 15000000,
-    "base_cost": 30000000,
-    "step": 15000000,
+    "bracket": 55000000000,
+    "base_cost": 110000000000,
+    "step": 55000000000,
     "per_level": {
-      "gold_per_metre": 300000,
+      "gold_per_metre": 90000000,
       "gold_dimensional_pct": 2
     },
-    "effect": "+300K gold per metre, +2% dimensional enemy gold per level"
+    "effect": "+90M gold per metre, +2% dimensional enemy gold per level"
   }
 ]

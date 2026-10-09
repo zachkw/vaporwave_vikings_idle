@@ -1,62 +1,62 @@
 {
-  "content_version": "2026-10-09.1",
+  "content_version": "2026-10-09.2",
   "level_costs": [
     {
-      "cost": 1.0,
+      "cost": 2.0,
       "count": 1,
       "from_level": 0,
       "slot": "sword"
     },
     {
-      "cost": 6.0,
+      "cost": 9.0,
       "count": 3,
       "from_level": 0,
       "slot": "sword"
     },
     {
-      "cost": 132.0,
+      "cost": 135.0,
       "count": 3,
       "from_level": 42,
       "slot": "sword"
     },
     {
-      "cost": 10.0,
+      "cost": 16.0,
       "count": 1,
       "from_level": 0,
       "slot": "chest"
     },
     {
-      "cost": 6750.0,
+      "cost": 16875.0,
       "count": 10,
       "from_level": 7,
       "slot": "helmet"
     },
     {
-      "cost": 250.0,
+      "cost": 5300.0,
       "count": 1,
       "from_level": 0,
       "slot": "legs"
     },
     {
-      "cost": 325000.0,
+      "cost": 13000000.0,
       "count": 25,
       "from_level": 12,
       "slot": "boots"
     },
     {
-      "cost": 27500.0,
+      "cost": 2200000.0,
       "count": 2,
       "from_level": 3,
       "slot": "gloves"
     },
     {
-      "cost": 30000000.0,
+      "cost": 110000000000.0,
       "count": 1,
       "from_level": 0,
       "slot": "cloak"
     },
     {
-      "cost": 1515000000.0,
+      "cost": 5555000000000.0,
       "count": 1,
       "from_level": 99,
       "slot": "cloak"
@@ -109,14 +109,14 @@
         "vine_plant": 25.0
       },
       "expected_gold_per_second": {
-        "dark_forest": 83.5
+        "dark_forest": 143.5
       },
       "gear": {
         "chest": 4,
         "helmet": 1,
         "sword": 12
       },
-      "gold_per_metre": 12.4,
+      "gold_per_metre": 24.4,
       "name": "early set",
       "run_speed_mult": 1.0
     },
@@ -129,7 +129,7 @@
         "vine_plant": 25.0
       },
       "expected_gold_per_second": {
-        "dark_forest": 1107.8725
+        "dark_forest": 20012.2475
       },
       "gear": {
         "boots": 3,
@@ -138,7 +138,7 @@
         "legs": 6,
         "sword": 40
       },
-      "gold_per_metre": 214.0,
+      "gold_per_metre": 3939.0,
       "name": "legs and boots",
       "run_speed_mult": 1.015
     },
@@ -151,7 +151,7 @@
         "vine_plant": 27.5
       },
       "expected_gold_per_second": {
-        "dark_forest": 34841.98125
+        "dark_forest": 2852284.48125
       },
       "gear": {
         "boots": 30,
@@ -162,7 +162,7 @@
         "shoulders": 5,
         "sword": 120
       },
-      "gold_per_metre": 6055.0,
+      "gold_per_metre": 496045.0,
       "name": "mid game",
       "run_speed_mult": 1.15
     },
@@ -175,7 +175,7 @@
         "vine_plant": 75.0
       },
       "expected_gold_per_second": {
-        "dark_forest": 41845107.5
+        "dark_forest": 10364364607.5
       },
       "gear": {
         "belt": 30,
@@ -189,7 +189,7 @@
         "shoulders": 100,
         "sword": 500
       },
-      "gold_per_metre": 4184501.0,
+      "gold_per_metre": 1036436451.0,
       "name": "late game",
       "run_speed_mult": 2.0
     }

@@ -380,7 +380,7 @@ func _store_tests() -> void:
 	var st: Dictionary = Store.state
 	expect(is_equal_approx(Store.gold(), 0.0), "a new game starts with 0 gold")
 	expect(Store.is_unlocked("sword") and Store.is_unlocked("chest") and Store.is_unlocked("helmet"), "sword, chest and helmet unlock at start")
-	expect(not Store.is_unlocked("legs"), "legs are locked until 100 gold is held")
+	expect(not Store.is_unlocked("legs"), "legs are locked until 2,650 gold is held")
 	expect(is_equal_approx(Store.gold_per_metre(), 1.0), "base gold per metre is 1")
 
 	Store.dispatch(Actions.distance_travelled(10.0))
@@ -390,21 +390,21 @@ func _store_tests() -> void:
 	expect(is_equal_approx(Store.gold(), 28.0), "3 coins pay 18 gold")
 
 	Store.dispatch(Actions.gear_level_bought("sword"))
-	expect(Store.gear_level("sword") == 1 and is_equal_approx(Store.gold(), 27.0), "first sword level costs 1 gold")
-	expect(is_equal_approx(Store.next_level_cost("sword"), 2.0), "next sword level costs 2 (linear)")
+	expect(Store.gear_level("sword") == 1 and is_equal_approx(Store.gold(), 26.0), "first sword level costs 2 gold")
+	expect(is_equal_approx(Store.next_level_cost("sword"), 3.0), "next sword level costs 3 (linear)")
 	expect(is_equal_approx(Store.gold_per_metre(), 1.2), "sword level adds 0.2 gold per metre")
 	expect(is_equal_approx(Selectors.damage(st), 12.0), "sword level adds 2 damage")
 
 	Store.dispatch(Actions.gear_level_bought("legs"))
 	expect(Store.gear_level("legs") == 0, "cannot buy a locked slot")
 	Store.dispatch(Actions.gear_level_bought("helmet"))
-	expect(Store.gear_level("helmet") == 0 and is_equal_approx(Store.gold(), 27.0), "cannot afford the 100-gold helmet; gold unchanged")
+	expect(Store.gear_level("helmet") == 0 and is_equal_approx(Store.gold(), 26.0), "cannot afford the 250-gold helmet; gold unchanged")
 
-	Store.dispatch(Actions.distance_travelled(100.0))
-	expect(Store.is_unlocked("legs"), "legs unlock once the wallet holds 100")
-	expect(not Store.is_unlocked("boots"), "boots still locked below 1000")
+	Store.dispatch(Actions.distance_travelled(2200.0))
+	expect(Store.is_unlocked("legs"), "legs unlock once the wallet holds 2,650")
+	expect(not Store.is_unlocked("boots"), "boots still locked below 20,000")
 	expect(not Store.has_sprint(), "no sprint before legs level 1")
-	Store.dispatch(Actions.distance_travelled(200.0))
+	Store.dispatch(Actions.distance_travelled(3000.0))
 	Store.dispatch(Actions.gear_level_bought("legs"))
 	expect(Store.gear_level("legs") == 1 and Store.has_sprint(), "legs level 1 grants sprint")
 	expect(Store.next_slot_unlock().get("id", "") == "boots", "next locked slot is boots")
@@ -459,7 +459,7 @@ func _sync_tests() -> void:
 	expect(is_equal_approx(float(open["gold_earned"]["coins"]), 30.0), "coin gold by source")
 	expect(is_equal_approx(float(open["gold_earned"]["basic"]), 25.0) and is_equal_approx(float(open["gold_earned"]["elite"]), 150.0), "kill gold by role")
 	expect(float(open["gold_earned"]["dimensional"]) > 0.0, "dimensional kills are their own source")
-	expect(is_equal_approx(float(open["gold_spent"]), 1.0 + 2.0 + 3.0 + 10.0), "gold spent sums the linear costs (sword 1+2+3, chest 10)")
+	expect(is_equal_approx(float(open["gold_spent"]), 2.0 + 3.0 + 4.0 + 16.0), "gold spent sums the linear costs (sword 2+3+4, chest 16)")
 	expect(int(open["counts"]["metres"]) == 310 and int(open["counts"]["coins"]) == 5 and int(open["counts"]["kills_basic"]) == 1 and int(open["counts"]["kills_elite"]) == 1 and int(open["counts"]["kills_dimensional"]) == 1 and int(open["counts"]["deaths"]) == 1 and int(open["counts"]["pit_falls"]) == 1, "counts tally every event")
 	expect(open["changes"]["effects_started"].size() == 1 and open["changes"]["effects_started"][0]["ingredient"] == "spirit_leaf", "effects started are listed")
 	Store.dispatch(Actions.checkpoint_reached("level_end"))
@@ -467,7 +467,7 @@ func _sync_tests() -> void:
 	var batch: Dictionary = Store.queued_batches()[0]
 	expect(int(batch["seq"]) == 1, "first batch is seq 1")
 	expect(batch["changes"]["gear"].get("sword", []) == [0, 3] and batch["changes"]["gear"].get("chest", []) == [0, 1], "gear changes are [from, to] against the baseline")
-	expect(batch["changes"]["unlocks"]["gear_slots"] == ["legs", "boots"], "the slots the wallet unlocked are listed (%s)" % str(batch["changes"]["unlocks"]["gear_slots"]))
+	expect(batch["changes"]["unlocks"]["gear_slots"] == [], "no slot unlocked below 2,650 (%s)" % str(batch["changes"]["unlocks"]["gear_slots"]))
 	expect(batch["changes"]["unlocks"]["ingredients"] == ["spirit_leaf"], "the ingredient unlock is listed")
 	expect(batch["changes"]["courses_completed"] == ["df_cave_a1"], "the completed course is listed")
 	expect(batch["changes"]["progress"].get("level", []) == [0, 1], "level advance is [from, to]")
@@ -709,7 +709,7 @@ func _save_tests() -> void:
 	expect(Save.load(path), "load finds the save")
 	# JSON turns ints into floats, so compare both sides after a JSON round trip.
 	expect(JSON.stringify(JSON.parse_string(JSON.stringify(Store.state))) == JSON.stringify(JSON.parse_string(before)), "loaded state equals saved state")
-	expect(Store.gear_level("chest") == 1 and is_equal_approx(Store.gold(), 40.0), "chest level and 40 gold survive the round trip")
+	expect(Store.gear_level("chest") == 1 and is_equal_approx(Store.gold(), 34.0), "chest level and 34 gold survive the round trip")
 
 	expect(Save.save(path), "second save")
 	expect(FileAccess.file_exists(path + ".bak"), "previous save kept as backup")

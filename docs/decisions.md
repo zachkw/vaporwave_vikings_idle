@@ -127,7 +127,7 @@ Last updated 8 October 2026 (second pass).
 
 ### Gear ladder (9 Oct)
 
-- **Opening costs widen like Idle Slayer's.** Sword 1, Chest 10, Helmet 100, Legs 250, then Boots 1K, Gloves 5K, Shoulders 30K, Bracers 250K, Belt 2.5M, Cloak 30M: gaps of 4x, 5x, 6x, 8x, 10x, 12x, growing to 2,000x by the last set piece. The old 100x jumps between slots 7 to 10 were a wall. A slot is revealed when the wallet holds half its level 1 cost. See [Economy](game-design/economy.md#the-gear-ladder).
+- **Opening costs are Idle Slayer's first ten, scaled to a 2-gold Sword.** 2, 16, 250, 5.3K, 40K, 400K, 4.7M, 195M, 1.8B, 110B (gaps 8x, 15x, 21x, 7.5x, 10x, 12x, 41x, 9x, 61x); pieces 11 to 18 follow Idle Slayer's 11 to 18 the same way. The old 100x jumps between slots 7 to 10 were a wall. A slot is revealed when the wallet holds half its level 1 cost. See [Economy](game-design/economy.md#the-gear-ladder).
 
 ## Open questions
 

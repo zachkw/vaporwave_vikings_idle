@@ -138,15 +138,16 @@ describe("sync checks", () => {
     expect(record.state.wallet.gold).toBe(1_000_000 + 1050 - levelCostSum(c, "sword", 42, 3));
   });
 
-  it("rejects gloves unlocked with a wallet that never reached 10^4", () => {
+  it("rejects gloves unlocked with a wallet that never reached its bracket", () => {
     const { record, t0 } = fresh();
     const out = applySync(record, req([batch(1, { changes: { ...batch(1).changes, unlocks: { gear_slots: ["gloves"], ingredients: [] } } })]), later(t0, 65), c);
     expect(out.response.result).toBe("rejected");
     expect(out.response.code).toBe("progress");
   });
 
-  it("accepts legs unlocked once the batch's earnings reach 100", () => {
+  it("accepts legs unlocked once the wallet plus earnings reach the bracket", () => {
     const { record, t0 } = fresh();
+    record.state.wallet.gold = 2000;
     const out = applySync(record, req([batch(1, { changes: { ...batch(1).changes, unlocks: { gear_slots: ["legs"], ingredients: [] } } })]), later(t0, 65), c);
     expect(out.response.result).toBe("accepted");
     expect(record.state.gear.legs.unlocked).toBe(true);
@@ -155,7 +156,7 @@ describe("sync checks", () => {
   it("rejects buying a level in a locked slot", () => {
     const { record, t0 } = fresh();
     record.state.wallet.gold = 1e6;
-    const out = applySync(record, req([batch(1, { gold_spent: 250, changes: { ...batch(1).changes, gear: { legs: [0, 1] } } })]), later(t0, 65), c);
+    const out = applySync(record, req([batch(1, { gold_spent: 5300, changes: { ...batch(1).changes, gear: { legs: [0, 1] } } })]), later(t0, 65), c);
     expect(out.response.result).toBe("rejected");
     expect(out.response.code).toBe("progress");
   });
@@ -182,7 +183,7 @@ describe("sync checks", () => {
 
   it("rejects a wallet that would go below zero", () => {
     const { record, t0 } = fresh();
-    const out = applySync(record, req([batch(1, { gold_earned: { distance: 0 }, gold_spent: 1, changes: { ...batch(1).changes, gear: { sword: [0, 1] } } })]), later(t0, 65), c);
+    const out = applySync(record, req([batch(1, { gold_earned: { distance: 0 }, gold_spent: 2, changes: { ...batch(1).changes, gear: { sword: [0, 1] } } })]), later(t0, 65), c);
     expect(out.response.result).toBe("rejected");
     expect(out.response.code).toBe("wallet");
   });
@@ -214,12 +215,12 @@ describe("sync checks", () => {
   it("applies several batches in order and rates each at its own gear", () => {
     const { record, t0 } = fresh();
     const b1 = batch(1, { gold_earned: { distance: 500 } });
-    const b2 = batch(2, { gold_spent: 6, changes: { ...batch(2).changes, gear: { sword: [0, 3] } } });
+    const b2 = batch(2, { gold_spent: 9, changes: { ...batch(2).changes, gear: { sword: [0, 3] } } });
     const out = applySync(record, req([b1, b2]), later(t0, 130), c);
     expect(out.response.result).toBe("accepted");
     expect(out.response.up_to_seq).toBe(2);
     expect(record.state.gear.sword.level).toBe(3);
-    expect(record.state.wallet.gold).toBe(500 + 1050 - 6);
+    expect(record.state.wallet.gold).toBe(500 + 1050 - 9);
     expect(record.state.run.play_seconds).toBe(120);
   });
 });

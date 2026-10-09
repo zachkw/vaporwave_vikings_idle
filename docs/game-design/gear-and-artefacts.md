@@ -13,34 +13,36 @@ Gear is the main gold sink: the thing the player can always spend on. Artefacts 
 
 ### Unlock ladder
 
-Costs follow Idle Slayer's shape (decided 9 Oct, see [Economy](economy.md#the-gear-ladder)): the gap between one piece's opening price and the next starts small and widens as the ladder climbs. A slot is revealed when the wallet holds half its level 1 cost ("gold held"), so the player sees the next piece a little before they can buy it. Everything from Boots on is a placeholder until the economy simulation.
+Costs copy Idle Slayer's first ten pieces exactly, scaled so the Sword opens at 2 gold (decided 9 Oct; see [Economy](economy.md#the-gear-ladder)). The gap between one piece's opening price and the next is small at first and widens up the ladder. A slot is revealed when the wallet holds half its level 1 cost, so the player sees the next piece a little before they can buy it. Pieces 11 to 22 continue the curve as placeholders until the economy simulation.
 
 | # | Piece | Group | Level 1 cost | Gold held to unlock | Gap from previous | Extra effect |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Sword | Warrior | 1 | Start | | Damage |
-| 2 | Chest | Warrior | 10 | Start | 10x | Defence |
-| 3 | Helmet | Warrior | 100 | Start | 10x | Health |
-| 4 | Legs | Warrior | 250 | 100 | 2.5x | Grants sprint at level 1 |
-| 5 | Boots | Warrior | 1,000 | 500 | 4x | Run speed (proposed) |
-| 6 | Gloves | Warrior | 5,000 | 2,500 | 5x | Crit chance |
-| 7 | Shoulders | Warrior | 30K | 15K | 6x | Basic enemy gold (proposed) |
-| 8 | Bracers | Warrior | 250K | 125K | 8x | Coin gold (proposed) |
-| 9 | Belt | Warrior | 2.5M | 1.25M | 10x | Elite gold (proposed) |
-| 10 | Cloak | Warrior | 30M | 15M | 12x | Dimensional enemy gold (proposed) |
-| 11 | Undershirt | Under-layer | 450M | 225M | 15x | Proposed: all gold |
-| 12 | Socks | Under-layer | 9B | 4.5B | 20x | Sprint speed bonus |
-| 13 | Underwear | Under-layer | 270B | 135B | 30x | Proposed: elite gold |
-| 14 | Beard ring | Jewellery | 13.5T | 6.75T | 50x | Proposed: boss gold |
-| 15 | Finger ring | Jewellery | 1.1Qa (10^15) | half | 80x | Proposed: all gold |
-| 16 | Necklace | Jewellery | 1.3 x 10^17 | half | 120x | Proposed: all gold |
-| 17 | Earring | Jewellery | 2.6 x 10^19 | half | 200x | Proposed: dimensional enemy gold |
-| 18 | Ranger coif | Ranger set | 7.8 x 10^21 | half | 300x | Ranged damage |
-| 19 | Ranger vambraces | Ranger set | 3.9 x 10^24 | half | 500x | Ranged damage |
-| 20 | Leather chaps | Ranger set | 3.1 x 10^27 | half | 800x | Ranged damage |
-| 21 | Wizard hat | Wizard set | 3.7 x 10^30 | half | 1,200x | Magic damage |
-| 22 | Wizard robe | Wizard set | 7.5 x 10^33 | half | 2,000x | Magic damage |
+| 1 | Sword | Warrior | 2 | Start | | Damage |
+| 2 | Chest | Warrior | 16 | Start | 8x | Defence |
+| 3 | Helmet | Warrior | 250 | Start | 15x | Health |
+| 4 | Legs | Warrior | 5.3K | 2.65K | 21x | Grants sprint at level 1 |
+| 5 | Boots | Warrior | 40K | 20K | 7.5x | Run speed (proposed) |
+| 6 | Gloves | Warrior | 400K | 200K | 10x | Crit chance |
+| 7 | Shoulders | Warrior | 4.7M | 2.35M | 12x | Basic enemy gold (proposed) |
+| 8 | Bracers | Warrior | 195M | 97.5M | 41x | Coin gold (proposed) |
+| 9 | Belt | Warrior | 1.8B | 900M | 9x | Elite gold (proposed) |
+| 10 | Cloak | Warrior | 110B | 55B | 61x | Dimensional enemy gold (proposed) |
+| 11 | Undershirt | Under-layer | 1.5T (10^12) | half | 14x | Proposed: all gold |
+| 12 | Socks | Under-layer | 7.3 x 10^13 | half | 48x | Sprint speed bonus |
+| 13 | Underwear | Under-layer | 5 x 10^16 | half | 680x | Proposed: elite gold |
+| 14 | Beard ring | Jewellery | 1.7 x 10^25 | half | 3 x 10^8 | Proposed: boss gold |
+| 15 | Finger ring | Jewellery | 1.7 x 10^35 | half | 10^10 | Proposed: all gold |
+| 16 | Necklace | Jewellery | 3.3 x 10^43 | half | 2 x 10^8 | Proposed: all gold |
+| 17 | Earring | Jewellery | 1.7 x 10^51 | half | 5 x 10^7 | Proposed: dimensional enemy gold |
+| 18 | Ranger coif | Ranger set | 1.7 x 10^61 | half | 10^10 | Ranged damage |
+| 19 | Ranger vambraces | Ranger set | 10^65 | half | | Ranged damage |
+| 20 | Leather chaps | Ranger set | 10^69 | half | | Ranged damage |
+| 21 | Wizard hat | Wizard set | 10^73 | half | | Magic damage |
+| 22 | Wizard robe | Wizard set | 10^77 | half | | Magic damage |
 
-Every row also adds gold per metre; the amount per level grows with the slot's bracket so the newest slot is always the best income buy. "Proposed" extra effects for slots 5 to 17 come from the October proposal and are not confirmed (G3). With the widening gaps the 17 regular pieces open near 10^19 and the sets near 10^34; level costs rise linearly on top, so the real top number is higher (E1).
+Pieces 11 to 18 follow Idle Slayer's pieces 11 to 18 (Spellbook to Shuriken) scaled by the same third; the four set pieces beyond that are a guess at 10^4 apart.
+
+Every row also adds gold per metre; the amount per level grows with the slot's bracket so the newest slot is always the best income buy. "Proposed" extra effects for slots 5 to 17 come from the October proposal and are not confirmed (G3). On this ladder the 17 regular pieces open near 10^51 and the sets near 10^77, close to Idle Slayer's own ceiling (E1).
 
 Hidden or small slots (undershirt, underwear, socks, rings, necklace, earring) may only need an icon, not art on the Viking.
 
